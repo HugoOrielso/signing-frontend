@@ -2,7 +2,12 @@ import "./globals.css";
 import SessionWrapper from "@/components/common/SessionWrapper";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
-import { Poppins } from "next/font/google";
+import { Poppins, Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/dashboard/AppSidebar";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -20,11 +25,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={poppins.variable}>
+    <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className="font-sans">
         <SessionWrapper>
           <Toaster richColors position="top-right" />
-          {children}
+          <SidebarProvider>
+            <AppSidebar />
+            <main>
+              <SidebarTrigger />
+              {children}
+            </main>
+          </SidebarProvider>
         </SessionWrapper>
       </body>
     </html>
