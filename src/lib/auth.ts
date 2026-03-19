@@ -9,8 +9,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       credentials: { email: {}, password: {} },
       async authorize(credentials) {
         const API_URL = process.env.API_URL;
-        console.log("🌐 API_URL:", API_URL);
-        console.log("📧 email:", credentials?.email);
 
         if (!API_URL) return null;
 
@@ -19,15 +17,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!email || !password) return null;
 
         try {
-          const res = await fetch(`${API_URL}/api/auth/login`, {
+          const res = await fetch(`${API_URL}/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),
           });
 
-          console.log("📡 Response status:", res.status);
           const data = await res.json();
-          console.log("📦 Response data:", data);
 
           if (!res.ok) return null;
           if (!data?.admin?.id || !data?.accessToken || !data?.refreshToken) return null;
@@ -41,8 +37,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             refreshToken: data.refreshToken,
             accessTokenExpires: Date.now() + 60 * 60 * 1000,
           };
-        } catch (err) {
-          console.error("❌ Error:", err);
+        } catch (_) {
           return null;
         }
       },
@@ -64,7 +59,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (!token.error.startsWith("RefreshNeeded")) return token;
 
       try {
-        const res = await fetch(`${API_URL}/api/auth/refresh`, {
+        const res = await fetch(`${API_URL}/auth/refresh`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ refreshToken: token.refreshToken }),

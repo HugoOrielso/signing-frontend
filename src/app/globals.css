@@ -5,6 +5,15 @@
   --foreground: #171717;
 }
 
+@theme {
+  --color-ink: #1a1a2e;
+  --color-gold: #c9a84c;
+  --color-gold-dark: #a07830;
+  --color-cream: #f5f0e8;
+  --color-border-soft: #d4c9b0;
+  --color-muted: #7a6e5f;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -22,5 +31,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), sans-serif;
 }
