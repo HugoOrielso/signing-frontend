@@ -12,42 +12,42 @@ export interface LibranzaSigner {
 }
 
 export interface LibranzaDataPreview {
-  id?:                 string;
-  contractId?:         string;
-  ciudad?:             string | null;
-  asesor?:             string | null;
-  fecha?:              string | null;
+  id?: string;
+  contractId?: string;
+  ciudad?: string | null;
+  asesor?: string | null;
+  fecha?: string | null;
   // Datos personales
-  clienteNombre?:      string | null;
-  clienteCC?:          string | null;
-  clienteCCDe?:        string | null;
-  clienteDireccion?:   string | null;
-  clienteTelefono?:    string | null;
-  clienteEmail?:       string | null;
+  clienteNombre?: string | null;
+  clienteCC?: string | null;
+  clienteCCDe?: string | null;
+  clienteDireccion?: string | null;
+  clienteTelefono?: string | null;
+  clienteEmail?: string | null;
   clienteFuncionario?: string | null;
-  clienteDesdeHace?:   string | null;
+  clienteDesdeHace?: string | null;
   // Datos laborales
-  municipioTrabajo?:   string | null;
-  empresaTrabajo?:     string | null;
-  departamento?:       string | null;
+  municipioTrabajo?: string | null;
+  empresaTrabajo?: string | null;
+  departamento?: string | null;
   // Financiero
-  sumaTotal?:          string | null;
-  numeroCuotas?:       string | null;
-  valorCuota?:         string | null;
-  mesCobro?:           string | null;
+  sumaTotal?: string | null;
+  numeroCuotas?: string | null;
+  valorCuota?: string | null;
+  mesCobro?: string | null;
   // Bancario
-  tipoCuenta?:         string | null;
-  numeroCuenta?:       string | null;
-  banco?:              string | null;
+  tipoCuenta?: string | null;
+  numeroCuenta?: string | null;
+  banco?: string | null;
   // Productos y pago
-  productos?:          ProductoItem[] | null;
-  formaPago?:          string | null;
+  productos?: ProductoItem[] | null;
+  formaPago?: string | null;
 }
 
 export interface ProductoItem {
-  codigo:      string;
+  codigo: string;
   descripcion: string;
-  valor:       string;
+  valor: string;
 }
 
 export interface LibranzaForm {
@@ -118,4 +118,57 @@ export const emptyLibranza: LibranzaForm = {
 
   destinatarioEmail: '',
   destinatarioNombre: '',
-};  
+};
+
+export interface Contract {
+  id: string;
+  title: string;
+  contractNumber?: string | null;
+  contractType?: string | null;
+  subject?: string | null;
+  status: ContractStatus;
+  token?: string | null;
+
+  amount?: number | null;
+  currency?: string | null;
+
+  createdAt: string;
+  updatedAt?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+
+  parties: ContractParty[];
+  signers: LibranzaSigner[];
+  signatures: LibranzaSignature[];
+  libranzaData?: LibranzaDataPreview | null;
+}
+
+
+export interface ContractParty {
+  id: string;
+  role: 'CONTRACTOR' | 'CONTRACTED';
+  name: string;
+  identification?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+}
+
+export type ContractStatus =
+  | 'DRAFT'
+  | 'SENT'
+  | 'VIEWED'
+  | 'PARTIALLY_SIGNED'
+  | 'SIGNED'
+  | 'EXPIRED'
+  | 'CANCELLED';
+
+
+export interface ContractDocumentItem {
+  id: string;
+  type: string;
+  label: string;
+  url: string;
+  mimeType?: string;
+  uploadedAt: string;
+}

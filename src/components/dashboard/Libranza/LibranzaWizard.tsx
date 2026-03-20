@@ -6,8 +6,6 @@ import LibranzaStepPreview from './LibranzaStepPreview';
 import LibranzaControlHeader from './LibranzaControlHeader';
 import { Separator } from '@/components/ui/separator';
 
-
-
 export default function LibranzaWizard() {
   const step = useLibranzaStore((state) => state.step);
 
@@ -17,7 +15,7 @@ export default function LibranzaWizard() {
       <LibranzaControlHeader />
       <Separator/>
 
-      <main className="mx-auto max-w-215 px-5 py-10">
+      <main className="mx-auto  px-5 py-10">
         {step === 1 && <LibranzaStepForm />}
         {step === 2 && <LibranzaStepPreview />}
       </main>

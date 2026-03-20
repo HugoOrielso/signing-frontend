@@ -145,15 +145,7 @@ export function SignaturePad({
                             key={t}
                             onClick={() => setTab(t)}
                             disabled={disabled}
-                            className={`
-              px-5 py-2 text-[11px] font-semibold uppercase tracking-wider
-              transition
-              ${tab === t
-                                    ? "bg-ink text-gold"
-                                    : "bg-white text-muted"
-                                }
-            `}
-                        >
+                            className={` px-5 py-2 text-[11px] font-semibold uppercase tracking-wider transition ${tab === t ? "bg-ink text-gold" : "bg-white text-muted"}`}>
                             {t === "draw" ? "✏️ Dibujar" : "⌨️ Escribir"}
                         </button>
                     ))}
