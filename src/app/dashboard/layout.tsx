@@ -1,4 +1,5 @@
 import DashboardSidebar from "@/components/dashboard/Sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
@@ -14,11 +15,13 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="flex min-h-screen">
+    <SidebarProvider>
+      <div className="min-h-screen  flex w-full">
         <DashboardSidebar />
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto">{children}</main>
+        <SidebarInset>
+          <main className="flex-1 overflow-y-auto">{children}</main>
+        </SidebarInset>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }

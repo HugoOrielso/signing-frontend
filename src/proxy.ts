@@ -13,7 +13,7 @@ export default auth((req) => {
   }
 
   if (!session) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   if (session.error?.startsWith("RefreshFailed")) {

@@ -4,8 +4,6 @@ import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import { Poppins, Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/dashboard/AppSidebar";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -26,16 +24,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
-      <body className="font-sans">
+      <body className="font-poppins antialiased">
         <SessionWrapper>
           <Toaster richColors position="top-right" />
-          <SidebarProvider>
-            <AppSidebar />
-            <main>
-              <SidebarTrigger />
-              {children}
-            </main>
-          </SidebarProvider>
+          <main>{children}</main>
         </SessionWrapper>
       </body>
     </html>

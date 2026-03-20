@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-3">
       <div>
         <h1 className="text-3xl font-bold text-gray-800">
           Bienvenido al dashboard

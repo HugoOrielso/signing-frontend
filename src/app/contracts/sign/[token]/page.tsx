@@ -1,6 +1,5 @@
-// src/app/contracts/sign/[token]/page.tsx
+import PublicContractView from "@/components/libranza/LibranzaView/LibranzaView";
 import { auth } from "@/lib/auth";
-import PublicContractView from "../../view/[token]/PublicContractView";
 
 type Props = { params: Promise<{ token: string }> };
 

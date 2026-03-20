@@ -1,69 +1,72 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Shield, FilePlus2, FileText, LayoutDashboard } from "lucide-react";
+import { FilePlus2, FileText, LayoutDashboard } from "lucide-react";
 import LogoutButton from "@/components/common/LogoutButton";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from "@/components/ui/sidebar";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { Separator } from "../ui/separator";
 
 const links = [
-  {
-    href: "/dashboard",
-    label: "Inicio",
-    icon: LayoutDashboard,
-  },
-  {
-    href: "/dashboard/create-contract",
-    label: "Crear contrato",
-    icon: FilePlus2,
-  },
-  {
-    href: "/dashboard/manage-contracts",
-    label: "Administrar contratos",
-    icon: FileText,
-  },
+  { href: "/dashboard", label: "Inicio", icon: LayoutDashboard },
+  { href: "/dashboard/create-contract", label: "Crear contrato", icon: FilePlus2 },
+  { href: "/dashboard/manage-contracts", label: "Administrar contratos", icon: FileText },
 ];
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-72 bg-white border-r border-gray-200 flex flex-col justify-between">
-      <div>
-        <div className="flex items-center gap-3 px-6 py-6 border-b border-gray-200">
-          <div className="p-2 rounded-xl bg-blue-100">
-            <Shield className="w-6 h-6 text-blue-600" />
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="dark:bg-[#0A0A0A] bg-white">
+        <div className="flex items-center justify-between group-data-[collapsible=icon]:justify-center">
+
+          <div className="group-data-[collapsible=icon]:hidden flex items-center gap-2">
+            <Image
+              src="/assets/logo.webp"
+              width={37}
+              height={37}
+              alt="Logo"
+            />
           </div>
-          <div>
-            <h2 className="text-lg font-bold text-gray-800">Admin Panel</h2>
-            <p className="text-sm text-gray-500">Gestión de contratos</p>
-          </div>
+
+          <SidebarTrigger className="ml-auto group-data-[collapsible=icon]:ml-0 cursor-pointer border-none shadow-none bg-transparent hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0" />
         </div>
+      </SidebarHeader>
 
-        <nav className="p-4 space-y-2">
-          {links.map(({ href, label, icon: Icon }) => {
-            const isActive = pathname === href;
+      <Separator/>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarMenu>
+            {links.map(({ href, label, icon: Icon }) => {
+              const isActive = pathname === href;
 
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
-                  isActive
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                <Icon className="w-5 h-5" />
-                <span>{label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
+              return (
+                <SidebarMenuItem key={href}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive}
+                    className="rounded-xl border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 data-[active=true]:bg-blue-600 data-[active=true]:text-white focus-visible:ring-0 focus-visible:ring-offset-0"
+                  >
+                    <Link
+                      href={href}
+                      className="flex items-center gap-3 py-3 text-sm font-medium transition"
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span>{label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
 
-      <div className="p-4 border-t border-gray-200">
-        <LogoutButton  />
-      </div>
-    </aside>
+      <SidebarFooter className="p-4 border-t border-gray-200 dark:border-white/10">
+        <LogoutButton />
+      </SidebarFooter>
+    </Sidebar>
   );
 }

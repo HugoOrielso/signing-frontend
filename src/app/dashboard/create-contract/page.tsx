@@ -1,6 +1,6 @@
 // page.tsx — Libranza wizard
+import LibranzaWizard from '@/components/dashboard/Libranza/LibranzaWizard';
 import { Metadata } from 'next';
-import LibranzaWizard from '../../../components/libranza/LibranzaWizard';
 
 export const metadata: Metadata = { title: 'Nueva Libranza — ContractSign' };
 

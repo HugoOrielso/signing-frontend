@@ -11,6 +11,11 @@
   --color-cream: #f5f0e8;
   --color-border-soft: #d4c9b0;
   --color-muted: #7a6e5f;
+  --font-poppins: "Poppins", sans-serif;
+}
+
+.font-poppins {
+  font-family: var(--font-poppins);
 }
 
 @theme inline {

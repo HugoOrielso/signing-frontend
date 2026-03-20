@@ -1,8 +1,8 @@
-import { GOLD, GOLD_D, INK } from "@/lib/constanst";
-import { LibranzaData, LibranzaSignature, LibranzaSigner } from "@/types/libranza";
+import Image from "next/image";
+import { LibranzaDataPreview, LibranzaSignature, LibranzaSigner } from "@/types/libranza";
 
 interface Props {
-  data: LibranzaData;
+  data: LibranzaDataPreview;
   signatures?: LibranzaSignature[];
   signers?: LibranzaSigner[];
   showSignatureZone: boolean;
@@ -18,105 +18,78 @@ export function LibranzaSignatureSection({
   const alreadySigned = !!contractedSig;
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: 6,
-        marginBottom: 5,
-      }}
-    >
-      <div style={{ fontSize: 7.5, border: "1px solid #ccc", padding: 5 }}>
-        <p style={{ margin: "0 0 5px", fontSize: 7, lineHeight: 1.4 }}>
-          <strong>
-            He recibo en perfecto estado y a mi entera conformidad, los libros que describe y
-            manifestado tener conocimiento que la empresa DIMCULTURA S.A.S., por ningún motivo
-            permitirá la anulación o devolución después de firmada esta LIBRANZA, sin embargo torna
-            la responsabilidad de que toda devolución que gote una devolución una indemnización
-            del 37% del valor de la misma.
-          </strong>
+    <div className="my-1 grid grid-cols-2 gap-3">
+      <div className="flex min-h-28 flex-col rounded-sm border border-neutral-400 p-1 text-[9.5px] text-ink">
+        <p className="mb-2 text-[7px] leading-[1.45] text-justify font-semibold text-ink">
+          He recibido en perfecto estado y a mi entera conformidad, los libros
+          aquí descritos, manifestando tener conocimiento de que la empresa
+          DIMCULTURA S.A.S. no permitirá la anulación o devolución después de
+          firmada esta libranza. Toda devolución genera una indemnización del
+          37% del valor de la misma.
         </p>
-        <strong>Acepto el Descuento y Recibo en Conformidad</strong>
-        <div style={{ borderBottom: "1px solid #000", marginTop: 22, marginBottom: 3 }} />
+
+        <p className="mt-auto font-bold uppercase tracking-[0.03em] text-ink">
+          Acepto el descuento y recibo en conformidad
+        </p>
+
+        <div className="mt-3 border-b border-ink" />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 5 }}>
-        <div style={{ border: "1px solid #ccc", padding: 5, fontSize: 7.5 }}>
-          <strong>Índice Derecho</strong>
-          <div
-            style={{
-              height: 44,
-              border: "1px dashed #bbb",
-              marginTop: 4,
-              borderRadius: 2,
-            }}
-          />
-        </div>
-
-        <div
-          style={{
-            border: alreadySigned
-              ? "2px solid #2d6a4f"
-              : `2px solid ${showSignatureZone ? GOLD : "#ccc"}`,
-            padding: 5,
-            borderRadius: 4,
-            fontSize: 7.5,
-          }}
-        >
-          <strong style={{ fontSize: 7 }}>
-            Aprobada la Autorización
-            <br />
-            para Descuento Respectivo
-          </strong>
+      <div
+        className="flex min-h-28 flex-col rounded-sm  p-1 text-[9.5px]"
+        style={{
+          border: alreadySigned
+            ? "2px solid #2d6a4f"
+            : showSignatureZone
+              ? "2px solid var(--color-gold)"
+              : "1px solid var(--color-border-soft)",
+        }}
+      >
+        <p className="text-[7px] font-bold uppercase leading-tight tracking-[0.03em] text-ink">
+          Aprobada la autorización
           <br />
-          <strong style={{ color: GOLD_D }}>Firma</strong>
+          para descuento respectivo
+        </p>
 
-          <div
-            style={{
-              height: 48,
-              marginTop: 2,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {alreadySigned ? (
-              contractedSig!.type === "DRAWN" && contractedSig!.imageUrl ? (
-                <img
-                  src={contractedSig!.imageUrl}
-                  alt="firma"
-                  style={{ maxHeight: 44, maxWidth: "100%", objectFit: "contain" }}
+        <p className="mt-1 text-[7px] font-bold uppercase tracking-[0.04em] text-gold-dark">
+          Firma
+        </p>
+
+        <div className="mt-2 flex flex-1 items-center justify-center rounded-sm bg-cream">
+          {alreadySigned ? (
+            contractedSig.type === "DRAWN" && contractedSig.imageUrl ? (
+              <div className="relative h-11.5 w-full">
+                <Image
+                  src={contractedSig.imageUrl}
+                  alt="Firma del cliente"
+                  fill
+                  unoptimized
+                  className="object-contain"
                 />
-              ) : (
-                <span
-                  style={{
-                    fontFamily: "Dancing Script, cursive",
-                    fontSize: 22,
-                    color: INK,
-                  }}
-                >
-                  {contractedSig!.typedValue}
-                </span>
-              )
-            ) : showSignatureZone ? (
+              </div>
+            ) : (
               <span
+                className="leading-none text-ink"
                 style={{
-                  fontSize: 6.5,
-                  color: GOLD,
-                  letterSpacing: 1,
-                  border: `1px dashed ${GOLD}`,
-                  padding: "4px 8px",
-                  borderRadius: 3,
+                  fontFamily: '"Dancing Script", cursive',
+                  fontSize: 22,
                 }}
               >
-                PENDIENTE DE FIRMA
+                {contractedSig.typedValue}
               </span>
-            ) : (
-              <span style={{ fontSize: 6.5, color: "#bbb", letterSpacing: 1 }}>
-                FIRMA DEL CLIENTE
-              </span>
-            )}
-          </div>
+            )
+          ) : showSignatureZone ? (
+            <span
+              className="rounded-sm border border-dashed px-2 py-1 text-[6.5px] tracking-[0.12em] text-gold"
+              style={{ borderColor: "var(--color-gold)" }}
+            >
+              PENDIENTE DE FIRMA
+            </span>
+          ) : (
+            <span className="text-[6.5px] text-black tracking-[0.12em] ">
+              FIRMA DEL CLIENTE
+            </span>
+          )}
         </div>
       </div>
     </div>

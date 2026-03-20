@@ -5,16 +5,12 @@ interface Props {
   children?: React.ReactNode;
 }
 
-export function FieldBox({ w = 70, children }: Props) {
+export function FieldBox({children }: Props) {
   return (
     <span
       style={{
         border: "1px solid #000",
-        display: "inline-block",
-        padding: "0 3px",
-        minWidth: w,
-        lineHeight: 1.4,
-        verticalAlign: "bottom",
+        padding: "0 2px",
       }}
     >
       {children ?? "\u00a0"}
