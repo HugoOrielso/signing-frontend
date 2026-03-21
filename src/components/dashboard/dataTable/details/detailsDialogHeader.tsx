@@ -1,5 +1,5 @@
 "use client"
-import { DialogHeader } from '@/components/ui/dialog';
+import { DialogHeader } from '@/components/ui/common/dialog';
 import { displayStatus, fmtDate, publicUrl } from '@/lib/utils/libranzaHelper';
 import { Contract } from '@/types/libranza'
 import { DialogTitle } from '@radix-ui/react-dialog';

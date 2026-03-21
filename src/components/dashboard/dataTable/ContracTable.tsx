@@ -5,11 +5,13 @@ import api from '@/lib/axiosClient';
 import type { Contract } from '@/types/libranza';
 import { DataTable } from './data-table';
 import { getContractsColumns } from './columns';
-import { Button } from '@/components/ui/button';
-import { ContractDetailDialog } from './libranzaDetailDialog';
+
 import { displayStatus } from '@/lib/utils/libranzaHelper';
-import { Input } from '@/components/ui/input';
+
 import StatsBar from './details/StatsBar';
+import { Button } from '@/components/ui/common/button';
+import { Input } from '@/components/ui/common/input';
+import { ContractDetailDialog } from './libranzaDetailDialog';
 
 const STATUS_TABS = [
     { label: 'Todos', value: 'ALL' },

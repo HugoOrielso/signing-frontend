@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { FilePlus2, FileText, LayoutDashboard } from "lucide-react";
 import LogoutButton from "@/components/common/LogoutButton";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from "@/components/ui/common/sidebar";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Separator } from "../ui/separator";
+import { Separator } from "../ui/common/separator";
 
 const links = [
   { href: "/dashboard", label: "Inicio", icon: LayoutDashboard },

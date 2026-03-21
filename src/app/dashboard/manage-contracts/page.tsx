@@ -28,6 +28,7 @@ export default async function DashboardPage() {
           </svg>
           Nueva libranza
         </a>
+        {/* <AnimatedThemeToggler />  */}
       </div>
 
       <div className="container mx-auto py-10">

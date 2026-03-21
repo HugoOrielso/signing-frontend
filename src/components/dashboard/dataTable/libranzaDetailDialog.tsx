@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import api from '@/lib/axiosClient';
 import type { Contract, ContractDocumentItem } from '@/types/libranza';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { DetailsDialogHeader } from './details/detailsDialogHeader';
 import { DetailsDialogBody } from './details/detailsDialogBody';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/common/dialog';
 
 export function ContractDetailDialog({
     contract,

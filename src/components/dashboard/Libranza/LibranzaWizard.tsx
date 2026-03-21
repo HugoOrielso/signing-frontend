@@ -4,7 +4,7 @@ import { useLibranzaStore } from '@/store/libranzaStore';
 import LibranzaStepForm from './LibranzaStepForm';
 import LibranzaStepPreview from './LibranzaStepPreview';
 import LibranzaControlHeader from './LibranzaControlHeader';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@/components/ui/common/separator';
 
 export default function LibranzaWizard() {
   const step = useLibranzaStore((state) => state.step);

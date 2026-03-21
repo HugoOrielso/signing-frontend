@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { F } from "@/lib/formatters/formaters";
 import { LibranzaDataPreview } from "@/types/libranza";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/ui/common/separator";
 
 interface Props {
   data: LibranzaDataPreview;

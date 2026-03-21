@@ -1,32 +1,10 @@
-import { CREAM, GOLD, MUTED } from "@/lib/constanst";
-
 export function PublicContractLoading() {
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: CREAM,
-      }}
-    >
-      <div style={{ textAlign: "center" }}>
-        <div
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            border: `2px solid ${GOLD}`,
-            borderTopColor: "transparent",
-            animation: "spin 1s linear infinite",
-            margin: "0 auto 16px",
-          }}
-        />
-        <p style={{ color: MUTED, fontSize: 14 }}>Cargando contrato…</p>
+    <div className="min-h-screen flex items-center justify-center bg-cream">
+      <div className="text-center">
+        <div className="w-10 h-10 rounded-full border-2 border-gold border-t-transparent animate-spin mx-auto mb-4" />
+        <p className="text-muted text-sm">Cargando contrato…</p>
       </div>
-
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
 }

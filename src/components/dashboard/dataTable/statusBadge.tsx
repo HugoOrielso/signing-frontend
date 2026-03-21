@@ -1,4 +1,4 @@
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/common/badge';
 import { cn } from '@/lib/utils';
 
 const STATUS_CONFIG: Record<

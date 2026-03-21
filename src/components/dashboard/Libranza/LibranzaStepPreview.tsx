@@ -108,7 +108,7 @@ export default function LibranzaStepPreview() {
   }
 
   return (
-    <div className='max-w-215'>
+    <div className='max-w-215 mx-auto'>
       <div className="mb-6">
         <h1 className="mb-1 font-serif text-[22px] text-ink">Vista Previa</h1>
         <p className="m-0 text-sm ">

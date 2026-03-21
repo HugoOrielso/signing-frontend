@@ -22,9 +22,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/Table';
+} from '@/components/ui/common/Table';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/common/button';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

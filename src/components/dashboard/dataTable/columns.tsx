@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/common/button';
 import type { Contract } from '@/types/libranza';
 
 import { ContractStatusBadge } from './statusBadge';
