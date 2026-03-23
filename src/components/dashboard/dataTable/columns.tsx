@@ -1,26 +1,19 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Button } from '@/components/ui/common/button';
 import type { Contract } from '@/types/libranza';
 
 import { ContractStatusBadge } from './statusBadge';
 import { clientCC, clientName, clientPhone, contractValue, displayStatus, fmtDate, signedCount } from '@/lib/utils/libranzaHelper';
+import Link from 'next/link';
 
-export type ContractRowAction = {
-  onOpen: (contract: Contract) => void;
-};
-
-export function getContractsColumns(
-  actions: ContractRowAction
-): ColumnDef<Contract>[] {
+export function getContractsColumns(): ColumnDef<Contract>[] {
   return [
     {
       id: 'search',
       accessorFn: (row) => {
         const ld = row.libranzaData;
         const contracted = row.parties.find((p) => p.role === 'CONTRACTED');
-
         return [
           row.contractNumber,
           row.title,
@@ -44,7 +37,6 @@ export function getContractsColumns(
       header: 'N° / Tipo',
       cell: ({ row }) => {
         const c = row.original;
-
         return (
           <div className="space-y-1">
             <div className="w-fit rounded bg-muted px-2 py-0.5 font-mono text-[10px]">
@@ -64,7 +56,6 @@ export function getContractsColumns(
         const c = row.original;
         const phone = clientPhone(c);
         const cc = clientCC(c);
-
         return (
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold">{clientName(c)}</p>
@@ -80,16 +71,13 @@ export function getContractsColumns(
       cell: ({ row }) => {
         const c = row.original;
         const ld = c.libranzaData;
-
         return (
           <div>
             <p className="text-sm font-semibold">{contractValue(c)}</p>
             {ld?.numeroCuotas && ld?.valorCuota && (
               <p className="text-[10px] text-muted-foreground">
                 {ld.numeroCuotas}x $
-                {parseFloat(ld.valorCuota.replace(/[^0-9.]/g, '') || '0').toLocaleString(
-                  'es-CO'
-                )}
+                {parseFloat(ld.valorCuota.replace(/[^0-9.]/g, '') || '0').toLocaleString('es-CO')}
               </p>
             )}
           </div>
@@ -124,7 +112,6 @@ export function getContractsColumns(
       cell: ({ row }) => {
         const [signed, total] = signedCount(row.original);
         const allSigned = total > 0 && signed === total;
-
         return (
           <div className="text-center">
             <p className={allSigned ? 'text-[12px] font-bold text-emerald-700' : 'text-[12px] font-bold text-muted-foreground'}>
@@ -138,18 +125,17 @@ export function getContractsColumns(
     {
       id: 'actions',
       header: '',
-      cell: ({ row }) => (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={(e) => {
-            e.stopPropagation();
-            actions.onOpen(row.original);
-          }}
-        >
-          Ver
-        </Button>
-      ),
+      cell: ({ row }) => <ViewButton id={row.original.id} />,
     },
   ];
+}
+
+function ViewButton({ id }: { id: string }) {
+  return (
+    <Link href={`/dashboard/manage-contracts/${id}`}
+      className="rounded-md border border-border-soft px-3 py-1 text-xs font-medium   transition-colors cursor-pointer"
+    >
+      Ver
+    </Link>
+  );
 }

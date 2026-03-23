@@ -1,7 +1,6 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import {
   Building2,
-  Copy,
   ExternalLink,
   FileText,
   ImageIcon,
@@ -10,7 +9,6 @@ import {
   User,
   Wallet,
 } from 'lucide-react'
-import { toast } from 'sonner'
 
 import { DetailRow, InfoCard, ProductsCard, Section, SignerCard } from './atoms'
 import { displayStatus, fmtDate, fmtMoney, publicUrl } from '@/lib/utils/libranzaHelper'
@@ -36,7 +34,7 @@ export const DetailsDialogBody = ({
   const contractedParty = contract.parties.find((p) => p.role === 'CONTRACTED')
 
   return (
-    <div className="h-full overflow-y-auto px-4 py-4 sm:px-6 sm:py-6">
+    <div className="h-full overflow-y-auto">
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
         {/* Columna principal */}
         <div className="space-y-6 xl:col-span-8">
@@ -61,17 +59,6 @@ export const DetailsDialogBody = ({
                       <Link2 className="h-3.5 w-3.5" />
                       Abrir enlace
                     </a>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        navigator.clipboard.writeText(link)
-                        toast.success('Enlace copiado')
-                      }}
-                      className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-xs font-semibold transition hover:bg-muted"
-                    >
-                      <Copy className="h-3.5 w-3.5" />
-                      Copiar enlace
-                    </button>
                   </div>
                 ) : (
                   <span className="text-sm text-muted-foreground">—</span>

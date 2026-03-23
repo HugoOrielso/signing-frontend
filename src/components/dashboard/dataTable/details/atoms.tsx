@@ -10,7 +10,7 @@ export function InfoCard({
     className?: string;
 }) {
     return (
-        <div className={`rounded-xl border bg-background/80 p-4 shadow-sm ${className}`}>
+        <div className={`rounded-xl border bg-background/80 p-3 shadow-sm ${className}`}>
             {children}
         </div>
     );
@@ -24,9 +24,9 @@ export function Section({
     icon?: React.ReactNode;
 }) {
     return (
-        <div className="flex items-center gap-2 border-b pb-2">
+        <div className="flex items-center gap-2 border-b pb-1.5">
             {icon}
-            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            <h3 className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                 {title}
             </h3>
         </div>
@@ -43,15 +43,15 @@ export function DetailRow({
     children?: React.ReactNode;
 }) {
     return (
-        <div className="grid items-start gap-2 border-b py-3 last:border-b-0 md:grid-cols-[160px_minmax(0,1fr)] xl:grid-cols-[190px_minmax(0,1fr)]">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+        <div className="grid items-start gap-1.5 border-b py-1.5 last:border-b-0 md:grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)]">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                 {label}
             </span>
 
             {children ? (
                 <div className="min-w-0">{children}</div>
             ) : (
-                <span className="min-w-0 wrap-break-word text-[15px] font-medium text-foreground">
+                <span className="min-w-0 wrap-break-word text-sm font-medium text-foreground">
                     {value?.trim() ? value : '—'}
                 </span>
             )}
@@ -69,14 +69,14 @@ export function SignerCard({ contract }: { contract: Contract }) {
                 icon={<BadgeCheck className="h-4 w-4 text-muted-foreground" />}
             />
 
-            <div className="mt-4 space-y-2">
+            <div className="mt-2 space-y-1.5">
                 {contract.signers.map((s) => {
                     const signed = signerIsSigned(contract, s.id);
 
                     return (
                         <div
                             key={s.id}
-                            className="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-3"
+                            className="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2"
                         >
                             <div className="min-w-0">
                                 <p className="truncate text-sm font-semibold">{s.name}</p>
@@ -113,11 +113,11 @@ export function ProductsCard({ contract }: { contract: Contract }) {
                 icon={<Wallet className="h-4 w-4 text-muted-foreground" />}
             />
 
-            <div className="mt-4 space-y-2">
+            <div className="mt-2 space-y-1.5">
                 {productos.map((p, i) => (
                     <div
                         key={`${p.codigo}-${i}`}
-                        className="grid gap-2 rounded-lg border bg-muted/20 px-3 py-3 md:grid-cols-[90px_minmax(0,1fr)_auto]"
+                        className="grid gap-2 rounded-lg border bg-muted/20 px-3 py-2 md:grid-cols-[80px_minmax(0,1fr)_auto]"
                     >
                         <div className="text-xs font-mono text-muted-foreground">
                             {p.codigo || 'S/C'}

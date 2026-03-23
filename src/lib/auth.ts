@@ -9,7 +9,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       credentials: { email: {}, password: {} },
       async authorize(credentials) {
         const API_URL = process.env.API_URL;
-
         if (!API_URL) return null;
 
         const email = String(credentials?.email ?? "").trim();
@@ -23,9 +22,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             body: JSON.stringify({ email, password }),
           });
 
+          if (!res.ok) return null;
+
           const data = await res.json();
 
-          if (!res.ok) return null;
           if (!data?.admin?.id || !data?.accessToken || !data?.refreshToken) return null;
 
           return {
@@ -37,7 +37,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             refreshToken: data.refreshToken,
             accessTokenExpires: Date.now() + 60 * 60 * 1000,
           };
-        } catch (_) {
+        } catch {
           return null;
         }
       },
@@ -49,14 +49,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       const API_URL = process.env.API_URL;
 
       if (user) {
-        token.accessToken = (user as { accessToken: string }).accessToken;
-        token.refreshToken = (user as { refreshToken: string }).refreshToken;
-        token.user = (user as { profile: { id: string; email: string; name: string } }).profile;
-        return token;
+        const u = user as {
+          profile: { id: string; email: string; name: string; role: string };
+          accessToken: string;
+          refreshToken: string;
+          accessTokenExpires: number;
+        };
+
+        return {
+          ...token,
+          user: u.profile,
+          accessToken: u.accessToken,
+          refreshToken: u.refreshToken,
+          accessTokenExpires: u.accessTokenExpires,
+          error: undefined,
+        };
       }
 
-      if (!token.error) return token;
-      if (!token.error.startsWith("RefreshNeeded")) return token;
+      if (Date.now() < (token.accessTokenExpires as number)) {
+        return token;
+      }
 
       try {
         const res = await fetch(`${API_URL}/auth/refresh`, {
@@ -65,7 +77,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           body: JSON.stringify({ refreshToken: token.refreshToken }),
         });
 
-        if (!res.ok) return { ...token, error: `RefreshFailed:${res.status}` };
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          const message = (errorData as { error?: string }).error ?? "RefreshFailed";
+          return { ...token, error: message };
+        }
 
         const refreshed = await res.json() as {
           accessToken: string;
@@ -76,18 +92,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           ...token,
           accessToken: refreshed.accessToken,
           refreshToken: refreshed.refreshToken,
+          accessTokenExpires: Date.now() + 60 * 60 * 1000,
           error: undefined,
         };
       } catch {
         return { ...token, error: "RefreshFailed:network" };
       }
     },
+
     async session({ session, token }) {
       session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken;
       session.error = token.error;
       session.user.id = token.user.id;
       session.user.email = token.user.email;
       session.user.name = token.user.name;
+      session.user.role = token.user.role;
       return session;
     },
   },

@@ -11,22 +11,20 @@ import { displayStatus } from '@/lib/utils/libranzaHelper';
 import StatsBar from './details/StatsBar';
 import { Button } from '@/components/ui/common/button';
 import { Input } from '@/components/ui/common/input';
-import { ContractDetailDialog } from './libranzaDetailDialog';
 
 const STATUS_TABS = [
-    { label: 'Todos', value: 'ALL' },
-    { label: 'Enviados', value: 'SENT_VIEWED' },
+    { label: 'Todos',       value: 'ALL'          },
+    { label: 'Enviados',    value: 'SENT_VIEWED'  },
     { label: 'Pend. firma', value: 'PENDING_SIGN' },
-    { label: 'Firmados', value: 'SIGNED' },
-    { label: 'Expirados', value: 'EXPIRED' },
+    { label: 'Firmados',    value: 'SIGNED'       },
+    { label: 'Expirados',   value: 'EXPIRED'      },
 ] as const;
 
 export default function ContractsTable() {
     const [contracts, setContracts] = useState<Contract[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState<string>('ALL');
-    const [selected, setSelected] = useState<Contract | null>(null);
-    const [search, setSearch] = useState('');
+    const [loading,   setLoading]   = useState(true);
+    const [filter,    setFilter]    = useState<string>('ALL');
+    const [search,    setSearch]    = useState('');
 
     useEffect(() => {
         api
@@ -39,7 +37,6 @@ export default function ContractsTable() {
             .finally(() => setLoading(false));
     }, []);
 
-
     const filteredContracts = useMemo(() => {
         return contracts.filter((c) => {
             const statusOk =
@@ -50,7 +47,6 @@ export default function ContractsTable() {
                         : displayStatus(c) === filter;
 
             if (!statusOk) return false;
-
             if (!search.trim()) return true;
 
             const q = search.toLowerCase();
@@ -61,9 +57,9 @@ export default function ContractsTable() {
                 c.contractNumber,
                 c.title,
                 ld?.clienteNombre ?? contracted?.name,
-                ld?.clienteCC ?? contracted?.identification,
+                ld?.clienteCC    ?? contracted?.identification,
                 ld?.clienteTelefono ?? contracted?.phone,
-                ld?.clienteEmail ?? contracted?.email,
+                ld?.clienteEmail    ?? contracted?.email,
                 ld?.asesor,
                 ld?.empresaTrabajo,
             ]
@@ -72,17 +68,11 @@ export default function ContractsTable() {
         });
     }, [contracts, filter, search]);
 
-    const columns = useMemo(
-        () =>
-            getContractsColumns({
-                onOpen: (contract) => setSelected(contract),
-            }),
-        []
-    );
+    const columns = useMemo(() => getContractsColumns(), []);
 
     return (
         <div className="space-y-5">
-            <div >
+            <div>
                 <StatsBar contracts={contracts} />
 
                 <div className="flex flex-col gap-3 py-2 md:flex-row md:items-center md:justify-between">
@@ -113,10 +103,7 @@ export default function ContractsTable() {
                         <div className="h-7 w-7 animate-spin rounded-full border-2 border-muted border-t-primary" />
                     </div>
                 ) : (
-                    <DataTable
-                        columns={columns}
-                        data={filteredContracts}
-                    />
+                    <DataTable columns={columns} data={filteredContracts} />
                 )}
             </div>
 
@@ -126,12 +113,6 @@ export default function ContractsTable() {
                     {filter !== 'ALL' && ' · filtrado'}
                 </p>
             )}
-
-            <ContractDetailDialog
-                contract={selected}
-                open={!!selected}
-                onOpenChange={(open) => !open && setSelected(null)}
-            />
         </div>
     );
 }

@@ -1,21 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { FilePlus2, FileText, LayoutDashboard } from "lucide-react";
 import LogoutButton from "@/components/common/LogoutButton";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from "@/components/ui/common/sidebar";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { Separator } from "../ui/common/separator";
-
-const links = [
-  { href: "/dashboard", label: "Inicio", icon: LayoutDashboard },
-  { href: "/dashboard/create-contract", label: "Crear contrato", icon: FilePlus2 },
-  { href: "/dashboard/manage-contracts", label: "Administrar contratos", icon: FileText },
-];
+import { links } from "@/lib/utils/sidebarInfo";
 
 export default function DashboardSidebar() {
-  const pathname = usePathname();
 
   return (
     <Sidebar collapsible="icon">
@@ -40,14 +32,12 @@ export default function DashboardSidebar() {
         <SidebarGroup>
           <SidebarMenu>
             {links.map(({ href, label, icon: Icon }) => {
-              const isActive = pathname === href;
 
               return (
                 <SidebarMenuItem key={href}>
                   <SidebarMenuButton
                     asChild
-                    isActive={isActive}
-                    className="rounded-xl border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 data-[active=true]:bg-blue-600 data-[active=true]:text-white focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className=" border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 data-[active=true]:bg-blue-600 data-[active=true]:text-white focus-visible:ring-0 focus-visible:ring-offset-0"
                   >
                     <Link
                       href={href}

@@ -1,4 +1,3 @@
-import { BORDER, GOLD_D, INK, MUTED } from "@/lib/constanst";
 import { getStatusMeta } from "./contractStatus";
 
 interface Props {
@@ -11,60 +10,26 @@ export function PublicContractTopBar({ isAdmin, clientEmail, status }: Props) {
   const st = getStatusMeta(status);
 
   return (
-    <div
-      style={{
-        background: "white",
-        borderBottom: `1px solid ${BORDER}`,
-        padding: "14px 24px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
-    >
-      <div
-        style={{
-          fontFamily: "Playfair Display, serif",
-          fontSize: 17,
-          color: INK,
-          fontWeight: 700,
-        }}
-      >
-        Dimcultura <em style={{ color: GOLD_D }}>S.A.S</em>
+    <div className="bg-white border-b border-border-soft px-6 py-3.5 flex items-center justify-between">
+
+      <div className="font-serif text-[17px] text-ink font-bold">
+        Dimcultura <em className="text-gold-dark">S.A.S</em>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div className="flex items-center gap-3">
         {isAdmin && (
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 600,
-              padding: "4px 10px",
-              borderRadius: 999,
-              background: "#1e1b4b",
-              color: "#a5b4fc",
-              textTransform: "uppercase",
-              letterSpacing: 1,
-            }}
-          >
+          <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#1e1b4b] text-[#a5b4fc] uppercase tracking-widest">
             Vista admin
           </span>
         )}
 
         {!isAdmin && clientEmail && (
-          <span style={{ fontSize: 11, color: MUTED }}>✓ {clientEmail}</span>
+          <span className="text-[11px] text-muted">✓ {clientEmail}</span>
         )}
 
         <span
-          style={{
-            fontSize: 11,
-            fontWeight: 600,
-            padding: "5px 12px",
-            borderRadius: 999,
-            background: st.bg,
-            color: st.color,
-            textTransform: "uppercase",
-            letterSpacing: 1,
-          }}
+          className="text-[11px] font-semibold px-3 py-1.25 rounded-full uppercase tracking-widest"
+          style={{ background: st.bg, color: st.color }}
         >
           {st.label}
         </span>

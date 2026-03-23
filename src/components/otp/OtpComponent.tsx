@@ -1,9 +1,5 @@
 "use client"
 import { useRef } from "react";
-const INK = "#1a1a2e";
-const GOLD = "#c9a84c";
-const BORDER = "#d4c9b0";
-
 import React from 'react'
 
 const OtpComponent = ({ value, onChange, disabled }: {
@@ -39,31 +35,32 @@ const OtpComponent = ({ value, onChange, disabled }: {
     }
 
     return (
-
-        <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+        <div className="flex gap-2 justify-center">
             {Array.from({ length: 6 }).map((_, i) => {
                 const filled = !!(value[i] && value[i] !== " ");
                 return (
-                    <input key={i} ref={refs[i]} type="text" inputMode="numeric"
-                        maxLength={1} disabled={disabled}
+                    <input
+                        key={i}
+                        ref={refs[i]}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        disabled={disabled}
                         value={filled ? value[i] : ""}
                         onChange={e => handleChange(i, e.target.value)}
                         onKeyDown={e => handleKey(i, e)}
                         onPaste={handlePaste}
                         onClick={() => refs[i].current?.select()}
-                        style={{
-                            width: 46, height: 54, textAlign: "center",
-                            fontSize: 24, fontWeight: 700, fontFamily: "monospace",
-                            border: `2px solid ${filled ? GOLD : BORDER}`,
-                            borderRadius: 10, outline: "none",
-                            color: INK, background: filled ? "#fffdf5" : "white",
-                            transition: "border-color 0.15s, background 0.15s",
-                        }}
+                        className={`w-11.5 h-13.5 text-center text-2xl font-bold font-mono rounded-[10px] outline-none border-2 transition-[border-color,background] duration-150 text-ink
+                            ${filled
+                                ? "border-gold bg-[#fffdf5]"
+                                : "border-border-soft bg-white"
+                            }`}
                     />
                 );
             })}
         </div>
-    )
+    );
 }
 
-export default OtpComponent
+export default OtpComponent;

@@ -2,7 +2,6 @@
 
 import OtpComponent from "@/components/otp/OtpComponent";
 import publicApi from "@/lib/axiosPublicClient";
-import { BORDER, CREAM, GOLD, GOLD_D, INK, MUTED } from "@/lib/constanst";
 import { usePublicContractSignerStore } from "@/store/publicContractSignerStore";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
@@ -52,14 +51,12 @@ export default function AuthScreen({ token }: { token: string }) {
         email: email.trim(), code,
       });
 
-      // Guardar en el store de Zustand (persiste en sessionStorage automáticamente)
       setSession(token, {
         email:        data.email,
         sessionToken: data.sessionToken,
         verified:     true,
       });
 
-      // El backend decide la ruta: SIGNED → /view, otros → /sign
       router.replace(data.nextRoute ?? `/contracts/sign/${token}`);
 
     } catch (err) {
@@ -75,108 +72,117 @@ export default function AuthScreen({ token }: { token: string }) {
     }
   }, [otp, authStep, handleVerify]);
 
-  return (
-    <div style={{ minHeight:"100dvh", display:"flex", alignItems:"center",
-      justifyContent:"center", background:CREAM, padding:"24px 16px" }}>
-      <div style={{ width:"100%", maxWidth:420 }}>
+  const otpComplete = otp.replace(/\s/g, "").length === 6;
 
-        <div style={{ textAlign:"center", marginBottom:28 }}>
-          <div style={{ fontFamily:"Playfair Display, serif", fontSize:22, color:INK, fontWeight:700 }}>
-            Dimcultura <em style={{ color:GOLD_D }}>S.A.S</em>
+  return (
+    <div className="min-h-dvh flex items-center justify-center bg-cream px-4 py-6">
+      <div className="w-full max-w-105">
+
+        {/* Header */}
+        <div className="text-center mb-7">
+          <div className="font-serif text-[22px] text-ink font-bold">
+            Dimcultura <em className="text-gold-dark">S.A.S</em>
           </div>
-          <p style={{ fontSize:12, color:MUTED, margin:"4px 0 0", fontStyle:"italic" }}>
+          <p className="text-[12px] text-muted mt-1 italic">
             &ldquo;Un mundo en el que debes estar&rdquo;
           </p>
         </div>
 
-        <div style={{ background:"white", borderRadius:20, border:`1.5px solid ${BORDER}`,
-          boxShadow:"0 8px 40px rgba(26,26,46,0.1)", overflow:"hidden" }}>
-          <div style={{ height:4, background:`linear-gradient(90deg,${GOLD},${GOLD_D},${INK})` }}/>
-          <div style={{ padding:"36px 32px" }}>
+        {/* Card */}
+        <div className="bg-white rounded-[20px] border border-border-soft shadow-[0_8px_40px_rgba(26,26,46,0.1)] overflow-hidden">
+
+          {/* Top gradient bar */}
+          <div className="h-1 bg-linear-to-r from-gold via-gold-dark to-ink" />
+
+          <div className="px-8 py-9">
 
             {authStep === "email" ? (
               <form onSubmit={handleRequestOtp}>
-                <h1 style={{ fontFamily:"Playfair Display, serif", fontSize:21,
-                  color:INK, margin:"0 0 8px", textAlign:"center" }}>
+                <h1 className="font-serif text-[21px] text-ink text-center mb-2">
                   Verificar Identidad
                 </h1>
-                <p style={{ fontSize:13, color:MUTED, textAlign:"center",
-                  margin:"0 0 28px", lineHeight:1.65 }}>
+                <p className="text-[13px] text-muted text-center leading-relaxed mb-7">
                   Ingresa el correo al que te enviamos el enlace para recibir tu código de acceso.
                 </p>
-                <label style={{ fontSize:11, fontWeight:600,
-                  textTransform:"uppercase" as const, letterSpacing:1,
-                  color:MUTED, display:"block", marginBottom:8 }}>
+
+                <label className="text-[11px] font-semibold uppercase tracking-widest text-muted block mb-2">
                   Correo electrónico
                 </label>
-                <input type="email" placeholder="tu@correo.com"
-                  value={email} onChange={e => { setEmail(e.target.value); setError(""); }}
-                  disabled={loading} autoFocus
-                  style={{ width:"100%", border:`1.5px solid ${error ? "#fca5a5" : BORDER}`,
-                    borderRadius:10, padding:"12px 14px", fontSize:14, color:INK,
-                    outline:"none", boxSizing:"border-box" as const, background:"white" }}/>
-                {error && <p style={{ fontSize:12, color:"#dc2626", margin:"8px 0 0" }}>⚠ {error}</p>}
-                <button type="submit" disabled={loading} style={{
-                  width:"100%", marginTop:20, padding:"13px", borderRadius:10,
-                  border:"none", background:loading?"#2d2d4e":INK, color:GOLD,
-                  fontSize:14, fontWeight:600,
-                  cursor:loading?"not-allowed":"pointer", transition:"all 0.2s" }}>
+                <input
+                  type="email"
+                  placeholder="tu@correo.com"
+                  value={email}
+                  onChange={e => { setEmail(e.target.value); setError(""); }}
+                  disabled={loading}
+                  autoFocus
+                  className={`w-full border rounded-[10px] px-3.5 py-3 text-sm text-ink outline-none bg-white box-border transition-colors
+                    ${error ? "border-red-300" : "border-border-soft"}`}
+                />
+                {error && (
+                  <p className="text-xs text-red-600 mt-2">⚠ {error}</p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full mt-5 py-3.25 rounded-[10px] border-none text-gold text-sm font-semibold transition-all duration-200
+                    ${loading ? "bg-[#2d2d4e] cursor-not-allowed" : "bg-ink cursor-pointer"}`}
+                >
                   {loading ? "Enviando código…" : "Enviar código →"}
                 </button>
               </form>
 
             ) : (
               <>
-                <button onClick={() => { setAuthStep("email"); setOtp(""); setError(""); }}
-                  style={{ background:"none", border:"none", cursor:"pointer",
-                    color:MUTED, fontSize:12, display:"flex", alignItems:"center",
-                    gap:4, marginBottom:20, padding:0 }}>
+                <button
+                  onClick={() => { setAuthStep("email"); setOtp(""); setError(""); }}
+                  className="flex items-center gap-1 bg-transparent border-none cursor-pointer text-muted text-xs mb-5 p-0"
+                >
                   ← Cambiar correo
                 </button>
-                <h1 style={{ fontFamily:"Playfair Display, serif", fontSize:21,
-                  color:INK, margin:"0 0 8px", textAlign:"center" }}>
+
+                <h1 className="font-serif text-[21px] text-ink text-center mb-2">
                   Código de Verificación
                 </h1>
-                <p style={{ fontSize:13, color:MUTED, textAlign:"center",
-                  margin:"0 0 4px", lineHeight:1.65 }}>
+                <p className="text-[13px] text-muted text-center leading-relaxed mb-1">
                   Enviamos un código a
                 </p>
-                <p style={{ fontSize:14, fontWeight:600, color:INK,
-                  textAlign:"center", margin:"0 0 28px" }}>
+                <p className="text-sm font-semibold text-ink text-center mb-7">
                   {email}
                 </p>
 
-                <OtpComponent value={otp}
+                <OtpComponent
+                  value={otp}
                   onChange={v => { setOtp(v); setError(""); }}
-                  disabled={loading}/>
+                  disabled={loading}
+                />
 
                 {error && (
-                  <p style={{ fontSize:12, color:"#dc2626", textAlign:"center", margin:"12px 0 0" }}>
-                    ⚠ {error}
-                  </p>
+                  <p className="text-xs text-red-600 text-center mt-3">⚠ {error}</p>
                 )}
 
-                <button onClick={handleVerify}
-                  disabled={otp.replace(/\s/g,"").length < 6 || loading}
-                  style={{ width:"100%", marginTop:24, padding:"13px", borderRadius:10,
-                    border:"none",
-                    background:otp.replace(/\s/g,"").length===6&&!loading?INK:"#e8e4da",
-                    color:otp.replace(/\s/g,"").length===6?GOLD:MUTED,
-                    fontSize:14, fontWeight:600,
-                    cursor:otp.replace(/\s/g,"").length<6?"not-allowed":"pointer",
-                    transition:"all 0.2s" }}>
+                <button
+                  onClick={handleVerify}
+                  disabled={!otpComplete || loading}
+                  className={`w-full mt-6 py-3.25 rounded-[10px] border-none text-sm font-semibold transition-all duration-200
+                    ${otpComplete && !loading
+                      ? "bg-ink text-gold cursor-pointer"
+                      : "bg-[#e8e4da] text-muted cursor-not-allowed"
+                    }`}
+                >
                   {loading ? "Verificando…" : "Verificar y acceder →"}
                 </button>
 
-                <div style={{ textAlign:"center", marginTop:20 }}>
+                <div className="text-center mt-5">
                   {countdown > 0 ? (
-                    <p style={{ fontSize:12, color:BORDER, margin:0 }}>
+                    <p className="text-xs text-border-soft m-0">
                       Reenviar en {countdown}s
                     </p>
                   ) : (
-                    <button onClick={() => handleRequestOtp()}
-                      style={{ background:"none", border:"none", cursor:"pointer",
-                        color:GOLD_D, fontSize:12, fontWeight:600 }}>
+                    <button
+                      onClick={() => handleRequestOtp()}
+                      className="bg-transparent border-none cursor-pointer text-gold-dark text-xs font-semibold"
+                    >
                       ¿No recibiste el código? Reenviar →
                     </button>
                   )}
@@ -186,7 +192,7 @@ export default function AuthScreen({ token }: { token: string }) {
           </div>
         </div>
 
-        <p style={{ textAlign:"center", fontSize:11, color:BORDER, margin:"20px 0 0" }}>
+        <p className="text-center text-[11px] text-border-soft mt-5">
           Acceso exclusivo para el firmante designado
         </p>
       </div>

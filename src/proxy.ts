@@ -3,28 +3,20 @@ import { NextResponse } from "next/server";
 
 export default auth((req) => {
   const session = req.auth;
-  const { pathname } = req.nextUrl;
 
-  if (pathname.startsWith("/login")) {
-    if (session && !session.error) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
-    }
-    return NextResponse.next();
-  }
-
+  // Si no hay sesión → redirige al home
   if (!session) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
+  // Si el refresh token falló → redirige al home
   if (session.error?.startsWith("RefreshFailed")) {
-    return NextResponse.redirect(
-      new URL("/login?error=SessionExpired", req.url)
-    );
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();
 });
 
 export const config = {
-  matcher: ["/login", "/dashboard/:path*"],
+  matcher: ["/dashboard/:path*"],
 };

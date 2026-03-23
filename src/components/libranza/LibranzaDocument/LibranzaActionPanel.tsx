@@ -1,6 +1,5 @@
 import { DownloadButton } from "@/components/contracts/DownloadButton";
 import { SignaturePad } from "@/components/contracts/SignaturePad";
-import { BORDER, GOLD, INK, MUTED } from "@/lib/constanst";
 
 interface Props {
   mode: "preview" | "sign" | "view";
@@ -29,79 +28,49 @@ export function LibranzaActionPanel({
   if (!isSignMode && !isViewMode) return null;
 
   return (
-    <div
-      style={{
-        marginTop: 20,
-        background: "white",
-        borderRadius: 16,
-        border: `1.5px solid ${BORDER}`,
-        boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-        overflow: "hidden",
-      }}
-    >
-      <div style={{ height: 4, background: `linear-gradient(90deg,${GOLD},#a07830)` }} />
-      <div style={{ padding: "28px 32px" }}>
+    <div className="mt-5 bg-white rounded-2xl border border-border-soft shadow-[0_4px_20px_rgba(0,0,0,0.05)] overflow-hidden">
+
+      {/* Top gradient bar */}
+      <div className="h-1 bg-linear-to-r from-gold to-gold-dark" />
+
+      <div className="px-8 py-7">
         {isViewMode || alreadySigned ? (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 16,
-              flexWrap: "wrap",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: "50%",
-                  background: "#e8f5ee",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2d6a4f" strokeWidth={2.5}>
+
+          /* ── Signed / view state ── */
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 rounded-full bg-[#e8f5ee] flex items-center justify-center shrink-0">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                  stroke="#2d6a4f" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                 </svg>
               </div>
-
               <div>
-                <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: 17, color: INK, margin: 0 }}>
+                <h3 className="font-serif text-[17px] text-ink m-0">
                   {isViewMode ? "Documento firmado" : "¡Libranza firmada correctamente!"}
                 </h3>
-                <p style={{ fontSize: 13, color: MUTED, marginTop: 4, marginBottom: 0 }}>
+                <p className="text-[13px] text-muted mt-1 mb-0">
                   {isViewMode
                     ? "Esta libranza ya fue firmada y se muestra en modo solo lectura."
                     : "Tu firma ha sido registrada. Recibirás una copia por correo."}
                 </p>
               </div>
             </div>
-
             {token && <DownloadButton token={token} />}
           </div>
+
         ) : (
+
+          /* ── Sign state ── */
           <div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: showPad ? 20 : 0,
-                gap: 16,
-                flexWrap: "wrap",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ fontSize: 22 }}>✍️</span>
+            <div className={`flex items-center justify-between gap-4 flex-wrap ${showPad ? "mb-5" : ""}`}>
+              <div className="flex items-center gap-3">
+                <span className="text-[22px]">✍️</span>
                 <div>
-                  <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: 19, color: INK, margin: 0 }}>
+                  <h2 className="font-serif text-[19px] text-ink m-0">
                     Firmar Libranza
                   </h2>
-                  <p style={{ fontSize: 13, color: MUTED, marginTop: 3, marginBottom: 0 }}>
+                  <p className="text-[13px] text-muted mt-0.75 mb-0">
                     Aprobada la Autorización para Descuento Respectivo
                   </p>
                 </div>
@@ -110,16 +79,7 @@ export function LibranzaActionPanel({
               {!showPad && (
                 <button
                   onClick={() => setShowPad(true)}
-                  style={{
-                    padding: "10px 24px",
-                    borderRadius: 8,
-                    border: "none",
-                    background: INK,
-                    color: GOLD,
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
+                  className="px-6 py-2.5 rounded-lg border-none bg-ink text-gold text-[13px] font-semibold cursor-pointer"
                 >
                   ✍️ Firmar ahora
                 </button>
@@ -131,23 +91,15 @@ export function LibranzaActionPanel({
                 <SignaturePad onSave={onSign} disabled={saving} />
 
                 {error && (
-                  <p style={{ marginTop: 12, fontSize: 13, color: "#8b3a3a", fontWeight: 500 }}>
+                  <p className="mt-3 text-[13px] text-[#8b3a3a] font-medium">
                     ⚠ {error}
                   </p>
                 )}
 
-                <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 8 }}>
+                <div className="flex justify-start mt-2">
                   <button
                     onClick={() => setShowPad(false)}
-                    style={{
-                      padding: "6px 16px",
-                      border: `1px solid ${BORDER}`,
-                      borderRadius: 8,
-                      background: "transparent",
-                      color: MUTED,
-                      fontSize: 12,
-                      cursor: "pointer",
-                    }}
+                    className="px-4 py-1.5 border border-border-soft rounded-lg bg-transparent text-muted text-xs cursor-pointer"
                   >
                     Cancelar
                   </button>
