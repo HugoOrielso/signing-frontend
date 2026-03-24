@@ -85,3 +85,14 @@ export function publicUrl(token?: string | null): string | null {
 
   return `${base}/contracts/sign/${token}`;
 }
+
+
+export function publicUrlAdmin(token?: string | null): string | null {
+  if (!token) return null;
+
+  const base =
+    process.env.NEXT_PUBLIC_FRONTEND_URL ||
+    (typeof window !== 'undefined' ? window.location.origin : '');
+
+  return `${base}/contracts/view/${token}`;
+}

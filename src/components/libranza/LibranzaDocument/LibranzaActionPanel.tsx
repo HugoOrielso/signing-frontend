@@ -49,7 +49,7 @@ export function LibranzaActionPanel({
                 <h3 className="font-serif text-[17px] text-ink m-0">
                   {isViewMode ? "Documento firmado" : "¡Libranza firmada correctamente!"}
                 </h3>
-                <p className="text-[13px] text-muted mt-1 mb-0">
+                <p className="text-[13px] mt-1 mb-0">
                   {isViewMode
                     ? "Esta libranza ya fue firmada y se muestra en modo solo lectura."
                     : "Tu firma ha sido registrada. Recibirás una copia por correo."}
@@ -70,7 +70,7 @@ export function LibranzaActionPanel({
                   <h2 className="font-serif text-[19px] text-ink m-0">
                     Firmar Libranza
                   </h2>
-                  <p className="text-[13px] text-muted mt-0.75 mb-0">
+                  <p className="text-[13px] mt-0.75 mb-0">
                     Aprobada la Autorización para Descuento Respectivo
                   </p>
                 </div>
@@ -99,7 +99,7 @@ export function LibranzaActionPanel({
                 <div className="flex justify-start mt-2">
                   <button
                     onClick={() => setShowPad(false)}
-                    className="px-4 py-1.5 border border-border-soft rounded-lg bg-transparent text-muted text-xs cursor-pointer"
+                    className="px-4 py-1.5 border border-border-soft rounded-lg bg-transparent text-xs cursor-pointer"
                   >
                     Cancelar
                   </button>

@@ -1,5 +1,6 @@
 import DashboardSidebar from "@/components/dashboard/Sidebar";
 import { SidebarProvider, SidebarInset } from "@/components/ui/common/sidebar";
+import { TooltipProvider } from "@/components/ui/common/tooltip";
 
 export default async function DashboardLayout({
   children,
@@ -11,7 +12,9 @@ export default async function DashboardLayout({
   return (
     <SidebarProvider>
       <div className="min-h-screen  flex w-full">
-        <DashboardSidebar />
+        <TooltipProvider>
+          <DashboardSidebar />
+        </TooltipProvider>
         <SidebarInset>
           <main className="flex-1 overflow-y-auto">{children}</main>
         </SidebarInset>

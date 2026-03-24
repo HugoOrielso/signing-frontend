@@ -27,21 +27,21 @@ export function ConfirmSignModal({ signerName, onConfirm, onCancel, confirming }
               <h2 className="font-serif text-[19px] text-ink m-0">
                 Confirmar Firma
               </h2>
-              <p className="text-xs text-muted mt-0.75 mb-0">
+              <p className="text-xs mt-0.75 mb-0">
                 Revisa y acepta los términos antes de firmar
               </p>
             </div>
           </div>
 
           {/* Signer name */}
-          <div className="bg-cream rounded-[10px] px-4 py-3 mb-4 border border-border-soft">
-            <p className="text-[11px] text-muted mb-0.75 uppercase tracking-widest font-semibold">
+          {/* <div className="bg-cream rounded-[10px] px-4 py-3 mb-4 border border-border-soft">
+            <p className="text-[11px] mb-0.75 uppercase tracking-widest font-semibold">
               Firmante
             </p>
             <p className="text-[15px] font-bold text-ink m-0">
               {signerName}
             </p>
-          </div>
+          </div> */}
 
           {/* Legal text */}
           <div className="bg-[#fafafa] rounded-[10px] px-4 py-3.5 mb-5 border border-border-soft max-h-50 overflow-y-auto text-[11px] text-[#4a4a6a] leading-[1.7]">
@@ -66,12 +66,12 @@ export function ConfirmSignModal({ signerName, onConfirm, onCancel, confirming }
               <li className="mb-1">La presente autorización es irrevocable una vez firmada,
                 salvo acuerdo escrito entre las partes.</li>
             </ul>
-            <p className="mb-2 mt-0 text-[10.5px] text-muted">
+            <p className="mb-2 mt-0 text-[10.5px] ">
               Esta firma electrónica genera los mismos efectos jurídicos que una firma manuscrita,
               de acuerdo con la normatividad colombiana vigente. Se registrará la fecha, hora,
               dirección IP y agente de usuario del dispositivo utilizado para firmar.
             </p>
-            <p className="m-0 text-[10.5px] text-muted">
+            <p className="m-0 text-[10.5px] ">
               Al confirmar, acepta también la <strong>Política de Tratamiento de Datos Personales
               </strong> de DIMCULTURA S.A.S. conforme a la Ley 1581 de 2012.
             </p>
@@ -103,7 +103,7 @@ export function ConfirmSignModal({ signerName, onConfirm, onCancel, confirming }
           <button
             onClick={onCancel}
             disabled={confirming}
-            className="flex-1 py-3 rounded-[10px] border border-border-soft bg-white text-muted text-[13px] font-semibold cursor-pointer"
+            className="flex-1 py-3 rounded-[10px] border border-border-soft  text-muted text-[13px] font-semibold cursor-pointer bg-red-500 "
           >
             Cancelar
           </button>

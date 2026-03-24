@@ -1,20 +1,28 @@
 import { auth } from "@/lib/auth";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export default auth((req) => {
-  const session = req.auth;
+export default auth(async (req: NextRequest) => {
 
-  // Si no hay sesión → redirige al home
-  if (!session) {
-    return NextResponse.redirect(new URL("/", req.url));
+  try {
+    const session = await auth();
+
+    // Si no hay sesión → redirige al home
+    if (!session) {
+      const signInUrl = new URL("/", req.url);
+      signInUrl.searchParams.set("callbackUrl", req.url);
+      return NextResponse.redirect(signInUrl);
+    }
+
+    if ((session?.error as string)?.startsWith("RefreshFailed")) {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+
+    return NextResponse.next();
+  } catch {
+    const signInUrl = new URL("/", req.url);
+    return NextResponse.redirect(signInUrl);
   }
 
-  // Si el refresh token falló → redirige al home
-  if (session.error?.startsWith("RefreshFailed")) {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
-
-  return NextResponse.next();
 });
 
 export const config = {

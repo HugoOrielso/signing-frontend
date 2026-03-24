@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { ProductoItem, LibranzaForm } from '@/types/libranza';
+import { ProductoItem, LibranzaForm, ReferenceItem } from '@/types/libranza';
 import { useLibranzaStore } from '@/store/libranzaStore';
+import ReferencesSection from './form/references/References';
 
 const inputClass =
   'w-full rounded-md border border-border-soft bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition-all placeholder:text-[#c0b8ac] focus:border-gold focus:ring-4 focus:ring-[rgba(201,168,76,0.12)]';
@@ -17,7 +18,9 @@ export default function LibranzaStepForm() {
   const form = useLibranzaStore((state) => state.form);
   const setForm = useLibranzaStore((state) => state.setForm);
   const nextStep = useLibranzaStore((state) => state.nextStep);
-
+  const [referencias, setReferencias] = useState<ReferenceItem[]>(
+    (form as { referencias?: ReferenceItem[] }).referencias ?? []
+  );
   const [productos, setProductos] = useState<ProductoItem[]>(
     form.productos?.length ? form.productos : [{ codigo: '', descripcion: '', valor: '' }]
   );
@@ -83,6 +86,9 @@ export default function LibranzaStepForm() {
 
       destinatarioEmail: String(fd.get('destinatarioEmail') || ''),
       destinatarioNombre: String(fd.get('destinatarioNombre') || ''),
+
+      references: referencias,
+
     };
 
     setForm(data);
@@ -204,6 +210,9 @@ export default function LibranzaStepForm() {
           </div>
         </div>
       </section>
+
+      <ReferencesSection value={referencias} onChange={setReferencias} />
+
 
       <section className={sectionClass}>
         <div className="mb-5 flex items-center gap-2.5 border-b border-border-soft pb-3">

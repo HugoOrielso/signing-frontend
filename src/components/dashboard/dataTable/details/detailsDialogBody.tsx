@@ -5,12 +5,11 @@ import {
   FileText,
   ImageIcon,
   Link2,
-  MapPin,
   User,
   Wallet,
 } from 'lucide-react'
 
-import { DetailRow, InfoCard, ProductsCard, Section, SignerCard } from './atoms'
+import { DetailRow, InfoCard, ProductsCard, Section } from './atoms'
 import { displayStatus, fmtDate, fmtMoney, publicUrl } from '@/lib/utils/libranzaHelper'
 import { Contract, ContractDocumentItem } from '@/types/libranza'
 import { docProxyUrl } from './proxyUrl'
@@ -32,12 +31,11 @@ export const DetailsDialogBody = ({
   const link = useMemo(() => publicUrl(contract.token), [contract.token])
   const ld = contract.libranzaData
   const contractedParty = contract.parties.find((p) => p.role === 'CONTRACTED')
-
   return (
     <div className="h-full overflow-y-auto">
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
         {/* Columna principal */}
-        <div className="space-y-6 xl:col-span-8">
+        <div className="space-y-6 xl:col-span-4">
           <InfoCard>
             <Section title="General" icon={<FileText className="h-4 w-4 text-muted-foreground" />} />
             <div className="mt-3">
@@ -54,9 +52,9 @@ export const DetailsDialogBody = ({
                       href={link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-xs font-semibold transition hover:bg-muted"
+                      className="inline-flex items-center gap-2 rounded-md border p-2 text-xs font-semibold transition hover:bg-muted"
                     >
-                      <Link2 className="h-3.5 w-3.5" />
+                      <Link2 className="h-3 w-3" />
                       Abrir enlace
                     </a>
                   </div>
@@ -84,7 +82,10 @@ export const DetailsDialogBody = ({
             </div>
           </InfoCard>
 
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+        </div>
+        <div className="space-y-6 xl:col-span-4">
+          <div className="grid grid-cols-1 gap-6 ">
             <InfoCard>
               <Section title="Datos Laborales" icon={<Building2 className="h-4 w-4 text-muted-foreground" />} />
               <div className="mt-3">
@@ -109,29 +110,11 @@ export const DetailsDialogBody = ({
             </InfoCard>
           </div>
         </div>
-
         {/* Columna lateral: cards pequeñas apiladas */}
         <div className="space-y-6 xl:col-span-4">
-          <SignerCard contract={contract} />
+          {/* <SignerCard contract={contract} /> */}
 
           <ProductsCard contract={contract} />
-
-          <InfoCard className="bg-muted/20">
-            <Section title="Resumen rápido" icon={<MapPin className="h-4 w-4 text-muted-foreground" />} />
-            <div className="mt-4 grid gap-3">
-              {[
-                { label: 'Cliente', value: ld?.clienteNombre ?? contractedParty?.name ?? '—' },
-                { label: 'Valor', value: ld?.sumaTotal ?? fmtMoney(contract.amount, contract.currency) },
-                { label: 'Asesor', value: ld?.asesor || '—' },
-                { label: 'Ciudad', value: ld?.ciudad || '—' },
-              ].map(({ label, value }) => (
-                <div key={label} className="rounded-lg border bg-background p-3">
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{label}</p>
-                  <p className="mt-1 wrap-break-word text-sm font-semibold">{value}</p>
-                </div>
-              ))}
-            </div>
-          </InfoCard>
 
           <InfoCard>
             <Section title="Documentos Adjuntos" icon={<FileText className="h-4 w-4 text-muted-foreground" />} />
@@ -147,13 +130,13 @@ export const DetailsDialogBody = ({
                     const proxy = docProxyUrl(contract.token, doc.id)
 
                     return (
-                      <div key={doc.id} className="rounded-xl border bg-muted/20 p-3">
+                      <div key={doc.id} className="rounded-xl border bg-muted/20 p-2">
                         <div className="mb-3 flex items-start gap-3">
                           <div className="rounded-lg bg-background p-2">
                             {isPdf ? (
-                              <FileText className="h-4 w-4 text-muted-foreground" />
+                              <FileText className="h-3 w-3 text-muted-foreground" />
                             ) : (
-                              <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                              <ImageIcon className="h-3 w-3 text-muted-foreground" />
                             )}
                           </div>
                           <div className="min-w-0">
@@ -169,7 +152,7 @@ export const DetailsDialogBody = ({
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
                           >
-                            <ExternalLink className="h-3.5 w-3.5" />
+                            <ExternalLink className="h-3 w-3" />
                             Ver
                           </a>
 
@@ -201,8 +184,52 @@ export const DetailsDialogBody = ({
               )}
             </div>
           </InfoCard>
+          <InfoCard>
+            <Section
+              title="Referencias"
+              icon={<FileText className="h-4 w-4 text-muted-foreground" />}
+            />
+
+            {contract.libranzaData?.references?.length ? (
+              <div className="space-y-3">
+                {contract.libranzaData.references.map((ref) => (
+                  <div
+                    key={ref.email}
+                    className="border rounded-lg p-3 mt-2 bg-muted/20 text-sm"
+                  >
+                    <div className="flex justify-between">
+                      <span className="font-medium">{ref.name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {ref.type === "LABORAL" ? "Laboral" : "Personal"}
+                      </span>
+                    </div>
+
+                    {ref.phone && (
+                      <div className="text-muted-foreground">Tel: {ref.phone}</div>
+                    )}
+
+                    {ref.email && (
+                      <div className="text-muted-foreground">Email: {ref.email}</div>
+                    )}
+
+                    {ref.company && (
+                      <div className="text-muted-foreground">Empresa: {ref.company}</div>
+                    )}
+
+                    {ref.position && (
+                      <div className="text-muted-foreground">Cargo: {ref.position}</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No hay referencias registradas
+              </p>
+            )}
+          </InfoCard>
         </div>
       </div>
     </div>
   )
-}   
+}  

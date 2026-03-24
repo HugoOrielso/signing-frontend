@@ -8,6 +8,7 @@ import { LibranzaActionPanel } from "./LibranzaDocument/LibranzaActionPanel";
 import DocumentUploader from "@/components/documents/Uploader";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
+import { ScaledDocumentViewer } from "./viewer/ScaledDocument";
 
 interface Props {
   data: LibranzaDataPreview;
@@ -41,7 +42,7 @@ export default function LibranzaPreview({ data, signers = [], signatures: initia
     setError("");
 
     try {
-      const body =sigType === "TYPED" ? { type: "TYPED", typedValue: sigData } : { type: "DRAWN", imageUrl: sigData };
+      const body = sigType === "TYPED" ? { type: "TYPED", typedValue: sigData } : { type: "DRAWN", imageUrl: sigData };
 
       const { data: res } = await publicApi.post(
         `/contracts/public/${token}/sign`,
@@ -74,22 +75,21 @@ export default function LibranzaPreview({ data, signers = [], signatures: initia
   return (
     <div className="relative">
       <div
-        className={`overflow-hidden rounded-xl border border-border-soft bg-white ${
-          isSignMode ? "shadow-[0_8px_40px_rgba(0,0,0,0.07)]" : ""
-        }`}
+        className={`overflow-x-auto rounded-xl border border-border-soft bg-white ${isSignMode ? "shadow-[0_8px_40px_rgba(0,0,0,0.07)]" : ""
+          }`}
       >
         {isSignMode && (
           <div className="h-1.25 bg-linear-to-r from-gold-dark via-gold-dark to-ink" />
         )}
 
-        <div className={`${isSignMode ? "p-6" : ""}`}>
+        <ScaledDocumentViewer>
           <LibranzaDocument
             data={data}
             signatures={signatures}
             signers={signers}
             showSignatureZone={isSignMode}
           />
-        </div>
+        </ScaledDocumentViewer>
       </div>
 
       {showActionPanel && (

@@ -18,8 +18,9 @@ export function LibranzaDocument({
   signers = [],
   showSignatureZone,
 }: Props) {
+  console.log(data)
   return (
-    <div className="text-[9px] text-white w-full p-1 bg-white">
+    <div className="text-[11px] text-white w-full p-1 bg-white">
       <LibranzaHeader data={data} />
       <LibranzaBody data={data} />
       <LibranzaSignatureSection

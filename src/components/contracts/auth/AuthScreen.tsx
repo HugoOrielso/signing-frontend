@@ -83,7 +83,7 @@ export default function AuthScreen({ token }: { token: string }) {
           <div className="font-serif text-[22px] text-ink font-bold">
             Dimcultura <em className="text-gold-dark">S.A.S</em>
           </div>
-          <p className="text-[12px] text-muted mt-1 italic">
+          <p className="text-[12px] mt-1 italic">
             &ldquo;Un mundo en el que debes estar&rdquo;
           </p>
         </div>
@@ -101,15 +101,16 @@ export default function AuthScreen({ token }: { token: string }) {
                 <h1 className="font-serif text-[21px] text-ink text-center mb-2">
                   Verificar Identidad
                 </h1>
-                <p className="text-[13px] text-muted text-center leading-relaxed mb-7">
+                <p className="text-[13px]  text-center leading-relaxed mb-7">
                   Ingresa el correo al que te enviamos el enlace para recibir tu código de acceso.
                 </p>
 
-                <label className="text-[11px] font-semibold uppercase tracking-widest text-muted block mb-2">
+                <label className="text-[11px] font-semibold uppercase tracking-widest  block mb-2">
                   Correo electrónico
                 </label>
                 <input
                   type="email"
+                  required
                   placeholder="tu@correo.com"
                   value={email}
                   onChange={e => { setEmail(e.target.value); setError(""); }}
@@ -136,7 +137,7 @@ export default function AuthScreen({ token }: { token: string }) {
               <>
                 <button
                   onClick={() => { setAuthStep("email"); setOtp(""); setError(""); }}
-                  className="flex items-center gap-1 bg-transparent border-none cursor-pointer text-muted text-xs mb-5 p-0"
+                  className="flex items-center gap-1 bg-transparent border-none cursor-pointer text-xs mb-5 p-0"
                 >
                   ← Cambiar correo
                 </button>
@@ -144,7 +145,7 @@ export default function AuthScreen({ token }: { token: string }) {
                 <h1 className="font-serif text-[21px] text-ink text-center mb-2">
                   Código de Verificación
                 </h1>
-                <p className="text-[13px] text-muted text-center leading-relaxed mb-1">
+                <p className="text-[13px] text-center leading-relaxed mb-1">
                   Enviamos un código a
                 </p>
                 <p className="text-sm font-semibold text-ink text-center mb-7">
@@ -167,7 +168,7 @@ export default function AuthScreen({ token }: { token: string }) {
                   className={`w-full mt-6 py-3.25 rounded-[10px] border-none text-sm font-semibold transition-all duration-200
                     ${otpComplete && !loading
                       ? "bg-ink text-gold cursor-pointer"
-                      : "bg-[#e8e4da] text-muted cursor-not-allowed"
+                      : "bg-[#e8e4da] cursor-not-allowed"
                     }`}
                 >
                   {loading ? "Verificando…" : "Verificar y acceder →"}

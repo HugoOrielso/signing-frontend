@@ -15,7 +15,7 @@ export default function ContractDetailPage() {
 
   useEffect(() => {
     if (!id) return;
-
+    
     api.get(`/contracts/${id}`)
       .then((res) => {
         const data: Contract = res.data?.data;

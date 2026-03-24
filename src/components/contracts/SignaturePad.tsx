@@ -1,5 +1,6 @@
 "use client";
 
+import { Trash } from "lucide-react";
 import { ConfirmSignModal } from "./ConfirmSignModal";
 import { useEffect, useRef, useState } from "react";
 
@@ -145,7 +146,7 @@ export function SignaturePad({
                             key={t}
                             onClick={() => setTab(t)}
                             disabled={disabled}
-                            className={` px-5 py-2 text-[11px] font-semibold uppercase tracking-wider transition ${tab === t ? "bg-ink text-gold" : "bg-white text-muted"}`}>
+                            className={` px-5 py-2 text-[11px] font-semibold uppercase tracking-wider transition ${tab === t ? "bg-ink text-gold" : "bg-white"}`}>
                             {t === "draw" ? "✏️ Dibujar" : "⌨️ Escribir"}
                         </button>
                     ))}
@@ -185,9 +186,12 @@ export function SignaturePad({
                             <button
                                 onClick={clear}
                                 disabled={disabled}
-                                className="px-3 py-1 text-xs text-muted"
+                                className="px-3 py-1 text-sm flex items-center gap-1 border bg-red-500 rounded-lg text-white"
                             >
-                                Limpiar
+                                <span>
+                                    Limpiar
+                                </span>
+                                <Trash  className="h-4 w-4"/>
                             </button>
 
                             <button

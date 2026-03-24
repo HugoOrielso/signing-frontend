@@ -66,6 +66,21 @@ export function getContractsColumns(): ColumnDef<Contract>[] {
       },
     },
     {
+      id: 'asesor',
+      header: 'Asesor',
+      cell: ({ row }) => {
+        const asesor = row.original.libranzaData?.asesor;
+
+        return (
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold">
+              {asesor || '—'}
+            </p>
+          </div>
+        );
+      },
+    },
+    {
       id: 'valor',
       header: 'Valor',
       cell: ({ row }) => {

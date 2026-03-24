@@ -9,6 +9,7 @@ import api from '@/lib/axiosClient';
 import { useLibranzaStore } from '@/store/libranzaStore';
 import { buildLibranzaPayload } from '../../../lib/utils/buildLibranzaPayload';
 import { LibranzaDocument } from '@/components/libranza/LibranzaDocument';
+import { ScaledDocumentViewer } from '@/components/libranza/viewer/ScaledDocument';
 
 
 
@@ -48,6 +49,7 @@ export default function LibranzaStepPreview() {
 
     productos: form.productos,
     formaPago: form.formaPago,
+    references: form.references
   };
 
   async function handleSend() {
@@ -141,12 +143,9 @@ export default function LibranzaStepPreview() {
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-xl bg-[#f0ece4] p-5">
-        <LibranzaDocument
-          data={libranzaData}
-          showSignatureZone={false}
-        />
-      </div>
+      <ScaledDocumentViewer>
+        <LibranzaDocument data={libranzaData} showSignatureZone={false} />
+      </ScaledDocumentViewer>
 
       <div className="mt-9 flex flex-col justify-between gap-3 border-t border-border-soft pt-6 md:flex-row md:items-center">
         <button

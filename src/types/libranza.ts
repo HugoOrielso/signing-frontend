@@ -42,12 +42,28 @@ export interface LibranzaDataPreview {
   // Productos y pago
   productos?: ProductoItem[] | null;
   formaPago?: string | null;
+  references: ReferenceItem[];
+
 }
 
 export interface ProductoItem {
   codigo: string;
   descripcion: string;
   valor: string;
+}
+
+export type ReferenceType = 'PERSONAL' | 'LABORAL';
+
+export interface ReferenceItem {
+  type: ReferenceType;
+  name: string;
+  phone: string;
+  email: string;
+  // Solo LABORAL
+  company: string;
+  position: string;
+  // Solo PERSONAL
+  relation: string;
 }
 
 export interface LibranzaForm {
@@ -63,6 +79,8 @@ export interface LibranzaForm {
   clienteEmail: string;
   clienteFuncionario: string;
   clienteDesdeHace: string;
+
+  references: ReferenceItem[];
 
   municipioTrabajo: string;
   empresaTrabajo: string;
@@ -98,6 +116,8 @@ export const emptyLibranza: LibranzaForm = {
   clienteEmail: '',
   clienteFuncionario: '',
   clienteDesdeHace: '',
+
+  references: [],
 
   municipioTrabajo: '',
   empresaTrabajo: '',

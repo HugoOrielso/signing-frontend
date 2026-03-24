@@ -66,5 +66,7 @@ export function buildLibranzaPayload(f: LibranzaForm) {
         signerOrder: 1,
       },
     ],
+
+    references: f.references
   };
 }

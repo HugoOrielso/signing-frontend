@@ -1,6 +1,6 @@
 'use client';
 
-import { displayStatus, fmtDate, publicUrl } from '@/lib/utils/libranzaHelper';
+import { displayStatus, fmtDate, publicUrlAdmin } from '@/lib/utils/libranzaHelper';
 import { Contract } from '@/types/libranza';
 import { BadgeCheck, CalendarDays, Copy, ExternalLink, FileText } from 'lucide-react';
 import { useMemo } from 'react';
@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { ContractStatusBadge } from '@/components/dashboard/dataTable/statusBadge';
 
 export function DetailsPageHeader({ contract }: { contract: Contract }) {
-  const link = useMemo(() => publicUrl(contract.token), [contract.token]);
+  const link = useMemo(() => publicUrlAdmin(contract.token), [contract.token]);
 
   return (
     <div className="bg-muted/30 px-4 py-4 sm:px-6 sm:py-5">

@@ -1,5 +1,13 @@
+"use client";
+
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { LibranzaDataPreview, LibranzaSignature, LibranzaSigner } from "@/types/libranza";
+
+const empresaNombre: Record<string, string> = {
+  dimcultura: "DIMCULTURA S.A.S.",
+  gruculcol: "GRUCULCOL",
+};
 
 interface Props {
   data: LibranzaDataPreview;
@@ -13,6 +21,10 @@ export function LibranzaSignatureSection({
   signers = [],
   showSignatureZone,
 }: Props) {
+  const pathname = usePathname();
+  const segment = pathname.split("/").pop()?.toLowerCase() ?? "dimcultura";
+  const nombre = empresaNombre[segment] ?? "DIMCULTURA S.A.S.";
+
   const contractedSigner = signers.find((s) => s.partyRole === "CONTRACTED");
   const contractedSig = signatures.find((sig) => sig.signerId === contractedSigner?.id);
   const alreadySigned = !!contractedSig;
@@ -22,10 +34,10 @@ export function LibranzaSignatureSection({
       <div className="flex min-h-28 flex-col rounded-sm border border-neutral-400 p-1 text-[9.5px] text-ink">
         <p className="mb-2 text-[7px] leading-[1.45] text-justify font-semibold text-ink">
           He recibido en perfecto estado y a mi entera conformidad, los libros
-          aquí descritos, manifestando tener conocimiento de que la empresa
-          DIMCULTURA S.A.S. no permitirá la anulación o devolución después de
-          firmada esta libranza. Toda devolución genera una indemnización del
-          37% del valor de la misma.
+          aquí descritos, manifestando tener conocimiento de que la empresa{" "}
+          <span className="font-bold">{nombre}</span> no permitirá la anulación
+          o devolución después de firmada esta libranza. Toda devolución genera
+          una indemnización del 37% del valor de la misma.
         </p>
 
         <p className="mt-auto font-bold uppercase tracking-[0.03em] text-ink">
@@ -36,7 +48,7 @@ export function LibranzaSignatureSection({
       </div>
 
       <div
-        className="flex min-h-28 flex-col rounded-sm  p-1 text-[9.5px]"
+        className="flex min-h-28 flex-col rounded-sm p-1 text-[9.5px]"
         style={{
           border: alreadySigned
             ? "2px solid #2d6a4f"
@@ -70,10 +82,7 @@ export function LibranzaSignatureSection({
             ) : (
               <span
                 className="leading-none text-ink"
-                style={{
-                  fontFamily: '"Dancing Script", cursive',
-                  fontSize: 22,
-                }}
+                style={{ fontFamily: '"Dancing Script", cursive', fontSize: 22 }}
               >
                 {contractedSig.typedValue}
               </span>
@@ -86,7 +95,7 @@ export function LibranzaSignatureSection({
               PENDIENTE DE FIRMA
             </span>
           ) : (
-            <span className="text-[6.5px] text-black tracking-[0.12em] ">
+            <span className="text-[6.5px] text-black tracking-[0.12em]">
               FIRMA DEL CLIENTE
             </span>
           )}

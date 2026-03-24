@@ -24,9 +24,9 @@ export function Section({
     icon?: React.ReactNode;
 }) {
     return (
-        <div className="flex items-center gap-2 border-b pb-1.5">
+        <div className="flex items-center gap-2 border-b pb-1.5  ">
             {icon}
-            <h3 className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            <h3 className="text-[13px] text-blue-700 font-semibold uppercase tracking-[0.18em] ">
                 {title}
             </h3>
         </div>
@@ -43,15 +43,15 @@ export function DetailRow({
     children?: React.ReactNode;
 }) {
     return (
-        <div className="grid items-start gap-1.5 border-b py-1.5 last:border-b-0 md:grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)]">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+        <div className="grid items-start gap-1.5 border-b py-1.5 last:border-b-0 md:grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)] text-[11px]">
+            <span className=" font-semibold uppercase tracking-[0.16em] ">
                 {label}
             </span>
 
             {children ? (
                 <div className="min-w-0">{children}</div>
             ) : (
-                <span className="min-w-0 wrap-break-word text-sm font-medium text-foreground">
+                <span className="min-w-0 wrap-break-word  ">
                     {value?.trim() ? value : '—'}
                 </span>
             )}
