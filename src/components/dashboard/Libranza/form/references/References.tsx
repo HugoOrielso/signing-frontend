@@ -9,7 +9,7 @@ const labelClass =
 
 
 export function emptyReference(type: ReferenceType = 'PERSONAL'): ReferenceItem {
-  return { type, name: '', phone: '', email: '', company: '', position: '', relation: '' };
+  return { type, name: '', phone: '', email: '', company: '', position: '', relationShip: '' };
 }
 
 interface Props {
@@ -82,7 +82,7 @@ export default function ReferencesSection({ value, onChange }: Props) {
                   <button type="button"
                     onClick={() => update(i, {
                       type: ref.type === 'PERSONAL' ? 'LABORAL' : 'PERSONAL',
-                      company: '', position: '', relation: '',
+                      company: '', position: '', relationShip: '',
                     })}
                     className="text-[10px] text-muted underline cursor-pointer bg-transparent border-none">
                     Cambiar tipo
@@ -123,7 +123,7 @@ export default function ReferencesSection({ value, onChange }: Props) {
                   <div>
                     <label className={labelClass}>Parentesco / Relación</label>
                     <input className={inputClass} placeholder="Ej: Familiar, Amigo, Vecino"
-                      value={ref.relation} onChange={e => update(i, { relation: e.target.value })}
+                      value={ref.relationShip} onChange={e => update(i, { relationShip: e.target.value })}
                       type="text" />
                   </div>
                 )}

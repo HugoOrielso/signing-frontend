@@ -14,17 +14,17 @@ interface Props {
   data: LibranzaDataPreview;
   signers?: LibranzaSigner[];
   signatures?: LibranzaSignature[];
+  templateKey: string
   mode: "preview" | "sign" | "view";
   token?: string;
   onSigned?: () => void;
 }
 
-export default function LibranzaPreview({ data, signers = [], signatures: initialSignatures = [], mode, token, onSigned }: Props) {
+export default function LibranzaPreview({ data, signers = [], signatures: initialSignatures = [], templateKey, mode, token, onSigned }: Props) {
   const [signatures, setSignatures] = useState<LibranzaSignature[]>(initialSignatures);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [showPad, setShowPad] = useState(false);
-
   useEffect(() => {
     setSignatures(initialSignatures);
   }, [initialSignatures]);
@@ -88,6 +88,7 @@ export default function LibranzaPreview({ data, signers = [], signatures: initia
             signatures={signatures}
             signers={signers}
             showSignatureZone={isSignMode}
+            templateKey={templateKey}
           />
         </ScaledDocumentViewer>
       </div>

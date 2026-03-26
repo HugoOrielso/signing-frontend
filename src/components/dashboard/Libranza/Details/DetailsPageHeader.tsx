@@ -2,14 +2,17 @@
 
 import { displayStatus, fmtDate, publicUrlAdmin } from '@/lib/utils/libranzaHelper';
 import { Contract } from '@/types/libranza';
-import { BadgeCheck, CalendarDays, Copy, ExternalLink, FileText } from 'lucide-react';
+import { BadgeCheck, CalendarDays, Copy, ExternalLink, FileText, History } from 'lucide-react';
 import { useMemo } from 'react';
 import { toast } from 'sonner';
 import { ContractStatusBadge } from '@/components/dashboard/dataTable/statusBadge';
+import { useParams } from 'next/navigation';
 
 export function DetailsPageHeader({ contract }: { contract: Contract }) {
-  const link = useMemo(() => publicUrlAdmin(contract.token), [contract.token]);
+  const params = useParams()
 
+  const link = useMemo(() => publicUrlAdmin(contract.token), [contract.token]);
+  console.log(params.id)
   return (
     <div className="bg-muted/30 px-4 py-4 sm:px-6 sm:py-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -39,6 +42,15 @@ export function DetailsPageHeader({ contract }: { contract: Contract }) {
 
           {link && (
             <div className="flex flex-wrap gap-2">
+              <a
+                href={`/dashboard/manage-contracts/${params.id}/audit`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
+              >
+                <History className="h-3.5 w-3.5" />
+                Ver auditoria
+              </a>
               <a
                 href={link}
                 target="_blank"

@@ -1,22 +1,24 @@
 "use client";
 
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { F } from "@/lib/formatters/formaters";
 import { LibranzaDataPreview } from "@/types/libranza";
 import { Separator } from "@/components/ui/common/separator";
 
 type Empresa = "dimcultura" | "gruculcol";
 
-const empresaConfig: Record<Empresa, {
-  logo: string;
-  nombre: string;
-  subtitulo: string;
-  slogan: string;
-  nit: string;
-  email: string;
-  web: string;
-}> = {
+const empresaConfig: Record<
+  Empresa,
+  {
+    logo: string;
+    nombre: string;
+    subtitulo: string;
+    slogan: string;
+    nit: string;
+    email: string;
+    web: string;
+  }
+> = {
   dimcultura: {
     logo: "/assets/logo.webp",
     nombre: "Dimcultura S.A.S.",
@@ -39,18 +41,18 @@ const empresaConfig: Record<Empresa, {
 
 const DEFAULT_EMPRESA: Empresa = "dimcultura";
 
-function getEmpresaFromPath(pathname: string): Empresa {
-  const segment = pathname.split("/").pop()?.toLowerCase() as Empresa;
-  return segment in empresaConfig ? segment : DEFAULT_EMPRESA;
+function resolveEmpresa(value?: string): Empresa {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  return normalized === "gruculcol" ? "gruculcol" : DEFAULT_EMPRESA;
 }
 
 interface Props {
   data: LibranzaDataPreview;
+  templateKey?: string ;
 }
 
-export function LibranzaHeader({ data }: Props) {
-  const pathname = usePathname();
-  const empresa = getEmpresaFromPath(pathname);
+export function LibranzaHeader({ data, templateKey }: Props) {
+  const empresa = resolveEmpresa(templateKey ?? '');
   const config = empresaConfig[empresa];
 
   return (
@@ -98,7 +100,7 @@ export function LibranzaHeader({ data }: Props) {
 
           <div className="flex items-end justify-between gap-3 text-[9px]">
             <div className="flex gap-1.5">
-              <span className="min-w-9.5 font-bold">Fecha:</span>
+              <span className="min-w-9.5 font-bold">FECHA:</span>
               <span>
                 {new Date().toLocaleDateString("es-CO", {
                   day: "2-digit",

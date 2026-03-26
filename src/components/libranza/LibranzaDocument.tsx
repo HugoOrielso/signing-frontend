@@ -10,6 +10,7 @@ interface Props {
   signatures?: LibranzaSignature[];
   signers?: LibranzaSigner[];
   showSignatureZone: boolean;
+  templateKey?:string
 }
 
 export function LibranzaDocument({
@@ -17,12 +18,12 @@ export function LibranzaDocument({
   signatures = [],
   signers = [],
   showSignatureZone,
+  templateKey
 }: Props) {
-  console.log(data)
   return (
     <div className="text-[11px] text-white w-full p-1 bg-white">
-      <LibranzaHeader data={data} />
-      <LibranzaBody data={data} />
+      <LibranzaHeader data={data} templateKey={templateKey} />
+      <LibranzaBody data={data}  templateKey={templateKey ?? ''} />
       <LibranzaSignatureSection
         data={data}
         signatures={signatures}

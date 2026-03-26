@@ -19,6 +19,7 @@ interface ContractData {
   contractType?: string;
   title: string;
   status: string;
+  templateKey?: string | null;
   signers: LibranzaSigner[];
   signatures: LibranzaSignature[];
   libranzaData?: LibranzaDataPreview | null;
@@ -107,6 +108,7 @@ export default function PublicContractView({ token, pageMode, isAdmin }: Props) 
             data={contract.libranzaData!}
             signers={contract.signers}
             signatures={signatures}
+            templateKey={contract.templateKey ?? ''}
             mode={mode}
             token={token}
             onSigned={() =>

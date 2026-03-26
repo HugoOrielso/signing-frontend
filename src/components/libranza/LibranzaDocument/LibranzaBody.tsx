@@ -1,25 +1,31 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { FieldUnderline as U } from "@/components/ui/Libranza/FieldUnderline";
 import { FieldBox as Box } from "@/components/ui/Libranza/FieldBox";
 import { CheckBox as Chk } from "@/components/ui/Libranza/CheckBox";
 import { F, FM } from "@/lib/formatters/formaters";
 import { LibranzaDataPreview } from "@/types/libranza";
 
-const empresaNombre: Record<string, string> = {
+type Empresa = "dimcultura" | "gruculcol";
+
+const empresaNombre: Record<Empresa, string> = {
   dimcultura: "DIMCULTURA S.A.S.",
   gruculcol: "GRUCULCOL",
 };
 
-interface Props {
-  data: LibranzaDataPreview;
+function resolveEmpresa(value?: string | null): Empresa {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  return normalized === "gruculcol" ? "gruculcol" : "dimcultura";
 }
 
-export function LibranzaBody({ data: d }: Props) {
-  const pathname = usePathname();
-  const segment = pathname.split("/").pop()?.toLowerCase() ?? "dimcultura";
-  const nombre = empresaNombre[segment] ?? "DIMCULTURA S.A.S.";
+interface Props {
+  data: LibranzaDataPreview;
+  templateKey:string
+}
+
+export function LibranzaBody({ data: d, templateKey }: Props) {
+  const empresa = resolveEmpresa(templateKey);
+  const nombre = empresaNombre[empresa]
 
   return (
     <div className="space-y-1 text-black">
@@ -79,7 +85,7 @@ export function LibranzaBody({ data: d }: Props) {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-semibold whitespace-nowrap">Parentesco:</span>
-                      <span className="flex-1 border-b border-black h-2.5">{r.relation}</span>
+                      <span className="flex-1 border-b border-black h-2.5">{r.relationShip}</span>
                       <span className="font-semibold whitespace-nowrap">Teléfono:</span>
                       <span className="flex-1 border-b border-black h-2.5">{r.phone}</span>
                     </div>

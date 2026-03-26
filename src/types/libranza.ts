@@ -43,7 +43,7 @@ export interface LibranzaDataPreview {
   productos?: ProductoItem[] | null;
   formaPago?: string | null;
   references: ReferenceItem[];
-
+  templateKey?: string | null;
 }
 
 export interface ProductoItem {
@@ -63,7 +63,7 @@ export interface ReferenceItem {
   company: string;
   position: string;
   // Solo PERSONAL
-  relation: string;
+  relationShip: string;
 }
 
 export interface LibranzaForm {
@@ -99,8 +99,10 @@ export interface LibranzaForm {
 
   formaPago: 'NOMINA' | 'EFECTY 110520' | 'PSE' | 'BANCO' | '';
 
+  
   destinatarioEmail: string;
   destinatarioNombre: string;
+  templateKey: string
 }
 
 export const emptyLibranza: LibranzaForm = {
@@ -138,6 +140,7 @@ export const emptyLibranza: LibranzaForm = {
 
   destinatarioEmail: '',
   destinatarioNombre: '',
+  templateKey: ''
 };
 
 export interface Contract {

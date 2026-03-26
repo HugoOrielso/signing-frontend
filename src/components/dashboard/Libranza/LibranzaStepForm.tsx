@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { ProductoItem, LibranzaForm, ReferenceItem } from '@/types/libranza';
 import { useLibranzaStore } from '@/store/libranzaStore';
 import ReferencesSection from './form/references/References';
+import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+
 
 const inputClass =
   'w-full rounded-md border border-border-soft bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition-all placeholder:text-[#c0b8ac] focus:border-gold focus:ring-4 focus:ring-[rgba(201,168,76,0.12)]';
@@ -14,13 +17,58 @@ const labelClass =
 const sectionClass =
   'mb-6 rounded-xl border border-border-soft bg-white p-7';
 
+
+type Empresa = "dimcultura" | "gruculcol";
+
+const empresaConfig: Record<Empresa, {
+  id: string
+  logo: string;
+  nombre: string;
+  subtitulo: string;
+  slogan: string;
+  nit: string;
+  email: string;
+  web: string;
+}> = {
+  dimcultura: {
+    id: "dimcultura",
+    logo: "/assets/logo.webp",
+    nombre: "Dimcultura S.A.S.",
+    subtitulo: "Nueva Dimensión Cultural",
+    slogan: "Un mundo en el que debes estar",
+    nit: "900.683.382-3",
+    email: "servicioalcliente@dimcultura.com",
+    web: "www.dimcultura.com",
+  },
+  gruculcol: {
+    id: "gruculcol",
+    logo: "/assets/gruculcol.webp",
+    nombre: "GRUCULCOL",
+    subtitulo: "Grupo Cultural Colombiano",
+    slogan: "Educación sin fronteras",
+    nit: "27.898.189-5",
+    email: "servicioalcliente@dimcultura.com",
+    web: "www.dimcultura.com",
+  },
+};
+
+const DEFAULT_EMPRESA: Empresa = "dimcultura";
+
+function getEmpresaFromPath(pathname: string): Empresa {
+  const segment = pathname.split("/").pop()?.toLowerCase() as Empresa;
+  return segment in empresaConfig ? segment : DEFAULT_EMPRESA;
+}
+
+
 export default function LibranzaStepForm() {
+  const { data: session } = useSession();
   const form = useLibranzaStore((state) => state.form);
   const setForm = useLibranzaStore((state) => state.setForm);
   const nextStep = useLibranzaStore((state) => state.nextStep);
   const [referencias, setReferencias] = useState<ReferenceItem[]>(
     (form as { referencias?: ReferenceItem[] }).referencias ?? []
   );
+
   const [productos, setProductos] = useState<ProductoItem[]>(
     form.productos?.length ? form.productos : [{ codigo: '', descripcion: '', valor: '' }]
   );
@@ -48,14 +96,25 @@ export default function LibranzaStepForm() {
     );
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const today = new Date().toISOString().split('T')[0];
+  const pathname = usePathname();
+  const empresa = getEmpresaFromPath(pathname);
+  const config = empresaConfig[empresa];
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const fd = new FormData(e.currentTarget);
 
+    const asesor =
+      session?.user.role === "OPERATOR"
+        ? String(session.user.name || "")
+        : String(fd.get("asesor") || "");
+
+
     const data: LibranzaForm = {
       ciudad: String(fd.get('ciudad') || ''),
-      asesor: String(fd.get('asesor') || ''),
+      asesor,
       fecha: String(fd.get('fecha') || ''),
 
       clienteNombre: String(fd.get('clienteNombre') || ''),
@@ -88,6 +147,7 @@ export default function LibranzaStepForm() {
       destinatarioNombre: String(fd.get('destinatarioNombre') || ''),
 
       references: referencias,
+      templateKey: config.id
 
     };
 
@@ -117,27 +177,37 @@ export default function LibranzaStepForm() {
             />
           </div>
 
-          <div>
-            <label className={labelClass}>Asesor</label>
-            <input
-              name="asesor"
-              className={inputClass}
-              placeholder="Nombre del asesor"
-              defaultValue={form.asesor}
-              required
-              type='text'
-            />
-          </div>
+          {session?.user.role === "ADMIN" && (
+            <div>
+              <label className={labelClass}>Asesor</label>
+              <input
+                name="asesor"
+                className={inputClass}
+                placeholder="Nombre del asesor"
+                defaultValue={form.asesor}
+                required
+                type="text"
+              />
+            </div>
+          )}
+
+          {session?.user.role === "OPERATOR" && (
+            <div>
+              <label className={labelClass}>Asesor</label>
+              <div className={`${inputClass} bg-slate-100 cursor-not-allowed`}>
+                {session.user.name}
+              </div>
+            </div>
+          )}
 
           <div>
             <label className={labelClass}>Fecha</label>
             <input
               name="fecha"
               type="date"
-              className={inputClass}
-              defaultValue={
-                form.fecha.includes('/') ? form.fecha.split('/').reverse().join('-') : form.fecha
-              }
+              className={`${inputClass} bg-slate-100 cursor-not-allowed`}
+              value={today}
+              readOnly
             />
           </div>
         </div>

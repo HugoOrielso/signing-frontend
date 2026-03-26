@@ -5,6 +5,7 @@ import {
   UserPlus,
   FilePlus,
   FileCheck,
+  FolderOpen,
 } from "lucide-react";
 
 export type UserRole = "ADMIN" | "OPERATOR";
@@ -43,6 +44,12 @@ export const links: SidebarLink[] = [
         roles: ["ADMIN", "OPERATOR"],
       },
     ],
+  },
+  {
+    href: "/dashboard/manage-contracts",
+    label: "Administrar contratos",
+    icon: FolderOpen,
+    roles: ["ADMIN", "OPERATOR"],
   },
   {
     href: "/dashboard/users",

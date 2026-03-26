@@ -9,6 +9,9 @@ const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: "Contract Signing",
+  icons: {
+    icon: "/assets/logo.webp",
+  },
 };
 
 export default function RootLayout({

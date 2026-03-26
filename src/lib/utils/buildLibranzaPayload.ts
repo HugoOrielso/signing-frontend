@@ -67,6 +67,7 @@ export function buildLibranzaPayload(f: LibranzaForm) {
       },
     ],
 
-    references: f.references
+    references: f.references,
+    templateKey: f.templateKey
   };
 }

@@ -10,15 +10,59 @@ import { useLibranzaStore } from '@/store/libranzaStore';
 import { buildLibranzaPayload } from '../../../lib/utils/buildLibranzaPayload';
 import { LibranzaDocument } from '@/components/libranza/LibranzaDocument';
 import { ScaledDocumentViewer } from '@/components/libranza/viewer/ScaledDocument';
+import { useParams, usePathname } from 'next/navigation';
+type Empresa = "dimcultura" | "gruculcol";
 
+const empresaConfig: Record<Empresa, {
+  id: string;
+  logo: string;
+  nombre: string;
+  subtitulo: string;
+  slogan: string;
+  nit: string;
+  email: string;
+  web: string;
+}> = {
+  dimcultura: {
+    id: "dimcultura",
+    logo: "/assets/logo.webp",
+    nombre: "Dimcultura S.A.S.",
+    subtitulo: "Nueva Dimensión Cultural",
+    slogan: "Un mundo en el que debes estar",
+    nit: "900.683.382-3",
+    email: "servicioalcliente@dimcultura.com",
+    web: "www.dimcultura.com",
+  },
+  gruculcol: {
+    id: "gruculcol",
+    logo: "/assets/gruculcol.webp",
+    nombre: "GRUCULCOL",
+    subtitulo: "Grupo Cultural Colombiano",
+    slogan: "Educación sin fronteras",
+    nit: "27.898.189-5",
+    email: "servicioalcliente@dimcultura.com",
+    web: "www.dimcultura.com",
+  },
+};
+
+const DEFAULT_EMPRESA: Empresa = "dimcultura";
+
+function getEmpresaFromPath(pathname: string): Empresa {
+  const segment = pathname.split("/").pop()?.toLowerCase() as Empresa;
+  return segment in empresaConfig ? segment : DEFAULT_EMPRESA;
+}
 
 
 export default function LibranzaStepPreview() {
   const form = useLibranzaStore((state) => state.form);
   const prevStep = useLibranzaStore((state) => state.prevStep);
-
+  const params = useParams()
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const pathname = usePathname();
+  const templateKey = params.id
+  const empresa = getEmpresaFromPath(pathname);
+  const config = empresaConfig[empresa];
 
   const libranzaData = {
     ciudad: form.ciudad,
@@ -49,7 +93,8 @@ export default function LibranzaStepPreview() {
 
     productos: form.productos,
     formaPago: form.formaPago,
-    references: form.references
+    references: form.references,
+    templateKey: config.nombre
   };
 
   async function handleSend() {
@@ -144,7 +189,7 @@ export default function LibranzaStepPreview() {
       </div>
 
       <ScaledDocumentViewer>
-        <LibranzaDocument data={libranzaData} showSignatureZone={false} />
+        <LibranzaDocument data={libranzaData} showSignatureZone={false} templateKey={templateKey?.toString() ?? 'dimcultura'} />
       </ScaledDocumentViewer>
 
       <div className="mt-9 flex flex-col justify-between gap-3 border-t border-border-soft pt-6 md:flex-row md:items-center">
