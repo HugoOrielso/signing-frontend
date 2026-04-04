@@ -3,7 +3,12 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { LibranzaDataPreview, LibranzaSignature, LibranzaSigner } from "@/types/libranza";
+import { Great_Vibes } from "next/font/google";
 
+const greatVibes = Great_Vibes({
+    subsets: ["latin"],
+    weight: "400",
+});
 const empresaNombre: Record<string, string> = {
   dimcultura: "DIMCULTURA S.A.S.",
   gruculcol: "GRUCULCOL",
@@ -67,7 +72,7 @@ export function LibranzaSignatureSection({
           Firma
         </p>
 
-        <div className="mt-2 flex flex-1 items-center justify-center rounded-sm bg-cream">
+        <div className="mt-2 flex flex-1 items-center justify-center rounded-sm bg-blue-50">
           {alreadySigned ? (
             contractedSig.type === "DRAWN" && contractedSig.imageUrl ? (
               <div className="relative h-11.5 w-full">
@@ -81,21 +86,19 @@ export function LibranzaSignatureSection({
               </div>
             ) : (
               <span
-                className="leading-none text-ink"
-                style={{ fontFamily: '"Dancing Script", cursive', fontSize: 22 }}
+                className={`leading-none text-ink ${greatVibes.className} text-2xl`}
+                
               >
                 {contractedSig.typedValue}
               </span>
             )
           ) : showSignatureZone ? (
             <span
-              className="rounded-sm border border-dashed px-2 py-1 text-[6.5px] tracking-[0.12em] text-gold"
-              style={{ borderColor: "var(--color-gold)" }}
-            >
+              className="rounded-sm border border-dashed px-2 py-1 text-[7.5px] tracking-[0.12em] text-black">
               PENDIENTE DE FIRMA
             </span>
           ) : (
-            <span className="text-[6.5px] text-black tracking-[0.12em]">
+            <span className="text-[7.5px] text-black tracking-[0.12em]">
               FIRMA DEL CLIENTE
             </span>
           )}

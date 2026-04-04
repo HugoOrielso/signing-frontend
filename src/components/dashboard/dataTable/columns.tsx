@@ -1,11 +1,28 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import type { Contract } from '@/types/libranza';
+import type { Contract, ContractStatus } from '@/types/libranza';
 
 import { ContractStatusBadge } from './statusBadge';
-import { clientCC, clientName, clientPhone, contractValue, displayStatus, fmtDate, signedCount } from '@/lib/utils/libranzaHelper';
+import {
+  clientCC,
+  clientName,
+  clientPhone,
+  contractValue,
+  displayStatus,
+  fmtDate,
+  signedCount,
+} from '@/lib/utils/libranzaHelper';
 import Link from 'next/link';
+
+function canReviewDocuments(status: ContractStatus) {
+  return (
+    status === 'PENDING_DOCUMENTS' ||
+    status === 'PENDING_VERIFICATION' ||
+    status === 'DOCUMENTS_UPLOADED'
+
+  );
+}
 
 export function getContractsColumns(): ColumnDef<Contract>[] {
   return [
@@ -59,8 +76,14 @@ export function getContractsColumns(): ColumnDef<Contract>[] {
         return (
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold">{clientName(c)}</p>
-            {cc !== '—' && <p className="font-mono text-[11px] text-muted-foreground">CC {cc}</p>}
-            {phone && <p className="text-[11px] text-muted-foreground">{phone}</p>}
+            {cc !== '—' && (
+              <p className="font-mono text-[11px] text-muted-foreground">
+                CC {cc}
+              </p>
+            )}
+            {phone && (
+              <p className="text-[11px] text-muted-foreground">{phone}</p>
+            )}
           </div>
         );
       },
@@ -73,9 +96,7 @@ export function getContractsColumns(): ColumnDef<Contract>[] {
 
         return (
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold">
-              {asesor || '—'}
-            </p>
+            <p className="truncate text-sm font-semibold">{asesor || '—'}</p>
           </div>
         );
       },
@@ -92,7 +113,9 @@ export function getContractsColumns(): ColumnDef<Contract>[] {
             {ld?.numeroCuotas && ld?.valorCuota && (
               <p className="text-[10px] text-muted-foreground">
                 {ld.numeroCuotas}x $
-                {parseFloat(ld.valorCuota.replace(/[^0-9.]/g, '') || '0').toLocaleString('es-CO')}
+                {parseFloat(
+                  ld.valorCuota.replace(/[^0-9.]/g, '') || '0'
+                ).toLocaleString('es-CO')}
               </p>
             )}
           </div>
@@ -106,7 +129,9 @@ export function getContractsColumns(): ColumnDef<Contract>[] {
         const c = row.original;
         return (
           <div>
-            <p className="text-xs text-muted-foreground">{fmtDate(c.createdAt)}</p>
+            <p className="text-xs text-muted-foreground">
+              {fmtDate(c.createdAt)}
+            </p>
             {c.libranzaData?.asesor && (
               <p className="truncate text-[10px] text-muted-foreground">
                 👤 {c.libranzaData.asesor}
@@ -119,7 +144,9 @@ export function getContractsColumns(): ColumnDef<Contract>[] {
     {
       id: 'estado',
       header: 'Estado',
-      cell: ({ row }) => <ContractStatusBadge status={displayStatus(row.original)} />,
+      cell: ({ row }) => (
+        <ContractStatusBadge status={displayStatus(row.original)} />
+      ),
     },
     {
       id: 'firmas',
@@ -127,12 +154,21 @@ export function getContractsColumns(): ColumnDef<Contract>[] {
       cell: ({ row }) => {
         const [signed, total] = signedCount(row.original);
         const allSigned = total > 0 && signed === total;
+
         return (
           <div className="text-center">
-            <p className={allSigned ? 'text-[12px] font-bold text-emerald-700' : 'text-[12px] font-bold text-muted-foreground'}>
+            <p
+              className={
+                allSigned
+                  ? 'text-[12px] font-bold text-emerald-700'
+                  : 'text-[12px] font-bold text-muted-foreground'
+              }
+            >
               {signed}/{total}
             </p>
-            <p className="text-[9px] uppercase tracking-wider text-muted-foreground">firmas</p>
+            <p className="text-[9px] uppercase tracking-wider text-muted-foreground">
+              firmas
+            </p>
           </div>
         );
       },
@@ -140,17 +176,31 @@ export function getContractsColumns(): ColumnDef<Contract>[] {
     {
       id: 'actions',
       header: '',
-      cell: ({ row }) => <ViewButton id={row.original.id} />,
+      cell: ({ row }) => <ActionsCell contract={row.original} />,
     },
   ];
 }
 
-function ViewButton({ id }: { id: string }) {
+function ActionsCell({ contract }: { contract: Contract }) {
+  const showReviewDocuments = canReviewDocuments(contract.status);
+
   return (
-    <Link href={`/dashboard/manage-contracts/${id}`}
-      className="rounded-md border border-border-soft px-3 py-1 text-xs font-medium   transition-colors cursor-pointer"
-    >
-      Ver
-    </Link>
+    <div className="flex items-center justify-end gap-2">
+      {showReviewDocuments && (
+        <Link
+          href={`/dashboard/upload-documents/${contract.id}`}
+          className="rounded-md border border-border-soft px-3 py-1 text-xs font-medium transition-colors cursor-pointer hover:bg-muted"
+        >
+          Revisar documentos
+        </Link>
+      )}
+
+      <Link
+        href={`/dashboard/manage-contracts/${contract.id}`}
+        className="rounded-md border border-border-soft px-3 py-1 text-xs font-medium transition-colors cursor-pointer hover:bg-muted"
+      >
+        Ver
+      </Link>
+    </div>
   );
 }

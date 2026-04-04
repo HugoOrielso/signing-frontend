@@ -14,8 +14,8 @@ const LibranzaControlHeader = () => {
     };
 
     return (
-        <header className="flex min-h-[46.5px] items-center justify-between px-10">
-            <div className="text-xl tracking-[1px] text-gold">
+        <header className="flex items-center justify-between p-2">
+            <div className="text-xl tracking-[1px] text-main">
                 <em>Crear nueva libranza</em>
             </div>
 
@@ -36,10 +36,10 @@ const LibranzaControlHeader = () => {
                                     className={[
                                         'flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold border-2',
                                         done
-                                            ? 'border-transparent bg-linear-to-br from-gold to-gold-dark text-ink'
+                                            ? 'border bg-linear-to-br from-green-500 to-green-600 text-white'
                                             : active
-                                                ? 'border-gold bg-ink text-gold'
-                                                : 'border-transparent bg-[#2d2d4e] text-[#5a5a7a]',
+                                                ? ' bg-main text-white'
+                                                : 'border bg-white ',
                                     ].join(' ')}
                                 >
                                     {done ? '✓' : s.n}
@@ -49,10 +49,10 @@ const LibranzaControlHeader = () => {
                                     className={[
                                         'text-xs',
                                         active
-                                            ? 'font-semibold text-gold'
+                                            ? 'font-semibold text-main'
                                             : done
-                                                ? 'text-gold-dark'
-                                                : 'text-[#5a5a7a]',
+                                                ? 'text-green-500'
+                                                : 'text-main',
                                     ].join(' ')}
                                 >
                                     {s.label}
@@ -63,7 +63,7 @@ const LibranzaControlHeader = () => {
                                 <div
                                     className={[
                                         'h-0.5 w-8',
-                                        done ? 'bg-linear-to-r from-gold to-gold-dark' : 'bg-[#2d2d4e]',
+                                        done ? 'bg-gray-500' : 'bg-[#2d2d4e]',
                                     ].join(' ')}
                                 />
                             )}

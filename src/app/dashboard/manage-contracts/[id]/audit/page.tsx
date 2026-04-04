@@ -21,6 +21,7 @@ export default function AuditTrailView() {
 
   async function getContractAuditTrail(contractId: string) {
     const res = await api.get(`/contracts/${contractId}/audit-trail`);
+    console.log(res.data)
     return res.data;
   }
 

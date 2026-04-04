@@ -33,16 +33,6 @@ export function ConfirmSignModal({ signerName, onConfirm, onCancel, confirming }
             </div>
           </div>
 
-          {/* Signer name */}
-          {/* <div className="bg-cream rounded-[10px] px-4 py-3 mb-4 border border-border-soft">
-            <p className="text-[11px] mb-0.75 uppercase tracking-widest font-semibold">
-              Firmante
-            </p>
-            <p className="text-[15px] font-bold text-ink m-0">
-              {signerName}
-            </p>
-          </div> */}
-
           {/* Legal text */}
           <div className="bg-[#fafafa] rounded-[10px] px-4 py-3.5 mb-5 border border-border-soft max-h-50 overflow-y-auto text-[11px] text-[#4a4a6a] leading-[1.7]">
             <p className="font-bold text-ink mb-2 text-xs mt-0">

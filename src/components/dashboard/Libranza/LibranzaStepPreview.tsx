@@ -3,54 +3,12 @@
 import { useState } from 'react';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
-
-import api from '@/lib/axiosClient';
-
 import { useLibranzaStore } from '@/store/libranzaStore';
-import { buildLibranzaPayload } from '../../../lib/utils/buildLibranzaPayload';
 import { LibranzaDocument } from '@/components/libranza/LibranzaDocument';
 import { ScaledDocumentViewer } from '@/components/libranza/viewer/ScaledDocument';
 import { useParams, usePathname } from 'next/navigation';
-type Empresa = "dimcultura" | "gruculcol";
+import { empresaConfig, getEmpresaFromPath } from '@/config/bussiness';
 
-const empresaConfig: Record<Empresa, {
-  id: string;
-  logo: string;
-  nombre: string;
-  subtitulo: string;
-  slogan: string;
-  nit: string;
-  email: string;
-  web: string;
-}> = {
-  dimcultura: {
-    id: "dimcultura",
-    logo: "/assets/logo.webp",
-    nombre: "Dimcultura S.A.S.",
-    subtitulo: "Nueva Dimensión Cultural",
-    slogan: "Un mundo en el que debes estar",
-    nit: "900.683.382-3",
-    email: "servicioalcliente@dimcultura.com",
-    web: "www.dimcultura.com",
-  },
-  gruculcol: {
-    id: "gruculcol",
-    logo: "/assets/gruculcol.webp",
-    nombre: "GRUCULCOL",
-    subtitulo: "Grupo Cultural Colombiano",
-    slogan: "Educación sin fronteras",
-    nit: "27.898.189-5",
-    email: "servicioalcliente@dimcultura.com",
-    web: "www.dimcultura.com",
-  },
-};
-
-const DEFAULT_EMPRESA: Empresa = "dimcultura";
-
-function getEmpresaFromPath(pathname: string): Empresa {
-  const segment = pathname.split("/").pop()?.toLowerCase() as Empresa;
-  return segment in empresaConfig ? segment : DEFAULT_EMPRESA;
-}
 
 
 export default function LibranzaStepPreview() {
@@ -72,15 +30,23 @@ export default function LibranzaStepPreview() {
     clienteNombre: form.clienteNombre,
     clienteCC: form.clienteCC,
     clienteCCDe: form.clienteCCDe,
+    clienteFechaNacimiento: form.clienteFechaNacimiento,
+    clienteFechaExpedicionCC: form.clienteFechaExpedicionCC,
     clienteDireccion: form.clienteDireccion,
     clienteTelefono: form.clienteTelefono,
     clienteEmail: form.clienteEmail,
     clienteFuncionario: form.clienteFuncionario,
     clienteDesdeHace: form.clienteDesdeHace,
 
+    pagaduriaNombre: form.pagaduriaNombre,
+    pagaduriaMunicipio: form.pagaduriaMunicipio,
+    pagaduriaDepartamento: form.pagaduriaDepartamento,
+
     municipioTrabajo: form.municipioTrabajo,
     empresaTrabajo: form.empresaTrabajo,
     departamento: form.departamento,
+
+    tipoContrato: form.tipoContrato,
 
     sumaTotal: form.sumaTotal,
     numeroCuotas: form.numeroCuotas,
@@ -94,7 +60,7 @@ export default function LibranzaStepPreview() {
     productos: form.productos,
     formaPago: form.formaPago,
     references: form.references,
-    templateKey: config.nombre
+    templateKey: config.nombre,
   };
 
   async function handleSend() {
@@ -106,7 +72,6 @@ export default function LibranzaStepPreview() {
     setSending(true);
 
     try {
-      await api.post('/contracts', buildLibranzaPayload(form));
       setSent(true);
       toast.success('Libranza creada y enviada correctamente');
     } catch (err) {
@@ -157,19 +122,19 @@ export default function LibranzaStepPreview() {
   return (
     <div className='max-w-215 mx-auto'>
       <div className="mb-6">
-        <h1 className="mb-1 font-serif text-[22px] text-ink">Vista Previa</h1>
+        <h1 className="mb-1 font-serif text-[22px] ">Vista Previa</h1>
         <p className="m-0 text-sm ">
           Revisa el documento antes de enviarlo al cliente.
         </p>
       </div>
 
-      <div className="mb-6 flex flex-col gap-4 rounded-xl border border-gold bg-[#fffdf5] p-5 md:flex-row md:items-center">
+      <div className="mb-6 flex flex-col gap-4 rounded-xl border border-blue-100 bg-blue-50 p-5 md:flex-row md:items-center">
         <span className="text-2xl">📧</span>
 
         <div className="flex-1">
-          <p className="mb-1 text-sm font-semibold text-ink">
+          <p className="mb-1 text-sm font-semibold ">
             Enviar a:{' '}
-            <span className="text-gold">
+            <span >
               {form.clienteEmail || '(sin correo)'}
             </span>
           </p>
@@ -192,14 +157,14 @@ export default function LibranzaStepPreview() {
         <LibranzaDocument data={libranzaData} showSignatureZone={false} templateKey={templateKey?.toString() ?? 'dimcultura'} />
       </ScaledDocumentViewer>
 
-      <div className="mt-9 flex flex-col justify-between gap-3 border-t border-border-soft pt-6 md:flex-row md:items-center">
+      <div className="mt-9 flex flex-col justify-between gap-3 border-t  pt-6 md:flex-row md:items-center">
         <button
           type="button"
           onClick={() => {
             prevStep();
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          className="rounded-lg cursor-pointer hover:bg-zinc-200  border border-border-soft bg-transparent px-6 py-3 text-sm font-semibold text-ink transition duration-200"
+          className="rounded-lg cursor-pointer hover:bg-zinc-200  border border-blue-200 bg-transparent px-6 py-3 text-sm font-semibold text-ink transition duration-200"
         >
           ← Editar datos
         </button>

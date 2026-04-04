@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -21,7 +20,11 @@ import {
   useSidebar,
 } from "@/components/ui/common/sidebar";
 import { Separator } from "../ui/common/separator";
-import { links, type UserRole, type SidebarLink } from "@/lib/utils/sidebarInfo";
+import {
+  links,
+  type UserRole,
+  type SidebarLink,
+} from "@/lib/utils/sidebarInfo";
 import { cn } from "@/lib/utils";
 
 import {
@@ -35,7 +38,7 @@ export default function DashboardSidebar() {
   const pathname = usePathname();
   const { state } = useSidebar();
 
-  const VALID_ROLES: UserRole[] = ["ADMIN", "OPERATOR"];
+  const VALID_ROLES: UserRole[] = ["ADMIN", "OPERATOR", "CREDIT_ANALYST"];
   const rawRole = session?.user?.role;
 
   const userRole: UserRole | undefined = VALID_ROLES.includes(rawRole as UserRole)
@@ -52,7 +55,9 @@ export default function DashboardSidebar() {
     .filter((link) => userRole && link.roles.includes(userRole))
     .map((link) => ({
       ...link,
-      children: link.children?.filter((child) => userRole && child.roles.includes(userRole)),
+      children: link.children?.filter(
+        (child) => userRole && child.roles.includes(userRole)
+      ),
     }));
 
   const renderLink = (link: SidebarLink) => {
@@ -67,7 +72,6 @@ export default function DashboardSidebar() {
     const isActive = pathname === href;
     const isChildActive = visibleChildren.some((child) => pathname === child.href);
 
-    // EXPANDED + HIJOS
     if (hasChildren && state === "expanded") {
       return (
         <SidebarMenuItem key={href}>
@@ -75,8 +79,7 @@ export default function DashboardSidebar() {
             onClick={() => toggleMenu(href)}
             className={cn(
               "w-full border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-pointer",
-              (isActive || isChildActive) &&
-                "bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-600"
+              (isActive || isChildActive) && "text-main hover:bg-gray-50 hover:text-main"
             )}
           >
             <Icon className="w-5 h-5 shrink-0" />
@@ -90,33 +93,34 @@ export default function DashboardSidebar() {
 
           {isOpen && (
             <SidebarMenu className="ml-4 mt-1 border-l border-gray-200 dark:border-white/10 pl-2">
-              {visibleChildren.map(({ href: childHref, label: childLabel, icon: ChildIcon }) => (
-                <SidebarMenuItem key={childHref}>
-                  <SidebarMenuButton
-                    asChild
-                    className={cn(
-                      "border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:ring-0 focus-visible:ring-offset-0",
-                      pathname === childHref &&
-                        "bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-600"
-                    )}
-                  >
-                    <Link
-                      href={childHref}
-                      className="flex items-center gap-3 py-2 text-sm font-medium transition"
+              {visibleChildren.map(
+                ({ href: childHref, label: childLabel, icon: ChildIcon }) => (
+                  <SidebarMenuItem key={childHref}>
+                    <SidebarMenuButton
+                      asChild
+                      className={cn(
+                        "border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:ring-0 focus-visible:ring-offset-0",
+                        pathname === childHref &&
+                          "text-main hover:bg-gray-50 hover:text-main"
+                      )}
                     >
-                      <ChildIcon className="w-4 h-4 shrink-0" />
-                      <span>{childLabel}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+                      <Link
+                        href={childHref}
+                        className="flex items-center gap-3 py-2 text-sm font-medium transition"
+                      >
+                        <ChildIcon className="w-4 h-4 shrink-0" />
+                        <span>{childLabel}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              )}
             </SidebarMenu>
           )}
         </SidebarMenuItem>
       );
     }
 
-    // COLLAPSED + HIJOS
     if (hasChildren && state === "collapsed") {
       return (
         <SidebarMenuItem key={href} className="p-0">
@@ -127,7 +131,7 @@ export default function DashboardSidebar() {
                 className={cn(
                   "w-full border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-pointer justify-center",
                   (isActive || isChildActive) &&
-                    "bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-600"
+                    "text-main hover:bg-gray-50 hover:text-main"
                 )}
               >
                 <Icon className="w-5 h-5 shrink-0" />
@@ -152,7 +156,7 @@ export default function DashboardSidebar() {
                       href={sub.href}
                       className={cn(
                         "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition hover:bg-gray-100 dark:hover:bg-white/10",
-                        subActive && "bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-600"
+                        subActive && "text-main hover:bg-gray-50 hover:text-main"
                       )}
                     >
                       <SubIcon className="w-4 h-4 shrink-0" />
@@ -167,7 +171,6 @@ export default function DashboardSidebar() {
       );
     }
 
-    // LINK NORMAL
     return (
       <SidebarMenuItem key={href}>
         <SidebarMenuButton
@@ -175,7 +178,7 @@ export default function DashboardSidebar() {
           tooltip={state === "collapsed" ? label : undefined}
           className={cn(
             "border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:ring-0 focus-visible:ring-offset-0",
-            isActive && "bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-600"
+            isActive && "text-main hover:bg-gray-50 hover:text-main"
           )}
         >
           <Link href={href} className="flex items-center gap-3 py-3 text-sm font-medium transition">
@@ -189,10 +192,10 @@ export default function DashboardSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="dark:bg-[#0A0A0A] bg-white">
+      <SidebarHeader className=" lg:flex bg-white dark:bg-[#0A0A0A]">
         <div className="flex items-center justify-between group-data-[collapsible=icon]:justify-center">
-          <div className="group-data-[collapsible=icon]:hidden flex items-center gap-2">
-            <Image src="/assets/logo.webp" width={37} height={37} alt="Logo" />
+          <div className="group-data-[collapsible=icon]:hidden flex items-center gap-2 text-main">
+            Dimcultura
           </div>
 
           <SidebarTrigger className="ml-auto group-data-[collapsible=icon]:ml-0 cursor-pointer border-none shadow-none bg-transparent hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0" />

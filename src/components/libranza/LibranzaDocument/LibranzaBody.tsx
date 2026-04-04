@@ -75,8 +75,8 @@ export function LibranzaBody({ data: d, templateKey }: Props) {
         <div className="font-bold mb-1">Referencias laborales y/o personales:</div>
         {d.references.length > 0 && (
           <div className="grid grid-cols-2 gap-3">
-            {d.references.map((r) => (
-              <div key={r.email}>
+            {d.references.map((r, i) => (
+              <div key={i}>
                 {r.type === "PERSONAL" && (
                   <div className="space-y-1 text-neutral-900">
                     <div className="flex items-center gap-1">

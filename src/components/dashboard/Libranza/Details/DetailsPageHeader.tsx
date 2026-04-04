@@ -21,7 +21,7 @@ export function DetailsPageHeader({ contract }: { contract: Contract }) {
           <h1 className="text-left text-2xl font-bold leading-tight">
             {contract.title}
           </h1>
-          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm ">
             <span className="inline-flex items-center gap-1">
               <FileText className="h-4 w-4" />
               {contract.contractNumber ?? 'Sin número'}

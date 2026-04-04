@@ -5,6 +5,7 @@ import LibranzaStepForm from './LibranzaStepForm';
 import LibranzaStepPreview from './LibranzaStepPreview';
 import LibranzaControlHeader from './LibranzaControlHeader';
 import { Separator } from '@/components/ui/common/separator';
+import LibranzaUploadDocuments from '@/app/dashboard/upload-documents/[id]/page';
 
 export default function LibranzaWizard() {
   const step = useLibranzaStore((state) => state.step);
@@ -15,9 +16,10 @@ export default function LibranzaWizard() {
       <LibranzaControlHeader />
       <Separator/>
 
-      <main className="mx-auto  px-5 py-10">
+      <main className="mx-auto  p-4">
         {step === 1 && <LibranzaStepForm />}
-        {step === 2 && <LibranzaStepPreview />}
+        {step === 2 && <LibranzaUploadDocuments />}
+        {step === 3 && <LibranzaStepPreview />}
       </main>
     </div>
   );

@@ -12,6 +12,7 @@ import { PublicContractTopBar } from "@/components/libranza/LibranzaDocument/Pub
 import { PublicContractAdminBanner } from "@/components/libranza/LibranzaDocument/AdminBanner";
 import { usePublicContractSignerStore } from "@/store/publicContractSignerStore";
 import LibranzaPreview from "@/components/libranza/LibranzaPreview";
+import PagarePreview from "../pagare/pagare";
 
 interface ContractData {
   id: string;
@@ -102,7 +103,7 @@ export default function PublicContractView({ token, pageMode, isAdmin }: Props) 
 
       {isAdmin && <PublicContractAdminBanner />}
 
-      <div className="mx-auto max-w-215 px-4 py-10">
+      <div className="mx-auto max-w-215 px-4 py-10 gap-2 flex flex-col">
         {isLibranza ? (
           <LibranzaPreview
             data={contract.libranzaData!}
@@ -124,7 +125,22 @@ export default function PublicContractView({ token, pageMode, isAdmin }: Props) 
             </p>
           </div>
         )}
+
+        {isLibranza ? (
+          <PagarePreview
+            data={contract.libranzaData!}
+            signers={contract.signers}
+            signatures={signatures}
+          />
+        ) : (
+          <div className="rounded-2xl border border-border-soft bg-white px-13 py-10">
+            <p className="m-0 text-center text-sm text-muted">
+              Este tipo de contrato no es soportado en la vista pública.
+            </p>
+          </div>
+        )}
       </div>
+
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import "./globals.css";
+import "./globals.css"
 import SessionWrapper from "@/components/common/SessionWrapper";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";

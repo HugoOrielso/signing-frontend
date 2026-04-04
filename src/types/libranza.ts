@@ -17,7 +17,7 @@ export interface LibranzaDataPreview {
   ciudad?: string | null;
   asesor?: string | null;
   fecha?: string | null;
-  // Datos personales
+
   clienteNombre?: string | null;
   clienteCC?: string | null;
   clienteCCDe?: string | null;
@@ -26,20 +26,28 @@ export interface LibranzaDataPreview {
   clienteEmail?: string | null;
   clienteFuncionario?: string | null;
   clienteDesdeHace?: string | null;
-  // Datos laborales
+
+  clienteFechaNacimiento?: string | null;
+  clienteFechaExpedicionCC?: string | null;
+
   municipioTrabajo?: string | null;
   empresaTrabajo?: string | null;
   departamento?: string | null;
-  // Financiero
+
+  pagaduriaNombre?: string | null;
+  pagaduriaMunicipio?: string | null;
+  pagaduriaDepartamento?: string | null;
+  tipoContrato?: TipoContratoLibranza | null;
+
   sumaTotal?: string | null;
   numeroCuotas?: string | null;
   valorCuota?: string | null;
   mesCobro?: string | null;
-  // Bancario
+
   tipoCuenta?: string | null;
   numeroCuenta?: string | null;
   banco?: string | null;
-  // Productos y pago
+
   productos?: ProductoItem[] | null;
   formaPago?: string | null;
   references: ReferenceItem[];
@@ -52,18 +60,35 @@ export interface ProductoItem {
   valor: string;
 }
 
+export type TipoCuenta = 'Ahorros' | 'Corriente' | '';
+
+export type FormaPago = 'NOMINA' | 'EFECTY 110520' | 'PSE' | 'BANCO' | '';
+
+export type TipoContratoLibranza =
+  | 'PROVISIONAL'
+  | 'TEMPORAL'
+  | 'PROVISIONAL_VACANTE_DEFINITIVA'
+  | 'CARRERA_ADMINISTRATIVA'
+  | 'PENSIONADO'
+  | '';
+
+export interface ProductoItem {
+  codigo: string;
+  descripcion: string;
+  valor: string;
+}
+
 export type ReferenceType = 'PERSONAL' | 'LABORAL';
+
 
 export interface ReferenceItem {
   type: ReferenceType;
   name: string;
   phone: string;
-  email: string;
-  // Solo LABORAL
-  company: string;
-  position: string;
-  // Solo PERSONAL
-  relationShip: string;
+  email?: string;
+  company?: string;
+  position?: string;
+  relationShip?: string;
 }
 
 export interface LibranzaForm {
@@ -80,29 +105,36 @@ export interface LibranzaForm {
   clienteFuncionario: string;
   clienteDesdeHace: string;
 
+  clienteFechaNacimiento: string;
+  clienteFechaExpedicionCC: string;
+
   references: ReferenceItem[];
 
   municipioTrabajo: string;
   empresaTrabajo: string;
   departamento: string;
 
+  pagaduriaNombre: string;
+  pagaduriaMunicipio: string;
+  pagaduriaDepartamento: string;
+  tipoContrato: TipoContratoLibranza;
+
   sumaTotal: string;
   numeroCuotas: string;
   valorCuota: string;
   mesCobro: string;
 
-  tipoCuenta: 'Ahorros' | 'Corriente' | '';
+  tipoCuenta: TipoCuenta;
   numeroCuenta: string;
   banco: string;
 
   productos: ProductoItem[];
 
-  formaPago: 'NOMINA' | 'EFECTY 110520' | 'PSE' | 'BANCO' | '';
+  formaPago: FormaPago;
 
-  
   destinatarioEmail: string;
   destinatarioNombre: string;
-  templateKey: string
+  templateKey: string;
 }
 
 export const emptyLibranza: LibranzaForm = {
@@ -119,11 +151,19 @@ export const emptyLibranza: LibranzaForm = {
   clienteFuncionario: '',
   clienteDesdeHace: '',
 
+  clienteFechaNacimiento: '',
+  clienteFechaExpedicionCC: '',
+
   references: [],
 
   municipioTrabajo: '',
   empresaTrabajo: '',
   departamento: '',
+
+  pagaduriaNombre: '',
+  pagaduriaMunicipio: '',
+  pagaduriaDepartamento: '',
+  tipoContrato: '',
 
   sumaTotal: '',
   numeroCuotas: '',
@@ -140,7 +180,7 @@ export const emptyLibranza: LibranzaForm = {
 
   destinatarioEmail: '',
   destinatarioNombre: '',
-  templateKey: ''
+  templateKey: '',
 };
 
 export interface Contract {
@@ -164,7 +204,10 @@ export interface Contract {
   signers: LibranzaSigner[];
   signatures: LibranzaSignature[];
   libranzaData?: LibranzaDataPreview | null;
+
+  documents?: ContractDocumentItem[];
 }
+
 
 
 export interface ContractParty {
@@ -179,19 +222,66 @@ export interface ContractParty {
 
 export type ContractStatus =
   | 'DRAFT'
+  | 'PENDING_DOCUMENTS'
+  | 'DOCUMENTS_UPLOADED'
+  | 'PENDING_VERIFICATION'
+  | 'READY_TO_SIGN'
   | 'SENT'
   | 'VIEWED'
+  | 'OTP_PENDING'
+  | 'OTP_VERIFIED'
   | 'PARTIALLY_SIGNED'
   | 'SIGNED'
+  | 'REJECTED'
   | 'EXPIRED'
   | 'CANCELLED';
 
 
 export interface ContractDocumentItem {
-  id: string;
-  type: string;
-  label: string;
-  url: string;
-  mimeType?: string;
-  uploadedAt: string;
+  id: string
+  type: string
+  status: 'PENDING' | 'APPROVED' | 'REJECTED'
+  notes?: string | null
+
+  fileUrl?: string | null
+  fileName?: string | null
+  mimeType?: string | null
+  source?: 'CAMERA' | 'FILE_UPLOAD' | null
+
+  createdAt: string | Date
+  updatedAt?: string | Date
+  uploadedAt?: string | Date
+  reviewedAt?: string | Date
 }
+
+export type DocType =
+  | "ID_FRONT"
+  | "ID_BACK"
+  | "SELFIE_WITH_ID"
+  | "BANK_CERTIFICATE"
+  | "PAYROLL_STUB"
+  | "ADDITIONAL_DOCUMENT";
+
+
+export type DocumentStatus = "PENDING" | "REJECTED" | "APPROVED";
+
+export type UploadState = {
+  file: File | null;
+  preview: string | null;
+  loading: boolean;
+  uploaded?: boolean;
+  uploadedUrl?: string | null;
+  mimeType?: string | null;
+  status?: DocumentStatus | null;
+  notes?: string | null;
+};
+
+
+// type UploadState = {
+//   file: File | null;
+//   preview: string | null;
+//   loading: boolean;
+//   uploaded?: boolean;
+//   uploadedUrl?: string | null;
+//   mimeType?: string | null;
+// };

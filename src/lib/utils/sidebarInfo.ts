@@ -8,7 +8,7 @@ import {
   FolderOpen,
 } from "lucide-react";
 
-export type UserRole = "ADMIN" | "OPERATOR";
+export type UserRole = "ADMIN" | "OPERATOR" | "CREDIT_ANALYST";
 
 export type SidebarLink = {
   href: string;
@@ -49,7 +49,7 @@ export const links: SidebarLink[] = [
     href: "/dashboard/manage-contracts",
     label: "Administrar contratos",
     icon: FolderOpen,
-    roles: ["ADMIN", "OPERATOR"],
+    roles: ["ADMIN", "OPERATOR", "CREDIT_ANALYST"],
   },
   {
     href: "/dashboard/users",
