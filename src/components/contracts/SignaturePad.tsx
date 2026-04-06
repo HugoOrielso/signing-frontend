@@ -191,7 +191,7 @@ export function SignaturePad({
                                 <span>
                                     Limpiar
                                 </span>
-                                <Trash  className="h-4 w-4"/>
+                                <Trash className="h-4 w-4" />
                             </button>
 
                             <button
@@ -253,7 +253,7 @@ export function SignaturePad({
                             <button
                                 onClick={requestTyped}
                                 disabled={disabled || !typed.trim()}
-                                className={`px-5 py-2 rounded-lg text-sm font-semibold
+                                className={`px-5 py-2 cursor-pointer rounded-lg text-sm font-semibold
                 bg-ink text-gold
                 ${!typed.trim() ? "opacity-40" : ""}
                 `}

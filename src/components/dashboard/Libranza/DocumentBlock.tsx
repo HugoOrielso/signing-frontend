@@ -35,11 +35,10 @@ export function DocumentBlock({
 
   const flags = getDocumentBlockFlags(doc.status);
 
-  const hasRemoteFile = !!doc.preview || !!doc.uploadedUrl;
   const hasSelectedFile = !!doc.file;
 
+  const hasRemoteFile = !!doc.uploadedUrl; // solo URL del servidor, no el blob local
   const previewUrl = doc.preview || doc.uploadedUrl || null;
-
   const isImage =
     !!previewUrl && (!!doc.mimeType ? doc.mimeType.startsWith("image/") : false);
 
@@ -186,15 +185,14 @@ export function DocumentBlock({
           type="button"
           onClick={() => onUpload(type)}
           disabled={!canUpload}
-          className={`flex w-full items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition ${
-            doc.loading
-              ? "bg-gray-200 text-gray-600"
-              : !canUpload
-                ? "cursor-not-allowed bg-gray-100 text-gray-400"
-                : flags.isRejected
-                  ? "bg-red-600 text-white hover:bg-red-700"
-                  : "bg-black text-white hover:opacity-90"
-          }`}
+          className={`flex w-full items-center justify-center cursor-pointer gap-2 rounded-lg py-2.5 text-sm font-medium transition ${doc.loading
+            ? "bg-gray-200 text-gray-600"
+            : !canUpload
+              ? "cursor-not-allowed bg-gray-100 text-gray-400"
+              : flags.isRejected
+                ? "bg-red-600 text-white hover:bg-red-700"
+                : "bg-black text-white hover:opacity-90"
+            }`}
         >
           {doc.loading ? (
             <>

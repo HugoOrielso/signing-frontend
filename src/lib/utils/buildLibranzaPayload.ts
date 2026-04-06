@@ -56,13 +56,13 @@ export function buildLibranzaPayload(f: LibranzaForm) {
 
     parties: [
       {
-        role: "CONTRACTOR",
+        role: "ACREEDOR",
         name: "Dimcultura S.A.S.",
         identification: "900.585.322-4",
         email: "servicioalcliente@dimcultura.com",
       },
       {
-        role: "CONTRACTED",
+        role: "DEUDOR",
         name: f.clienteNombre,
         identification: f.clienteCC,
         email: f.clienteEmail || f.destinatarioEmail,
@@ -73,11 +73,11 @@ export function buildLibranzaPayload(f: LibranzaForm) {
 
     signers: [
       {
-        partyRole: "CONTRACTED",
+        partyRole: "DEUDOR",
         name: f.destinatarioNombre || f.clienteNombre,
         email: f.destinatarioEmail,
         phone: f.clienteTelefono,
-        roleTitle: "Contratado",
+        roleTitle: "Deudor",
         signerOrder: 1,
       },
     ],

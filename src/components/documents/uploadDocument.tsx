@@ -20,7 +20,7 @@ const DOC_CONFIG: {
     { type: "ADDITIONAL_DOCUMENT", label: "Documento adicional", required: false },
   ];
 
-export default function LibranzaUploadDocuments() {
+export  function LibranzaUploadDocuments() {
   const params = useParams();
   const token = params?.id as string;
 
@@ -36,27 +36,23 @@ export default function LibranzaUploadDocuments() {
   useEffect(() => {
     if (!token) return;
 
-    let isMounted = true;
-
     const loadDocs = async () => {
       try {
         const { data } = await api.get(`/contracts/public/${token}/documents`);
-        const serverDocs = data?.data as Record<DocType, ContractDocumentItem>;
+        console.log(data);
 
-        if (!isMounted) return;
+        const serverDocs = data?.data as Record<DocType, ContractDocumentItem>;
+        console.log(serverDocs);
 
         setDocs((prev) => {
-          let hasChanges = false;
           const updated = { ...prev };
 
           Object.keys(serverDocs || {}).forEach((key) => {
             const doc = serverDocs[key as DocType];
             if (!doc) return;
 
-            const prevDoc = prev[key as DocType];
-
-            const newDoc = {
-              ...prevDoc,
+            updated[key as DocType] = {
+              ...updated[key as DocType],
               uploaded: !!doc.fileUrl,
               uploadedUrl: doc.fileUrl ?? null,
               preview: doc.fileUrl ?? null,
@@ -64,34 +60,16 @@ export default function LibranzaUploadDocuments() {
               status: doc.status ?? null,
               notes: doc.notes ?? '',
             };
-
-            // 🔥 solo actualiza si cambió algo
-            if (JSON.stringify(prevDoc) !== JSON.stringify(newDoc)) {
-              updated[key as DocType] = newDoc;
-              hasChanges = true;
-            }
           });
 
-          return hasChanges ? updated : prev;
+          return updated;
         });
       } catch (error) {
         console.error(error);
       }
     };
 
-    // 🔥 primera carga inmediata
     loadDocs();
-
-    // 🔥 polling cada 10s
-    const interval = setInterval(() => {
-      loadDocs();
-    }, 10000);
-
-    // cleanup
-    return () => {
-      isMounted = false;
-      clearInterval(interval);
-    };
   }, [token]);
 
   const handleFileChange = (type: DocType, file: File | null) => {
@@ -107,7 +85,6 @@ export default function LibranzaUploadDocuments() {
         preview,
         mimeType: file.type || null,
         uploaded: false,
-        uploadedUrl: null,
       },
     }));
   };
@@ -157,10 +134,10 @@ export default function LibranzaUploadDocuments() {
       }));
 
       toast.success("Documento subido");
-      setTimeout(() => {
+      setTimeout(()=>{
         location.reload()
-      }, 300)
-    } catch {
+      },300)
+    } catch  {
       toast.error("Error subiendo documento");
       setDocs((prev) => ({
         ...prev,

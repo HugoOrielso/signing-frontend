@@ -5,7 +5,6 @@ import publicApi from "@/lib/axiosPublicClient";
 import { LibranzaDataPreview, LibranzaSignature, LibranzaSigner } from "@/types/libranza";
 import { LibranzaDocument } from "./LibranzaDocument";
 import { LibranzaActionPanel } from "./LibranzaDocument/LibranzaActionPanel";
-import DocumentUploader from "@/components/documents/Uploader";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { ScaledDocumentViewer } from "./viewer/ScaledDocument";
@@ -30,7 +29,7 @@ export default function LibranzaPreview({ data, signers = [], signatures: initia
   }, [initialSignatures]);
 
   const contractedSigner = signers.find((s) => s.partyRole === "CONTRACTED");
-  const alreadySigned = !!signatures.find((sig) => sig.signerId === contractedSigner?.id);
+  const alreadySigned = false
 
   const isSignMode = mode === "sign";
   const showActionPanel = mode === "sign" || mode === "view";
@@ -106,7 +105,6 @@ export default function LibranzaPreview({ data, signers = [], signatures: initia
         />
       )}
 
-      {isSignMode && token && <DocumentUploader token={token} />}
     </div>
   );
 }

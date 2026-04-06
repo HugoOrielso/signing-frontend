@@ -132,8 +132,8 @@ export interface LibranzaForm {
 
   formaPago: FormaPago;
 
-  destinatarioEmail: string;
-  destinatarioNombre: string;
+  destinatarioEmail: string | null;
+  destinatarioNombre: string | null;
   templateKey: string;
 }
 
@@ -276,6 +276,20 @@ export type UploadState = {
   notes?: string | null;
 };
 
+export type ContractSummary = {
+  id: string;
+  title: string;
+  contractNumber: string | null;
+  contractType: string | null;
+  status: ContractStatus;
+  amount: string | null;
+  currency: string | null;
+  createdAt: string;
+  updatedAt: string;
+  token: string;
+  canSign: boolean;
+  hasAttachments: boolean;
+};
 
 // type UploadState = {
 //   file: File | null;

@@ -99,7 +99,7 @@ export function LibranzaActionPanel({
                 <div className="flex justify-start mt-2">
                   <button
                     onClick={() => setShowPad(false)}
-                    className="px-4 py-1.5 border border-border-soft rounded-lg bg-transparent text-xs cursor-pointer"
+                    className="px-4 py-1.5 border bg-red-500 border-border-soft rounded-lg text-white text-xs cursor-pointer"
                   >
                     Cancelar
                   </button>

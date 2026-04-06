@@ -1,18 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
-import publicApi from "@/lib/axiosPublicClient";
 import { LibranzaDataPreview, LibranzaSignature, LibranzaSigner } from "@/types/libranza";
 import { PublicContractLoading } from "@/components/libranza/LibranzaDocument/ContractLoading";
 import { PublicContractError } from "@/components/libranza/LibranzaDocument/ContractErrot";
-import { PublicContractTopBar } from "@/components/libranza/LibranzaDocument/PublicContractTopBar";
-import { PublicContractAdminBanner } from "@/components/libranza/LibranzaDocument/AdminBanner";
-import { usePublicContractSignerStore } from "@/store/publicContractSignerStore";
 import LibranzaPreview from "@/components/libranza/LibranzaPreview";
-import PagarePreview from "../pagare/pagare";
+import publicApiNew from "@/lib/publicAxios";
 
 interface ContractData {
   id: string;
@@ -31,91 +26,68 @@ export type ViewMode = "sign" | "view" | "preview";
 interface Props {
   token: string;
   pageMode: "sign" | "view";
-  isAdmin: boolean;
 }
 
-type Step = "checking" | "loading" | "view" | "error";
+type Step = "loading" | "view" | "error";
 
-export default function PublicContractView({ token, pageMode, isAdmin }: Props) {
-  const router = useRouter();
+export default function PublicContractView({ token, pageMode }: Props) {
 
-  const [step, setStep] = useState<Step>("checking");
+  const [step, setStep] = useState<Step>("loading");
   const [contract, setContract] = useState<ContractData | null>(null);
   const [signatures, setSignatures] = useState<LibranzaSignature[]>([]);
-  const hydrated = usePublicContractSignerStore((s) => s.hydrated);
-  const session = usePublicContractSignerStore((s) => s.sessions[token] ?? null);
-  const hasValidSession = usePublicContractSignerStore((s) => s.hasValidSession);
 
   useEffect(() => {
-    if (!hydrated) return;
-
-    const run = async () => {
-      if (isAdmin || hasValidSession(token)) {
-        setStep("loading");
-
-        try {
-          const { data } = await publicApi.get(`/contracts/public/${token}`);
-          setContract(data.contract);
-          setSignatures(data.contract.signatures ?? []);
-          setStep("view");
-        } catch (err) {
-          const error = err as AxiosError<{ message?: string }>;
-          toast.error(
-            error.response?.data?.message ?? "No se pudo cargar el contrato"
-          );
-          setStep("error");
-        }
-
-        return;
+    const load = async () => {
+      try {
+        const { data } = await publicApiNew.get(`/users/contracts/${token}`);
+        setContract(data.data);
+        setSignatures(data.data.signatures ?? []);
+        setStep("view");
+      } catch (err) {
+        console.log(err)
+        const error = err as AxiosError<{ message?: string }>;
+        toast.error(error.response?.data?.message ?? "No se pudo cargar el contrato");
+        setStep("error");
       }
-
-      router.replace(`/contracts/auth/${token}`);
     };
 
-    run();
-  }, [hydrated, isAdmin, token, hasValidSession, router]);
+    if (pageMode === "view") {
+      // Vista libre — carga directo sin validar sesión
+      load();
+      return;
+    }
+
+    // Modo sign — por ahora también carga directo, aquí irá la validación OTP después
+    // TODO: validar sesión antes de cargar
+    load();
+  }, [token, pageMode]);
 
   function resolveMode(): ViewMode {
-    if (isAdmin) return "preview";
     if (pageMode === "view") return "view";
     if (contract?.status === "SIGNED") return "view";
     return "sign";
   }
 
   if (!token) return <PublicContractError />;
-  if (!hydrated || step === "checking" || step === "loading") {
-    return <PublicContractLoading />;
-  }
-  if (step === "error" || !contract) {
-    return <PublicContractError />;
-  }
+  if (step === "loading") return <PublicContractLoading />;
+  if (step === "error" || !contract) return <PublicContractError />;
 
   const isLibranza = contract.contractType === "LIBRANZA" && !!contract.libranzaData;
   const mode = resolveMode();
 
   return (
-    <div className="min-h-screen bg-cream font-sans">
-      <PublicContractTopBar
-        isAdmin={isAdmin}
-        clientEmail={session?.email ?? null}
-        status={contract.status}
-      />
-
-      {isAdmin && <PublicContractAdminBanner />}
-
+    <div className="min-h-screen font-sans">
       <div className="mx-auto max-w-215 px-4 py-10 gap-2 flex flex-col">
         {isLibranza ? (
           <LibranzaPreview
             data={contract.libranzaData!}
             signers={contract.signers}
             signatures={signatures}
-            templateKey={contract.templateKey ?? ''}
+            templateKey={contract.templateKey ?? ""}
             mode={mode}
             token={token}
             onSigned={() =>
-              setContract((prev) =>
-                prev ? { ...prev, status: "SIGNED" } : prev
-              )
+              setContract((prev) => prev ? { ...prev, status: "SIGNED" } : prev)
             }
           />
         ) : (
@@ -125,7 +97,7 @@ export default function PublicContractView({ token, pageMode, isAdmin }: Props) 
             </p>
           </div>
         )}
-
+        {/* 
         {isLibranza ? (
           <PagarePreview
             data={contract.libranzaData!}
@@ -138,9 +110,8 @@ export default function PublicContractView({ token, pageMode, isAdmin }: Props) 
               Este tipo de contrato no es soportado en la vista pública.
             </p>
           </div>
-        )}
+        )} */}
       </div>
-
     </div>
   );
 }

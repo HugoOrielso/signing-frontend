@@ -33,7 +33,6 @@ export default function LibranzaStepForm() {
   const { data: session } = useSession();
   const form = useLibranzaStore((state) => state.form);
   const setForm = useLibranzaStore((state) => state.setForm);
-  const nextStep = useLibranzaStore((state) => state.nextStep);
   const router = useRouter()
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -147,8 +146,8 @@ export default function LibranzaStepForm() {
       productos,
       formaPago,
 
-      destinatarioEmail: String(fd.get("destinatarioEmail") || ""),
-      destinatarioNombre: String(fd.get("destinatarioNombre") || ""),
+      destinatarioEmail: null,
+      destinatarioNombre: null,
 
       templateKey: config.id,
     };
@@ -765,7 +764,7 @@ export default function LibranzaStepForm() {
         {renderError('formaPago')}
       </section>
 
-      <section className={sectionClass}>
+      {/* <section className={sectionClass}>
         <div className="mb-5 flex items-center gap-2 border-b pb-3">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg text-base">📧</span>
           <h2 className="m-0 font-serif text-lg text-ink">Envío al Cliente</h2>
@@ -798,19 +797,19 @@ export default function LibranzaStepForm() {
             />
             {renderError('destinatarioEmail')}
           </div>
-        </div>
+        </div> 
 
         <p className="mt-3 text-x text-red-700">
           Se enviará un enlace de firma a este correo. El cliente podrá ver la libranza completa y firmar en línea.
         </p>
-      </section>
+      </section> */}
 
       <div className="mt-9 flex justify-end border-t pt-6">
         <button
           type="submit"
           className="rounded-lg bg-ink px-7 py-3 text-sm font-semibold text-main cursor-pointer"
         >
-          Vista Previa y Enviar →
+          Guardar borrador →
         </button>
       </div>
     </form>

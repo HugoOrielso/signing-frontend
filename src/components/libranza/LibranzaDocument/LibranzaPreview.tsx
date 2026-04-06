@@ -5,7 +5,6 @@ import publicApi from "@/lib/axiosPublicClient";
 import { LibranzaDataPreview, LibranzaSignature, LibranzaSigner } from "@/types/libranza";
 import { LibranzaDocument } from "../LibranzaDocument";
 import { LibranzaActionPanel } from "./LibranzaActionPanel";
-import DocumentUploader from "@/components/documents/Uploader";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 
@@ -105,7 +104,6 @@ export default function LibranzaPreview({ data, signers = [], signatures: initia
         />
       )}
 
-      {isSignMode && token && <DocumentUploader token={token} />}
     </div>
   );
 }

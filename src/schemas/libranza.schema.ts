@@ -159,8 +159,8 @@ export const libranzaFormSchema = z
             message: "Debe seleccionar una forma de pago",
         }),
 
-        destinatarioEmail: z.string().trim().email("Correo del destinatario inválido"),
-        destinatarioNombre: z.string().trim().min(1, "El nombre del destinatario es obligatorio"),
+        destinatarioEmail: z.string().nullable(),
+        destinatarioNombre: z.string().nullable(),
 
         templateKey: z.string().trim().min(1, "El template es obligatorio"),
     })

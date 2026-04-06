@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
@@ -19,29 +18,18 @@ import {
   useSidebar,
 } from "@/components/ui/common/sidebar";
 import { Separator } from "../ui/common/separator";
-import {
-  links,
-  type UserRole,
-  type SidebarLink,
-} from "@/lib/utils/sidebarInfo";
 import { cn } from "@/lib/utils";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "../ui/common/dropDown";
+import { linksUser, SidebarLink } from "@/lib/utils/userSidebarInfo";
 
-export default function DashboardSidebar() {
-  const { data: session } = useSession();
+export default function UserSidebar() {
   const pathname = usePathname();
   const { state } = useSidebar();
-
-  const VALID_ROLES: UserRole[] = ["ADMIN", "OPERATOR", "CREDIT_ANALYST"];
-  const rawRole = session?.user?.role;
-
-  const userRole: UserRole | undefined = VALID_ROLES.includes(rawRole as UserRole)
-    ? (rawRole as UserRole)
-    : undefined;
 
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
@@ -49,26 +37,13 @@ export default function DashboardSidebar() {
     setOpenMenus((prev) => ({ ...prev, [href]: !prev[href] }));
   };
 
-  const filteredLinks = links
-    .filter((link) => userRole && link.roles.includes(userRole))
-    .map((link) => ({
-      ...link,
-      children: link.children?.filter(
-        (child) => userRole && child.roles.includes(userRole)
-      ),
-    }));
-
   const renderLink = (link: SidebarLink) => {
     const { href, label, icon: Icon, children = [] } = link;
 
-    const visibleChildren = children.filter(
-      (child) => userRole && child.roles.includes(userRole)
-    );
-
-    const hasChildren = visibleChildren.length > 0;
+    const hasChildren = children.length > 0;
     const isOpen = openMenus[href] ?? false;
     const isActive = pathname === href;
-    const isChildActive = visibleChildren.some((child) => pathname === child.href);
+    const isChildActive = children.some((child) => pathname === child.href);
 
     if (hasChildren && state === "expanded") {
       return (
@@ -77,7 +52,8 @@ export default function DashboardSidebar() {
             onClick={() => toggleMenu(href)}
             className={cn(
               "w-full border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-pointer",
-              (isActive || isChildActive) && "text-main hover:bg-gray-50 hover:text-main"
+              (isActive || isChildActive) &&
+              "text-main hover:bg-gray-50 hover:text-main"
             )}
           >
             <Icon className="w-5 h-5 shrink-0" />
@@ -91,22 +67,28 @@ export default function DashboardSidebar() {
 
           {isOpen && (
             <SidebarMenu className="ml-4 mt-1 border-l border-gray-200 dark:border-white/10 pl-2">
-              {visibleChildren.map(({ href: childHref, label: childLabel, icon: ChildIcon }) => (
-                <SidebarMenuItem key={childHref}>
-                  <SidebarMenuButton
-                    asChild
-                    className={cn(
-                      "border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:ring-0 focus-visible:ring-offset-0",
-                      pathname === childHref && "text-main hover:bg-gray-50 hover:text-main"
-                    )}
-                  >
-                    <Link href={childHref} className="flex items-center gap-3 py-2 text-sm font-medium transition">
-                      <ChildIcon className="w-4 h-4 shrink-0" />
-                      <span>{childLabel}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {children.map(
+                ({ href: childHref, label: childLabel, icon: ChildIcon }) => (
+                  <SidebarMenuItem key={childHref}>
+                    <SidebarMenuButton
+                      asChild
+                      className={cn(
+                        "border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:ring-0 focus-visible:ring-offset-0",
+                        pathname === childHref &&
+                        "text-main hover:bg-gray-50 hover:text-main"
+                      )}
+                    >
+                      <Link
+                        href={childHref}
+                        className="flex items-center gap-3 py-2 text-sm font-medium transition"
+                      >
+                        <ChildIcon className="w-4 h-4 shrink-0" />
+                        <span>{childLabel}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              )}
             </SidebarMenu>
           )}
         </SidebarMenuItem>
@@ -122,25 +104,33 @@ export default function DashboardSidebar() {
                 tooltip={label}
                 className={cn(
                   "w-full border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-pointer justify-center",
-                  (isActive || isChildActive) && "text-main hover:bg-gray-50 hover:text-main"
+                  (isActive || isChildActive) &&
+                  "text-main hover:bg-gray-50 hover:text-main"
                 )}
               >
                 <Icon className="w-5 h-5 shrink-0" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent side="right" align="start" className="w-64 rounded-xl p-2">
+            <DropdownMenuContent
+              side="right"
+              align="start"
+              className="w-64 rounded-xl p-2"
+            >
               <div className="px-2 py-2 text-sm font-semibold">{label}</div>
+
               <div className="mt-1 flex flex-col gap-1">
-                {visibleChildren.map((sub) => {
+                {children.map((sub) => {
                   const SubIcon = sub.icon;
+                  const subActive = pathname === sub.href;
+
                   return (
                     <Link
                       key={sub.href}
                       href={sub.href}
                       className={cn(
                         "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition hover:bg-gray-100 dark:hover:bg-white/10",
-                        pathname === sub.href && "text-main hover:bg-gray-50 hover:text-main"
+                        subActive && "text-main hover:bg-gray-50 hover:text-main"
                       )}
                     >
                       <SubIcon className="w-4 h-4 shrink-0" />
@@ -165,7 +155,10 @@ export default function DashboardSidebar() {
             isActive && "text-main hover:bg-gray-50 hover:text-main"
           )}
         >
-          <Link href={href} className="flex items-center gap-3 py-3 text-sm font-medium transition">
+          <Link
+            href={href}
+            className="flex items-center gap-3 py-3 text-sm font-medium transition"
+          >
             <Icon className="w-5 h-5 shrink-0" />
             <span>{label}</span>
           </Link>
@@ -175,11 +168,10 @@ export default function DashboardSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon">
-      {/* ✅ Solo el logo/nombre, sin SidebarTrigger */}
-      <SidebarHeader className="bg-white dark:bg-[#0A0A0A] group-data-[collapsible=icon]:hidden">
+    <Sidebar collapsible="icon" className="hidden lg:flex"  >
+      <SidebarHeader className="bg-white dark:bg-[#0A0A0A]">
         <div className="flex items-center px-2 py-1 group-data-[collapsible=icon]:justify-center">
-          <span className=" text-main font-semibold">
+          <span className="group-data-[collapsible=icon]:hidden text-main font-semibold">
             Dimcultura
           </span>
         </div>
@@ -189,7 +181,7 @@ export default function DashboardSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarMenu>{filteredLinks.map(renderLink)}</SidebarMenu>
+          <SidebarMenu>{linksUser.map(renderLink)}</SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
 
