@@ -48,9 +48,9 @@ export default function LibranzaStepPreview() {
 
     tipoContrato: form.tipoContrato,
 
-    sumaTotal: form.sumaTotal,
-    numeroCuotas: form.numeroCuotas,
-    valorCuota: form.valorCuota,
+    sumaTotal: Number(form.sumaTotal),
+    numeroCuotas: Number(form.numeroCuotas),
+    valorCuota: Number(form.valorCuota),
     mesCobro: form.mesCobro,
 
     tipoCuenta: form.tipoCuenta,
