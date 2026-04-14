@@ -34,7 +34,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
+          tags: ghcr.io/hugoorielso/dimcultura-frontend:productio
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
@@ -49,4 +49,4 @@ jobs:
           server: ${{ secrets.CAPROVER_SERVER }}      # https://captain.tudominio.com
           app: ${{ secrets.CAPROVER_APP_NAME }}       # nombre de la app en CapRover
           token: ${{ secrets.CAPROVER_APP_TOKEN }}    # token de la app (no el root)
-          image: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
+          image: ghcr.io/hugoorielso/dimcultura-frontend:productio
