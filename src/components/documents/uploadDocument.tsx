@@ -39,10 +39,8 @@ export  function LibranzaUploadDocuments() {
     const loadDocs = async () => {
       try {
         const { data } = await api.get(`/contracts/public/${token}/documents`);
-        console.log(data);
 
         const serverDocs = data?.data as Record<DocType, ContractDocumentItem>;
-        console.log(serverDocs);
 
         setDocs((prev) => {
           const updated = { ...prev };

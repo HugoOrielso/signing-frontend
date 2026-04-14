@@ -41,9 +41,12 @@ export function clientPhone(c: Contract): string | null {
 export function contractValue(c: Contract): string {
   const ld = c.libranzaData;
 
-  if (ld?.sumaTotal?.trim()) {
-    const n = parseFloat(ld.sumaTotal.replace(/[^0-9.]/g, ''));
-    return Number.isNaN(n) ? ld.sumaTotal : `$${n.toLocaleString('es-CO')}`;
+  if (ld?.sumaTotal) {
+    const n = Number(ld.sumaTotal);
+
+    return Number.isNaN(n)
+      ? ld.sumaTotal.toString()
+      : `$${n.toLocaleString("es-CO")}`;
   }
 
   return fmtMoney(c.amount, c.currency);

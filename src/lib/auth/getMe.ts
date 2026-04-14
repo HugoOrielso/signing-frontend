@@ -3,7 +3,7 @@ import api from "@/lib/axiosClient";
 export type UserSession = {
   id: string;
   email: string;
-  role: "USER" | "ADMIN" | "SUPER_ADMIN"; // ajusta según tus roles
+  role: string; // ajusta según tus roles
   name?: string;
 };
 

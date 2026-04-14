@@ -9,9 +9,11 @@ import {
 } from 'lucide-react'
 
 import { DetailRow, InfoCard, ProductsCard, Section } from './atoms'
-import { fmtDate, fmtMoney, publicUrl } from '@/lib/utils/libranzaHelper'
+import { fmtMoney, publicUrl } from '@/lib/utils/libranzaHelper'
 import { Contract, ContractDocumentItem } from '@/types/libranza'
 import { DocumentComplianceCard } from './DocumentCard'
+import { ContractFinalReviewCard } from './ContractDataReview'
+import { RejectedInfoCard } from './RejectedInfoCard'
 
 interface DetailsDialogBodyProps {
   contract: Contract
@@ -33,10 +35,22 @@ export const DetailsDialogBody = ({
   const approvedCount = docs.filter((d) => d.status === 'APPROVED').length
   const pendingCount = docs.filter((d) => !d.status || d.status === 'PENDING').length
   const rejectedCount = docs.filter((d) => d.status === 'REJECTED').length
+  const docsVerifies = docs.every(d => d.status === 'APPROVED')
+  const contracDataStatus = contract.dataReviewStatus
 
   return (
     <div className="h-full overflow-y-auto">
       <div className="space-y-6">
+        {
+          (docsVerifies && contract.status === "PENDING_VERIFICATION") && contracDataStatus === "PENDING" &&
+          <ContractFinalReviewCard contractId={contract.id} />
+        }
+
+        { 
+          (docsVerifies && contract.status === "PENDING_VERIFICATION") && contracDataStatus === "REJECTED" &&
+          <RejectedInfoCard notes={contract.dataReviewNotes} />
+        }
+
         {/* FILA 1 */}
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
           <InfoCard>
@@ -45,10 +59,11 @@ export const DetailsDialogBody = ({
               icon={<FileText className="h-4 w-4 text-muted-foreground" />}
             />
             <div className="mt-3">
-              <DetailRow label="Fecha creación" value={fmtDate(contract.createdAt)} />
               <DetailRow label="Ciudad" value={ld?.ciudad} />
               <DetailRow label="Asesor" value={ld?.asesor} />
-              <DetailRow label="Fecha libranza" value={ld?.fecha ? fmtDate(ld.fecha) : '—'} />
+              <DetailRow label="Pagaduría" value={(ld?.pagaduriaNombre ?? "-")} />
+              <DetailRow label="Pagaduría departamento" value={(ld?.pagaduriaDepartamento ?? "-")} />
+              <DetailRow label="Pagaduría municipio" value={(ld?.pagaduriaMunicipio ?? "-")} />
 
               <DetailRow label="Enlace de firma">
                 {link ? (
@@ -99,10 +114,10 @@ export const DetailsDialogBody = ({
             <div className="mt-3">
               <DetailRow
                 label="Suma total"
-                value={ld?.sumaTotal ?? fmtMoney(contract.amount, contract.currency)}
+                value={ld?.sumaTotal?.toString() ?? fmtMoney(contract.amount, contract.currency).toString()}
               />
-              <DetailRow label="N° cuotas" value={ld?.numeroCuotas} />
-              <DetailRow label="Valor cuota" value={ld?.valorCuota} />
+              <DetailRow label="N° cuotas" value={ld?.numeroCuotas?.toString()} />
+              <DetailRow label="Valor cuota" value={ld?.valorCuota?.toString()} />
               <DetailRow label="Desde mes" value={ld?.mesCobro} />
               <DetailRow label="Tipo cuenta" value={ld?.tipoCuenta} />
               <DetailRow label="N° cuenta" value={ld?.numeroCuenta} />
@@ -181,54 +196,58 @@ export const DetailsDialogBody = ({
           <ProductsCard contract={contract} />
         </div>
 
+
         {/* FILA 3 */}
-        <div>
-          <InfoCard>
-            <Section
-              title="Documentación del expediente"
-              icon={<FileText className="h-4 w-4 text-muted-foreground" />}
-            />
+        {
+          !docsVerifies && contracDataStatus === "PENDING" &&
+          <div>
+            <InfoCard>
+              <Section
+                title="Documentación del expediente"
+                icon={<FileText className="h-4 w-4 text-muted-foreground" />}
+              />
 
-            <div className="mt-4 grid grid-cols-3 gap-3">
-              <div className="rounded-xl border bg-muted/10 p-3 text-center">
-                <p className="text-lg font-semibold">{docs.length}</p>
-                <p className="text-[11px] text-muted-foreground">Documentos</p>
-              </div>
-              <div className="rounded-xl border bg-emerald-50 p-3 text-center">
-                <p className="text-lg font-semibold text-emerald-700">{approvedCount}</p>
-                <p className="text-[11px] text-emerald-700/80">Aprobados</p>
-              </div>
-              <div className="rounded-xl border bg-amber-50 p-3 text-center">
-                <p className="text-lg font-semibold text-amber-700">
-                  {pendingCount + rejectedCount}
-                </p>
-                <p className="text-[11px] text-amber-700/80">Por revisar</p>
-              </div>
-            </div>
-
-            <div className="mt-4">
-              {docsLoading ? (
-                <p className="text-sm text-muted-foreground">Cargando documentos…</p>
-              ) : docs.length === 0 ? (
-                <div className="rounded-xl border border-dashed bg-muted/10 p-6 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    No hay documentos registrados para este contrato.
+              <div className="mt-4 grid grid-cols-3 gap-3">
+                <div className="rounded-xl border bg-muted/10 p-3 text-center">
+                  <p className="text-lg font-semibold">{docs.length}</p>
+                  <p className="text-[11px] text-muted-foreground">Documentos</p>
+                </div>
+                <div className="rounded-xl border bg-emerald-50 p-3 text-center">
+                  <p className="text-lg font-semibold text-emerald-700">{approvedCount}</p>
+                  <p className="text-[11px] text-emerald-700/80">Aprobados</p>
+                </div>
+                <div className="rounded-xl border bg-amber-50 p-3 text-center">
+                  <p className="text-lg font-semibold text-amber-700">
+                    {pendingCount + rejectedCount}
                   </p>
+                  <p className="text-[11px] text-amber-700/80">Por revisar</p>
                 </div>
-              ) : (
-                <div className="space-y-3 grid gap-2 grid-cols-1 lg:grid-cols-2">
-                  {docs.map((doc) => (
-                    <DocumentComplianceCard
-                      key={doc.id}
-                      doc={doc}
-                      onPreview={onPreview}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </InfoCard>
-        </div>
+              </div>
+
+              <div className="mt-4">
+                {docsLoading ? (
+                  <p className="text-sm text-muted-foreground">Cargando documentos…</p>
+                ) : docs.length === 0 ? (
+                  <div className="rounded-xl border border-dashed bg-muted/10 p-6 text-center">
+                    <p className="text-sm text-muted-foreground">
+                      No hay documentos registrados para este contrato.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3 grid gap-2 grid-cols-1 lg:grid-cols-2">
+                    {docs.map((doc) => (
+                      <DocumentComplianceCard
+                        key={doc.id}
+                        doc={doc}
+                        onPreview={onPreview}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </InfoCard>
+          </div>
+        }
       </div>
     </div>
   )

@@ -5,13 +5,13 @@ import { ProductoItem, LibranzaForm, ReferenceItem } from '@/types/libranza';
 import { useLibranzaStore } from '@/store/libranzaStore';
 import ReferencesSection from './form/references/References';
 import { usePathname } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import { libranzaFormSchema } from "@/schemas/libranza.schema";
 import { toast } from 'sonner';
 import { empresaConfig, getEmpresaFromPath } from '@/config/bussiness';
 import { buildLibranzaPayload } from '@/lib/utils/buildLibranzaPayload';
 import api from '@/lib/axiosClient';
 import { useRouter } from 'next/navigation';
+import { useSessionStore } from '@/store/adminSession';
 
 const inputClass =
   'w-full rounded-md border bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition-all placeholder:text-gray-500 focus:border-blue-100 focus:ring-4 focus:ring-blue-50';
@@ -30,9 +30,8 @@ const errorTextClass = 'mt-1 text-xs text-red-600';
 type FormErrors = Record<string, string>;
 
 export default function LibranzaStepForm() {
-  const { data: session } = useSession();
+  const user = useSessionStore((s) => s.user);
   const form = useLibranzaStore((state) => state.form);
-  const setForm = useLibranzaStore((state) => state.setForm);
   const router = useRouter()
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -99,8 +98,8 @@ export default function LibranzaStepForm() {
     const fd = new FormData(e.currentTarget);
 
     const asesor =
-      session?.user.role === "OPERATOR"
-        ? String(session.user.name || "")
+      user?.role === "OPERATOR"
+        ? String(user?.name || "")
         : String(fd.get("asesor") || "");
 
     const data: LibranzaForm = {
@@ -157,18 +156,21 @@ export default function LibranzaStepForm() {
     if (!result.success) {
       const formatted: Record<string, string> = {};
 
+
       result.error.issues.forEach((issue) => {
         const key = issue.path.join(".");
+
+
         if (!formatted[key]) {
           formatted[key] = issue.message;
         }
       });
 
+
       setErrors(formatted);
       toast.error("Hay errores en el formulario");
       return;
     }
-
     try {
       const draftContract = await api.post("/contracts", buildLibranzaPayload(result.data));
 
@@ -180,7 +182,12 @@ export default function LibranzaStepForm() {
       }
 
       setErrors({});
-      setForm(result.data);
+      // setForm({
+      //   ...result.data,
+      //   sumaTotal: (result.data.sumaTotal),
+      //   numeroCuotas: (result.data.numeroCuotas),
+      //   valorCuota: (result.data.valorCuota),
+      // });
       toast.success("Borrador guardado");
       // nextStep();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -212,7 +219,7 @@ export default function LibranzaStepForm() {
             {renderError('ciudad')}
           </div>
 
-          {session?.user.role === "ADMIN" && (
+          {user?.role === "ADMIN" && (
             <div>
               <label className={labelClass}>Asesor</label>
               <input
@@ -228,11 +235,11 @@ export default function LibranzaStepForm() {
             </div>
           )}
 
-          {session?.user.role === "OPERATOR" && (
+          {user?.role === "OPERATOR" && (
             <div>
               <label className={labelClass}>Asesor</label>
               <div className={`${inputClass} bg-slate-100 cursor-not-allowed`}>
-                {session.user.name}
+                {user?.name}
               </div>
               {renderError('asesor')}
             </div>
@@ -741,7 +748,7 @@ export default function LibranzaStepForm() {
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {(['NOMINA', 'EFECTY 110520', 'PSE', 'BANCO'] as const).map((op) => (
+          {(['NOMINA'] as const).map((op) => (
             <button
               key={op}
               type="button"

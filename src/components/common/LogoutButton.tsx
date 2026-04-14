@@ -1,23 +1,24 @@
 "use client";
 
-import { signOut, useSession } from "next-auth/react";
+import api from "@/lib/axiosClient";
+import { useSessionStore } from "@/store/adminSession";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
-import api from "@/lib/axiosClient";
 
 export default function LogoutButton() {
-  const { data: session } = useSession();
+  const clearSession = useSessionStore((s) => s.clearSession);
 
   const handleLogout = async () => {
     const toastId = toast.loading("Signing out...");
 
     try {
-      // 1. Revocar refresh token en BD
-      await api.post("/auth/logout", { refreshToken: session?.refreshToken });
+      await api.post("/auth/logout");
 
-      // 2. Destruir sesión de Next-Auth
-      await signOut({ callbackUrl: "/" });
-      toast.dismiss(toastId);
+      clearSession();
+
+      toast.success("Signed out successfully", { id: toastId });
+
+      window.location.href = "/";
     } catch {
       toast.error("Failed to sign out. Try again.", { id: toastId });
     }
@@ -26,12 +27,10 @@ export default function LogoutButton() {
   return (
     <button
       onClick={handleLogout}
-      className="flex items-center gap-2 text-sm text-red-500 hover:text-red-700 transition font-medium"
+      className="flex items-center gap-2 text-sm font-medium text-red-500 transition hover:text-red-700"
     >
-      <LogOut className="w-3 h-3" />
-      <span>
-        Cerrar sesion
-      </span>
+      <LogOut className="h-3 w-3" />
+      <span>Cerrar sesión</span>
     </button>
   );
 }

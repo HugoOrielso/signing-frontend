@@ -52,7 +52,7 @@ export function DetailRow({
                 <div className="min-w-0">{children}</div>
             ) : (
                 <span className="min-w-0 wrap-break-word  ">
-                    {value?.trim() ? value : '—'}
+                    {value ? value : '—'}
                 </span>
             )}
         </div>

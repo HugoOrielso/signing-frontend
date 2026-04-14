@@ -40,27 +40,28 @@ export default function LibranzaPreview({ data, signers = [], signatures: initia
     setError("");
 
     try {
-      const body =sigType === "TYPED" ? { type: "TYPED", typedValue: sigData } : { type: "DRAWN", imageUrl: sigData };
+      const body = sigType === "TYPED"
+        ? { type: "TYPED", typedValue: sigData }
+        : { type: "DRAWN", imageUrl: sigData }; // base64 directo, el backend lo sube
 
       const { data: res } = await publicApi.post(
         `/contracts/public/${token}/sign`,
         body
       );
 
+      // ⚠️ Aquí usa la URL de Cloudinary que devuelve el backend, no el base64
       const newSig: LibranzaSignature = {
         id: crypto.randomUUID(),
         signerId: contractedSigner?.id ?? "",
         type: sigType,
         typedValue: sigType === "TYPED" ? sigData : null,
-        imageUrl: sigType === "DRAWN" ? sigData : null,
+        imageUrl: sigType === "DRAWN" ? (res.imageUrl ?? sigData) : null,
         signedAt: new Date().toISOString(),
       };
 
       setSignatures((prev) => [...prev, newSig]);
       setShowPad(false);
-
       toast.success("✓ " + (res.message ?? "Firma registrada correctamente"));
-
       onSigned?.();
     } catch (err) {
       const error = err as AxiosError<{ message?: string }>;
@@ -73,9 +74,8 @@ export default function LibranzaPreview({ data, signers = [], signatures: initia
   return (
     <div className="relative">
       <div
-        className={`overflow-hidden rounded-xl border border-border-soft bg-white ${
-          isSignMode ? "shadow-[0_8px_40px_rgba(0,0,0,0.07)]" : ""
-        }`}
+        className={`overflow-hidden rounded-xl border border-border-soft bg-white ${isSignMode ? "shadow-[0_8px_40px_rgba(0,0,0,0.07)]" : ""
+          }`}
       >
         {isSignMode && (
           <div className="h-1.25 bg-linear-to-r from-gold-dark via-gold-dark to-ink" />

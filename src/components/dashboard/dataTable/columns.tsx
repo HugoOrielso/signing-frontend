@@ -14,13 +14,11 @@ import {
   signedCount,
 } from '@/lib/utils/libranzaHelper';
 import Link from 'next/link';
+import { useSessionStore } from '@/store/adminSession';
 
 function canReviewDocuments(status: ContractStatus) {
   return (
-    status === 'PENDING_DOCUMENTS' ||
-    status === 'PENDING_VERIFICATION' ||
-    status === 'DOCUMENTS_UPLOADED'
-
+    status === 'PENDING_DOCUMENTS'
   );
 }
 
@@ -51,16 +49,16 @@ export function getContractsColumns(): ColumnDef<Contract>[] {
     },
     {
       accessorKey: 'contractNumber',
-      header: 'N° / Tipo',
+      header: 'Consecutivo',
       cell: ({ row }) => {
         const c = row.original;
         return (
           <div className="space-y-1">
             <div className="w-fit rounded bg-muted px-2 py-0.5 font-mono text-[10px]">
-              {c.contractNumber ?? 'S/N'}
+              {c.consecutivo ?? 'S/N'}
             </div>
             <div className="text-[10px] font-semibold uppercase tracking-wider text-amber-700">
-              {c.contractType ?? 'Contrato'}
+              {c.templateKey ?? 'Contrato'}
             </div>
           </div>
         );
@@ -114,7 +112,7 @@ export function getContractsColumns(): ColumnDef<Contract>[] {
               <p className="text-[10px] text-muted-foreground">
                 {ld.numeroCuotas}x $
                 {parseFloat(
-                  ld.valorCuota.replace(/[^0-9.]/g, '') || '0'
+                  ld.valorCuota.toString() || '0'
                 ).toLocaleString('es-CO')}
               </p>
             )}
@@ -182,8 +180,11 @@ export function getContractsColumns(): ColumnDef<Contract>[] {
 }
 
 function ActionsCell({ contract }: { contract: Contract }) {
-  const showReviewDocuments = canReviewDocuments(contract.status);
-
+  const contratDataAproved = contract.dataReviewStatus === "APPROVED";
+  const contratDataRejected = contract.dataReviewStatus === "REJECTED";
+  const contratDataPending = contract.dataReviewStatus === "PENDING";
+  const showReviewDocuments = canReviewDocuments(contract.status) && contratDataAproved && contratDataPending
+  const user = useSessionStore((s) => s.user);
   return (
     <div className="flex items-center justify-end gap-2">
       {showReviewDocuments && (
@@ -192,6 +193,34 @@ function ActionsCell({ contract }: { contract: Contract }) {
           className="rounded-md border border-border-soft px-3 py-1 text-xs font-medium transition-colors cursor-pointer hover:bg-muted"
         >
           Revisar documentos
+        </Link>
+      )}
+
+      {contract.status === "PENDING_VERIFICATION" && contratDataPending && (
+        <div
+          className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
+        >
+          <span className="h-2 w-2 rounded-full bg-amber-500" />
+          Verificar datos del usuario
+        </div>
+      )}
+
+
+      {contratDataRejected && user?.role === "CREDIT_ANALYST" && (
+        <div
+          className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-semibold text-red-700 transition hover:bg-red-100"
+        >
+          <span className="h-2 w-2 rounded-full bg-red-500" />
+          Se deben volver a enviar los datos
+        </div>
+      )}
+
+      {contratDataRejected && (user?.role === "OPERATOR" || user?.role === "ADMIN") && (
+        <Link href={`/dashboard/review/${contract.id}`}
+          className="rounded-md border border-red-500 bg-red-50 text-red-700 px-3 py-1 text-xs font-medium transition-colors cursor-pointer "
+        >
+          <span className="h-2 w-2 rounded-full bg-red-500" />
+          Revisar documento rechazado
         </Link>
       )}
 

@@ -1,4 +1,5 @@
 // DashboardLayout.tsx
+import SessionInitializer from "@/components/dashboard/SessionInitializer";
 import DashboardSidebar from "@/components/dashboard/Sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/common/sidebar";
 import { TooltipProvider } from "@/components/ui/common/tooltip";
@@ -10,6 +11,7 @@ export default async function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
+      <SessionInitializer/>
       <TooltipProvider>
         <DashboardSidebar />
 

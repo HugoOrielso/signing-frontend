@@ -1,62 +1,86 @@
-import axios from "axios";
-import type { Session } from "next-auth";
-import { getSession, signOut } from "next-auth/react";
-
-async function forceSignOut(reason: string) {
-  try {
-    const session = await getSession();
-
-    if ((session as Session | null)?.refreshToken) {
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
-        { refreshToken: (session as Session).refreshToken },
-        { headers: { "Content-Type": "application/json" } }
-      );
-    }
-  } catch {
-    // si falla la revocación remota, igual cerramos sesión local
-  } finally {
-    await signOut({ callbackUrl: `/?error=${reason}` });
-  }
-}
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { forceLogout } from "./logout";
+type RetryableRequest = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+};
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: "/api",
+  withCredentials: true,
 });
 
-api.interceptors.request.use(async (config) => {
-  const session = (await getSession()) as Session | null;
+let isRefreshing = false;
 
-  if (session?.error?.includes("RefreshFailed")) {
-    await forceSignOut("session-expired");
-    return Promise.reject(new Error("Session expired"));
-  }
+let failedQueue: {
+  resolve: () => void;
+  reject: (error: unknown) => void;
+}[] = [];
 
-  if (session?.accessToken) {
-    config.headers.Authorization = `Bearer ${session.accessToken}`;
-  }
+const processQueue = (error: unknown = null) => {
+  failedQueue.forEach((promise) => {
+    if (error) {
+      promise.reject(error);
+    } else {
+      promise.resolve();
+    }
+  });
 
-  return config;
-});
+  failedQueue = [];
+};
+
+const AUTH_API_URLS = ["/auth/login", "/auth/refresh", "/auth/logout"];
+
+const shouldSkipRefresh = (url: string) => {
+  return AUTH_API_URLS.some((authUrl) => url.includes(authUrl));
+};
 
 api.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    const status = error?.response?.status;
-    const requestUrl = error?.config?.url ?? "";
+  async (error: AxiosError) => {
+    const originalRequest = error.config as RetryableRequest | undefined;
 
-    const authRoutes = ["/auth/login", "/auth/refresh", "/api/auth"];
-    const isAuthRequest = authRoutes.some((route) => requestUrl.includes(route));
-
-    if (isAuthRequest) {
+    if (!originalRequest) {
       return Promise.reject(error);
     }
 
-    if (status === 401) {
-      await forceSignOut("unauthorized");
+    if (error.response?.status !== 401) {
+      return Promise.reject(error);
     }
 
-    return Promise.reject(error);
+    const requestUrl = originalRequest.url ?? "";
+
+    if (shouldSkipRefresh(requestUrl)) {
+      return Promise.reject(error);
+    }
+
+    if (originalRequest._retry) {
+      await forceLogout();
+      return Promise.reject(error);
+    }
+
+    if (isRefreshing) {
+      return new Promise((resolve, reject) => {
+        failedQueue.push({
+          resolve: () => resolve(api(originalRequest)),
+          reject,
+        });
+      });
+    }
+
+    originalRequest._retry = true;
+    isRefreshing = true;
+
+    try {
+      await api.post("/auth/refresh");
+      processQueue();
+      return api(originalRequest);
+    } catch (refreshError) {
+      processQueue(refreshError);
+      await forceLogout();
+      return Promise.reject(refreshError);
+    } finally {
+      isRefreshing = false;
+    }
   }
 );
 

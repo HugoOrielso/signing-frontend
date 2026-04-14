@@ -5,6 +5,7 @@ import {
   FileText,
   CalendarDays,
   BadgeDollarSign,
+  AlertCircle,
 } from "lucide-react";
 import { ContractStatus, ContractSummary } from "@/types/libranza";
 import { DEFAULT_STATUS_META, STATUS_META, StatusMeta, TOTAL_STEPS } from "@/lib/utils/userContract";
@@ -64,23 +65,43 @@ function EmptyState() {
 function ContractCard({ contract }: { contract: ContractSummary }) {
   const statusMeta = getStatusMeta(contract.status);
   const StatusIcon = statusMeta.icon;
-
+  const dataReviewStatus = contract.dataReviewStatus === "REJECTED" && contract.status === "PENDING_VERIFICATION"
   return (
     <article
-      className={`rounded-3xl border p-5 shadow-sm transition hover:shadow-md ${statusMeta.cardClassName ?? "bg-white border-slate-200"}`}>
+      className={`rounded-3xl border p-5 shadow-sm transition hover:shadow-md ${dataReviewStatus ? '"border-red-200 bg-red-50 ' : statusMeta.cardClassName ?? "bg-white border-slate-200"}`}>
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap justify-between items-center gap-3">
             <h3 className="text-lg font-semibold text-slate-900">
-              {contract.title || "Contrato"}
+              Libranza - {contract.consecutivo || "Contrato"}
             </h3>
             <div className="flex items-center gap-2">
-              <span
-                className={`inline-flex items-center gap-2 rounded-sm border p-1 text-xs font-medium ${statusMeta.className}`}
-              >
-                <StatusIcon className="h-4 w-4" />
-                {statusMeta.label}
-              </span>
+
+              {
+                dataReviewStatus ?
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`inline-flex items-center gap-2 rounded-sm border p-1 text-xs font-medium bg-red-100 text-red-700`}
+                    >
+
+                      <AlertCircle className="h-4 w-4" />
+                      Datos rechazados
+                    </span>
+
+                    <a href="#" className="inline-flex items-center gap-2 rounded-sm border p-1 text-xs font-medium bg-red-100 text-red-700">
+                      Ir a editar datos
+                    </a>
+                  </div>
+                  :
+                  <span
+                    className={`inline-flex items-center gap-2 rounded-sm border p-1 text-xs font-medium ${statusMeta.className}`}
+                  >
+
+                    <StatusIcon className="h-4 w-4" />
+                    {statusMeta.label}
+                  </span>
+              }
+
 
               <div className="flex flex-wrap gap-2">
                 {statusMeta.action && contract.token && (
@@ -97,19 +118,16 @@ function ContractCard({ contract }: { contract: ContractSummary }) {
                 )}
               </div>
             </div>
-
           </div>
 
-          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm ">
-            {contract.contractNumber && (
-              <span>Número: {contract.contractNumber}</span>
-            )}
-            {contract.contractType && (
-              <span>Tipo: {contract.contractType}</span>
-            )}
-          </div>
 
-          <p className="mt-3 text-sm ">{statusMeta.description}</p>
+          {
+            dataReviewStatus ? 
+            <p className="mt-3 text-sm ">Los datos fueron rechazados por favor revisa el formulario inicial.</p>
+            :
+            <p className="mt-3 text-sm ">{statusMeta.description}</p>
+
+          }
 
           <div className="mt-4">
             <div className="mb-2 flex items-center justify-between text-xs ">

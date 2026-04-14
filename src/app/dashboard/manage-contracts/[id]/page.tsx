@@ -24,7 +24,6 @@ export default function ContractDetailPage() {
       try {
         const res = await api.get(`/contracts/${id}`);
         const data: Contract = res.data?.data;
-
         if (!data) {
           setNotFound(true);
           return;

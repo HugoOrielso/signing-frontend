@@ -2,7 +2,7 @@ import { FileSignature, ShieldCheck, BadgeCheck, Building2 } from "lucide-react"
 
 export default function DashboardPage() {
   return (
-    <section className="flex items-center justify-center px-8 py-10 min-h-screen ">
+    <section className="flex items-center justify-center px-8 py-10 min-h-full h-full ">
       <div className="grid gap-10 xl:grid-cols-[1.45fr_0.95fr]">
         {/* Lado izquierdo */}
         <div className="flex flex-col justify-between">

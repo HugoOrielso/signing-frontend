@@ -1,3 +1,5 @@
+import { LibranzaReviewForm } from "@/helpers/toRevieForm";
+
 export interface LibranzaSignature {
   id: string; signerId: string;
   type: "DRAWN" | "TYPED";
@@ -8,7 +10,7 @@ export interface LibranzaSignature {
 
 export interface LibranzaSigner {
   id: string; name: string; roleTitle?: string;
-  signerOrder: number; partyRole: "CONTRACTOR" | "CONTRACTED";
+  signerOrder: number; partyRole: "CONTRACTOR" | "DEUDOR";
 }
 
 export interface LibranzaDataPreview {
@@ -39,9 +41,9 @@ export interface LibranzaDataPreview {
   pagaduriaDepartamento?: string | null;
   tipoContrato?: TipoContratoLibranza | null;
 
-  sumaTotal?: string | null;
-  numeroCuotas?: string | null;
-  valorCuota?: string | null;
+  sumaTotal?: number | null;
+  numeroCuotas?: number | null;
+  valorCuota?: number | null;
   mesCobro?: string | null;
 
   tipoCuenta?: string | null;
@@ -95,7 +97,6 @@ export interface LibranzaForm {
   ciudad: string;
   asesor: string;
   fecha: string;
-
   clienteNombre: string;
   clienteCC: string;
   clienteCCDe: string;
@@ -137,11 +138,26 @@ export interface LibranzaForm {
   templateKey: string;
 }
 
+export type DataReviewStatus = "PENDING" | "APPROVED" | "REJECTED";
+
+export interface ReviewedLibranzaForm extends LibranzaForm {
+  dataReviewStatus: DataReviewStatus;
+  dataReviewNotes: string | null;
+}
+
+
+export interface ReviewedLibranzaDetail {
+  id: string;
+  status: string;
+  dataReviewStatus: DataReviewStatus;
+  dataReviewNotes: string | null;
+  libranzaData: LibranzaForm;
+}
+
 export const emptyLibranza: LibranzaForm = {
   ciudad: '',
   asesor: '',
   fecha: '',
-
   clienteNombre: '',
   clienteCC: '',
   clienteCCDe: '',
@@ -183,6 +199,50 @@ export const emptyLibranza: LibranzaForm = {
   templateKey: '',
 };
 
+export const emptyLibranzaToReview: LibranzaReviewForm = {
+  ciudad: '',
+  asesor: '',
+  fecha: '',
+  clienteNombre: '',
+  clienteCC: '',
+  clienteCCDe: '',
+  clienteDireccion: '',
+  clienteTelefono: '',
+  clienteEmail: '',
+  clienteFuncionario: '',
+  clienteDesdeHace: '',
+
+  clienteFechaNacimiento: '',
+  clienteFechaExpedicionCC: '',
+
+  references: [],
+
+  municipioTrabajo: '',
+  empresaTrabajo: '',
+  departamento: '',
+
+  pagaduriaNombre: '',
+  pagaduriaMunicipio: '',
+  pagaduriaDepartamento: '',
+  tipoContrato: '',
+
+  sumaTotal: '',
+  numeroCuotas: '',
+  valorCuota: '',
+  mesCobro: '',
+
+  tipoCuenta: '',
+  numeroCuenta: '',
+  banco: '',
+
+  productos: [{ codigo: '', descripcion: '', valor: '' }],
+
+  formaPago: '',
+
+  destinatarioEmail: '',
+  destinatarioNombre: '',
+};
+
 export interface Contract {
   id: string;
   title: string;
@@ -191,15 +251,16 @@ export interface Contract {
   subject?: string | null;
   status: ContractStatus;
   token?: string | null;
-
+  consecutivo: string
   amount?: number | null;
   currency?: string | null;
-
+  templateKey: string
   createdAt: string;
   updatedAt?: string | null;
   startDate?: string | null;
   endDate?: string | null;
-
+  dataReviewStatus: "PENDING" | "APPROVED" | "REJECTED"
+  dataReviewNotes: string | null,
   parties: ContractParty[];
   signers: LibranzaSigner[];
   signatures: LibranzaSignature[];
@@ -278,6 +339,7 @@ export type UploadState = {
 
 export type ContractSummary = {
   id: string;
+  consecutivo: string
   title: string;
   contractNumber: string | null;
   contractType: string | null;
@@ -289,13 +351,7 @@ export type ContractSummary = {
   token: string;
   canSign: boolean;
   hasAttachments: boolean;
+  dataReviewStatus: "REJECTED" | "PENDING" | "APPROVED"  
+  dataReviewNotes?: string
 };
 
-// type UploadState = {
-//   file: File | null;
-//   preview: string | null;
-//   loading: boolean;
-//   uploaded?: boolean;
-//   uploadedUrl?: string | null;
-//   mimeType?: string | null;
-// };

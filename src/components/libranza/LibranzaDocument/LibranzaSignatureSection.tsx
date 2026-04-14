@@ -30,10 +30,10 @@ export function LibranzaSignatureSection({
   const segment = pathname.split("/").pop()?.toLowerCase() ?? "dimcultura";
   const nombre = empresaNombre[segment] ?? "DIMCULTURA S.A.S.";
 
-  const contractedSigner = signers.find((s) => s.partyRole === "CONTRACTED");
+  const contractedSigner = signers.find((s) => s.partyRole === "DEUDOR");
   const contractedSig = signatures.find((sig) => sig.signerId === contractedSigner?.id);
   const alreadySigned = !!contractedSig;
-
+  console.log(alreadySigned)
   return (
     <div className="my-1 grid grid-cols-2 gap-3">
       <div className="flex min-h-28 flex-col rounded-sm border border-neutral-400 p-1 text-[9.5px] text-ink">

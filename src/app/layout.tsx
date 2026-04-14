@@ -1,5 +1,4 @@
 import "./globals.css"
-import SessionWrapper from "@/components/common/SessionWrapper";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import { Geist } from "next/font/google";
@@ -21,10 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className="font-poppins antialiased" cz-shortcut-listen="true" suppressHydrationWarning>
-        <SessionWrapper>
-          <Toaster richColors position="top-right" />
-          <main>{children}</main>
-        </SessionWrapper>
+        <Toaster richColors position="top-right" />
+        <main>{children}</main>
       </body>
     </html>
   );

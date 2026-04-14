@@ -118,7 +118,7 @@ export default function ReferencesSection({
               <input
                 className={getInputClass('references.0.name')}
                 placeholder="Nombre de la referencia"
-                value={personal.name}
+                value={personal.name ?? ''}
                 onChange={(e) => update('PERSONAL', { name: e.target.value })}
                 required
                 type="text"
@@ -131,7 +131,7 @@ export default function ReferencesSection({
               <input
                 className={getInputClass('references.0.phone')}
                 placeholder="+57 300 000 0000"
-                value={personal.phone}
+                value={personal.phone ?? ''}
                 onChange={(e) => update('PERSONAL', { phone: e.target.value })}
                 required
                 type="tel"
@@ -144,7 +144,7 @@ export default function ReferencesSection({
               <input
                 className={getInputClass('references.0.email')}
                 placeholder="correo@ejemplo.com"
-                value={personal.email}
+                value={personal.email ?? ''}
                 onChange={(e) => update('PERSONAL', { email: e.target.value })}
                 type="email"
               />
@@ -156,7 +156,7 @@ export default function ReferencesSection({
               <input
                 className={getInputClass('references.0.relationShip')}
                 placeholder="Ej: Familiar, Amigo, Vecino"
-                value={personal.relationShip}
+                value={personal.relationShip ?? ''}
                 onChange={(e) =>
                   update('PERSONAL', { relationShip: e.target.value })
                 }
@@ -181,7 +181,7 @@ export default function ReferencesSection({
               <input
                 className={getInputClass('references.1.name')}
                 placeholder="Nombre de la referencia"
-                value={laboral.name}
+                value={laboral.name ?? ''}
                 onChange={(e) => update('LABORAL', { name: e.target.value })}
                 required
                 type="text"
@@ -194,7 +194,7 @@ export default function ReferencesSection({
               <input
                 className={getInputClass('references.1.phone')}
                 placeholder="+57 300 000 0000"
-                value={laboral.phone}
+                value={laboral.phone ?? ''}
                 onChange={(e) => update('LABORAL', { phone: e.target.value })}
                 required
                 type="tel"
@@ -207,7 +207,7 @@ export default function ReferencesSection({
               <input
                 className={getInputClass('references.1.email')}
                 placeholder="correo@ejemplo.com"
-                value={laboral.email}
+                value={laboral.email ?? ''}
                 onChange={(e) => update('LABORAL', { email: e.target.value })}
                 type="email"
               />
@@ -219,7 +219,7 @@ export default function ReferencesSection({
               <input
                 className={getInputClass('references.1.company')}
                 placeholder="Nombre de la empresa"
-                value={laboral.company}
+                value={laboral.company ?? ''}
                 onChange={(e) => update('LABORAL', { company: e.target.value })}
                 type="text"
               />
@@ -231,7 +231,7 @@ export default function ReferencesSection({
               <input
                 className={getInputClass('references.1.position')}
                 placeholder="Cargo que desempeña"
-                value={laboral.position}
+                value={laboral.position ?? ''}
                 onChange={(e) => update('LABORAL', { position: e.target.value })}
                 type="text"
               />

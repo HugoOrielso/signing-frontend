@@ -3,7 +3,7 @@
 import { FieldUnderline as U } from "@/components/ui/Libranza/FieldUnderline";
 import { FieldBox as Box } from "@/components/ui/Libranza/FieldBox";
 import { CheckBox as Chk } from "@/components/ui/Libranza/CheckBox";
-import { F, FM } from "@/lib/formatters/formaters";
+import { F } from "@/lib/formatters/formaters";
 import { LibranzaDataPreview } from "@/types/libranza";
 
 type Empresa = "dimcultura" | "gruculcol";
@@ -43,9 +43,9 @@ export function LibranzaBody({ data: d, templateKey }: Props) {
         <U>{F(d.empresaTrabajo)}</U>,
         departamento <U>{F(d.departamento)}</U>,
         para que descuente de mi sueldo o de cualquier otro concepto la
-        suma de <Box>{FM(d.sumaTotal)}</Box>{" "}
-        en <Box>{F(d.numeroCuotas)}</Box>{" "}
-        cuotas mensuales consecutivas por valor de <Box w={90}>{FM(d.valorCuota)}</Box>,
+        suma de <Box>{(d.sumaTotal)}</Box>{" "}
+        en <Box>{(d.numeroCuotas)}</Box>{" "}
+        cuotas mensuales consecutivas por valor de <Box w={90}>{(d.valorCuota)}</Box>,
         cada una, a partir del mes de <Box>{F(d.mesCobro)}</Box>{" "}
         y pagarlos a la orden de <span className="font-bold">{nombre}</span>{" "}
         <br />

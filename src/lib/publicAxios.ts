@@ -9,7 +9,6 @@ publicApiNew.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response?.status;
-    console.log(error)
 
     if ((status === 401 || status === 403) && typeof window !== "undefined") {
       const path = window.location.pathname;

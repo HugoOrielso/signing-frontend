@@ -22,13 +22,10 @@ const moneyStringSchema = z
     });
 
 const optionalEmailSchema = z
-    .union([
-        z.literal(""),
-        z.string().trim().email("Correo inválido"),
-    ])
+    .union([z.literal(""), z.string().trim().email("Correo inválido")])
     .optional();
 
-export const tipoContratoSchema = z.enum([
+const tipoContratoSchema = z.enum([
     "PROVISIONAL",
     "TEMPORAL",
     "PROVISIONAL_VACANTE_DEFINITIVA",
@@ -36,25 +33,20 @@ export const tipoContratoSchema = z.enum([
     "PENSIONADO",
 ]);
 
-export const productoSchema = z.object({
+const productoSchema = z.object({
     codigo: z.string().trim().min(1, "El código es obligatorio"),
     descripcion: z.string().trim().min(1, "La descripción es obligatoria"),
     valor: moneyStringSchema,
 });
 
-export const referenceSchema = z
+const referenceSchema = z
     .object({
         type: z.enum(["PERSONAL", "LABORAL"]),
-
         name: z.string().trim().min(1, "El nombre es obligatorio"),
-
         phone: phoneSchema,
-
         email: optionalEmailSchema,
-
         company: z.string().trim().optional(),
         position: z.string().trim().optional(),
-
         relationShip: z.string().trim().optional(),
     })
     .superRefine((ref, ctx) => {
@@ -67,8 +59,61 @@ export const referenceSchema = z
         }
     });
 
+function parseDateString(value: string): Date | null {
+    if (!value) return null;
 
-export const libranzaFormSchema = z
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        const [year, month, day] = value.split("-").map(Number);
+        const date = new Date(year, month - 1, day);
+
+        if (
+            date.getFullYear() !== year ||
+            date.getMonth() !== month - 1 ||
+            date.getDate() !== day
+        ) {
+            return null;
+        }
+
+        return date;
+    }
+
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+        const [day, month, year] = value.split("/").map(Number);
+        const date = new Date(year, month - 1, day);
+
+        if (
+            date.getFullYear() !== year ||
+            date.getMonth() !== month - 1 ||
+            date.getDate() !== day
+        ) {
+            return null;
+        }
+
+        return date;
+    }
+
+    return null;
+}
+
+function calculateAgeFromString(value: string): number | null {
+    const birthDate = parseDateString(value);
+    if (!birthDate) return null;
+
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+        age--;
+    }
+
+    return age;
+}
+
+export const libranzaReviewSchema = z
     .object({
         ciudad: z.string().trim().min(1, "Ciudad requerida"),
         asesor: z.string().trim().min(1, "Asesor requerido"),
@@ -82,6 +127,7 @@ export const libranzaFormSchema = z
         clienteEmail: z.string().trim().email("Email inválido"),
         clienteFuncionario: z.string().trim().min(1, "La empresa del funcionario es obligatoria"),
         clienteDesdeHace: z.string().trim().min(1, "Este campo es obligatorio"),
+
         clienteFechaNacimiento: z
             .string()
             .trim()
@@ -114,25 +160,53 @@ export const libranzaFormSchema = z
 
         tipoContrato: tipoContratoSchema,
 
-        sumaTotal: moneyStringSchema,
+        sumaTotal: z
+            .string()
+            .trim()
+            .min(1, "Este campo es obligatorio")
+            .transform((value) => {
+                const normalized = value
+                    .replace(/\./g, "") // quita separador de miles
+                    .replace(/,/g, "."); // por si usan coma decimal
+
+                return Number(normalized);
+            })
+            .refine((num) => !Number.isNaN(num), {
+                message: "Debe ser un número válido",
+            })
+            .refine((num) => num > 0, {
+                message: "Debe ser mayor a 0",
+            }),
+
         numeroCuotas: z
             .string()
             .trim()
             .min(1, "El número de cuotas es obligatorio")
-            .refine((value) => {
-                const num = Number(value);
-                return Number.isInteger(num);
-            }, {
+            .transform((value) => Number(value))
+            .refine((num) => Number.isInteger(num), {
                 message: "Debe ser un número entero",
             })
-            .refine((value) => {
-                const num = Number(value);
-                return num >= 10 && num <= 22;
-            }, {
+            .refine((num) => num >= 10 && num <= 22, {
                 message: "El número de cuotas debe estar entre 10 y 22",
             }),
 
-        valorCuota: moneyStringSchema,
+        valorCuota: z
+            .string()
+            .trim()
+            .min(1, "Este campo es obligatorio")
+            .transform((value) => {
+                const normalized = value
+                    .replace(/\./g, "") // quita separadores miles
+                    .replace(/,/g, "."); // por si usan coma decimal
+
+                return Number(normalized);
+            })
+            .refine((num) => !Number.isNaN(num), {
+                message: "Debe ser un número válido",
+            })
+            .refine((num) => num > 0, {
+                message: "Debe ser mayor a 0",
+            }),
         mesCobro: z.string().trim().min(1, "El mes de cobro es obligatorio"),
 
         tipoCuenta: z.enum(["Ahorros", "Corriente"], {
@@ -141,9 +215,7 @@ export const libranzaFormSchema = z
         numeroCuenta: z.string().trim().min(1, "El número de cuenta es obligatorio"),
         banco: z.string().trim().min(1, "El banco es obligatorio"),
 
-        productos: z
-            .array(productoSchema)
-            .min(1, "Debe ingresar al menos un producto"),
+        productos: z.array(productoSchema).min(1, "Debe ingresar al menos un producto"),
 
         references: z
             .array(referenceSchema)
@@ -161,8 +233,6 @@ export const libranzaFormSchema = z
 
         destinatarioEmail: z.string().nullable(),
         destinatarioNombre: z.string().nullable(),
-
-        templateKey: z.string().trim().min(1, "El template es obligatorio"),
     })
     .superRefine((data, ctx) => {
         const birthDate = new Date(data.clienteFechaNacimiento);
@@ -234,9 +304,9 @@ export const libranzaFormSchema = z
             return sum + toNumber(producto.valor);
         }, 0);
 
-        const sumaTotal = toNumber(data.sumaTotal);
-        const numeroCuotas = toNumber(data.numeroCuotas);
-        const valorCuota = toNumber(data.valorCuota);
+        const sumaTotal = (data.sumaTotal);
+        const numeroCuotas = (data.numeroCuotas);
+        const valorCuota = (data.valorCuota);
 
         if (Math.abs(totalProductos - sumaTotal) > 0.01) {
             ctx.addIssue({
@@ -259,62 +329,4 @@ export const libranzaFormSchema = z
         }
     });
 
-export type LibranzaFormValidated = z.infer<typeof libranzaFormSchema>;
-
-
-function parseDateString(value: string): Date | null {
-    if (!value) return null;
-
-    // formato YYYY-MM-DD
-    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-        const [year, month, day] = value.split("-").map(Number);
-        const date = new Date(year, month - 1, day);
-
-        if (
-            date.getFullYear() !== year ||
-            date.getMonth() !== month - 1 ||
-            date.getDate() !== day
-        ) {
-            return null;
-        }
-
-        return date;
-    }
-
-    // formato DD/MM/YYYY
-    if (/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
-        const [day, month, year] = value.split("/").map(Number);
-        const date = new Date(year, month - 1, day);
-
-        if (
-            date.getFullYear() !== year ||
-            date.getMonth() !== month - 1 ||
-            date.getDate() !== day
-        ) {
-            return null;
-        }
-
-        return date;
-    }
-
-    return null;
-}
-
-function calculateAgeFromString(value: string): number | null {
-    const birthDate = parseDateString(value);
-    if (!birthDate) return null;
-
-    const today = new Date();
-
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-
-    if (
-        monthDiff < 0 ||
-        (monthDiff === 0 && today.getDate() < birthDate.getDate())
-    ) {
-        age--;
-    }
-
-    return age;
-}
+export type LibranzaReviewValidated = z.infer<typeof libranzaReviewSchema>;

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
@@ -30,23 +29,28 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "../ui/common/dropDown";
+import { useSessionStore } from "@/store/adminSession";
 
 export default function DashboardSidebar() {
-  const { data: session } = useSession();
   const pathname = usePathname();
   const { state } = useSidebar();
 
-  const VALID_ROLES: UserRole[] = ["ADMIN", "OPERATOR", "CREDIT_ANALYST"];
-  const rawRole = session?.user?.role;
+  const user = useSessionStore((s) => s.user);
 
-  const userRole: UserRole | undefined = VALID_ROLES.includes(rawRole as UserRole)
-    ? (rawRole as UserRole)
-    : undefined;
+  const VALID_ROLES: UserRole[] = ["ADMIN", "OPERATOR", "CREDIT_ANALYST"];
+
+  const userRole: UserRole | undefined =
+    user?.role && VALID_ROLES.includes(user.role)
+      ? user.role
+      : undefined;
 
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
   const toggleMenu = (href: string) => {
-    setOpenMenus((prev) => ({ ...prev, [href]: !prev[href] }));
+    setOpenMenus((prev) => ({
+      ...prev,
+      [href]: !prev[href],
+    }));
   };
 
   const filteredLinks = links

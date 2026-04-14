@@ -44,7 +44,6 @@ export default function PublicContractView({ token, pageMode }: Props) {
         setSignatures(data.data.signatures ?? []);
         setStep("view");
       } catch (err) {
-        console.log(err)
         const error = err as AxiosError<{ message?: string }>;
         toast.error(error.response?.data?.message ?? "No se pudo cargar el contrato");
         setStep("error");

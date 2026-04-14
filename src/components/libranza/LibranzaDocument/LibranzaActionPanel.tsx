@@ -26,7 +26,6 @@ export function LibranzaActionPanel({
   const isViewMode = mode === "view";
 
   if (!isSignMode && !isViewMode) return null;
-
   return (
     <div className="mt-5 bg-white rounded-2xl border border-border-soft shadow-[0_4px_20px_rgba(0,0,0,0.05)] overflow-hidden">
 
@@ -34,6 +33,17 @@ export function LibranzaActionPanel({
       <div className="h-1 bg-linear-to-r from-gold to-gold-dark" />
 
       <div className="px-8 py-7">
+
+        {saving && (
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-3 rounded-2xl">
+            <svg className="animate-spin h-8 w-8 text-gold" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+            </svg>
+            <p className="text-[13px] font-semibold text-ink">Guardando firma...</p>
+          </div>
+        )}
+
         {isViewMode || alreadySigned ? (
 
           /* ── Signed / view state ── */

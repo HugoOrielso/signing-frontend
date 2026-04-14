@@ -5,7 +5,6 @@ import { Contract } from '@/types/libranza'
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { BadgeCheck, CalendarDays, Copy, ExternalLink, FileText } from 'lucide-react';
 import { useMemo } from 'react'
-import { toast } from 'sonner';
 import { ContractStatusBadge } from '../statusBadge';
 
 export function DetailsDialogHeader({ contract }: { contract: Contract }) {
@@ -52,17 +51,15 @@ export function DetailsDialogHeader({ contract }: { contract: Contract }) {
                                 Abrir enlace
                             </a>
 
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    navigator.clipboard.writeText(link);
-                                    toast.success('Enlace copiado');
-                                }}
+                            <a
+                                href={`/dashboard/upload-documents/${contract.id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="inline-flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
                             >
                                 <Copy className="h-3.5 w-3.5" />
-                                Copiar enlace
-                            </button>
+                                Ver/subir documentos
+                            </a>
                         </div>
                     )}
                 </div>

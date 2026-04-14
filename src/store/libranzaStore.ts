@@ -1,16 +1,32 @@
-'use client';
+import { LibranzaReviewForm, toReviewForm } from "@/helpers/toRevieForm";
+import {
+  emptyLibranza,
+  emptyLibranzaToReview,
+  LibranzaForm,
+  ProductoItem,
+} from "@/types/libranza";
+import { create } from "zustand";
 
-
-
-import { emptyLibranza, LibranzaForm, ProductoItem } from '@/types/libranza';
-import { create } from 'zustand';
+export type DataReviewStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 
 interface LibranzaState {
   form: LibranzaForm;
+  reviewForm: LibranzaReviewForm;
   step: number;
 
+  dataReviewStatus: DataReviewStatus | null;
+  dataReviewNotes: string | null;
+
   setForm: (form: LibranzaForm) => void;
+  setReviewForm: (form: LibranzaReviewForm) => void;
+
+  hydrateRejectedForm: (payload: {
+    form: LibranzaForm;
+    dataReviewStatus: DataReviewStatus;
+    dataReviewNotes: string | null;
+  }) => void;
+
   setStep: (step: number) => void;
   nextStep: () => void;
   prevStep: () => void;
@@ -23,20 +39,43 @@ interface LibranzaState {
 
 export const useLibranzaStore = create<LibranzaState>((set) => ({
   form: emptyLibranza,
+  reviewForm: emptyLibranzaToReview,
   step: 1,
 
+  dataReviewStatus: null,
+  dataReviewNotes: null,
+
   setForm: (form) => set({ form }),
+  setReviewForm: (reviewForm) => set({ reviewForm }),
+
+  hydrateRejectedForm: ({ form, dataReviewStatus, dataReviewNotes }) =>
+    set({
+      form,
+      reviewForm: toReviewForm(form),
+      dataReviewStatus,
+      dataReviewNotes,
+    }),
 
   setStep: (step) => set({ step }),
   nextStep: () => set((state) => ({ step: state.step + 1 })),
   prevStep: () => set((state) => ({ step: Math.max(1, state.step - 1) })),
-  resetForm: () => set({ form: emptyLibranza, step: 1 }),
+  resetForm: () =>
+    set({
+      form: emptyLibranza,
+      reviewForm: emptyLibranzaToReview,
+      step: 1,
+      dataReviewStatus: null,
+      dataReviewNotes: null,
+    }),
 
   addProducto: () =>
     set((state) => ({
       form: {
         ...state.form,
-        productos: [...state.form.productos, { codigo: '', descripcion: '', valor: '' }],
+        productos: [
+          ...state.form.productos,
+          { codigo: "", descripcion: "", valor: "" },
+        ],
       },
     })),
 
