@@ -123,13 +123,13 @@ export default function PagarePreviewCompact({
                     En mi calidad de funcionario(a) de <U>{F(data.clienteFuncionario)}</U>,
                     vinculado(a) desde hace <U>{F(data.clienteDesdeHace)}</U>, autorizo <b>Dimcultura S.A.S.</b>
                     para que descuente de mi salario o de
-                    cualquier otro concepto la suma total de <U>{FM(data.sumaTotal)}</U>.
+                    cualquier otro concepto la suma total de <U>{FM(data.sumaTotal?.toString()) || ''}</U>.
                 </p>
 
                 <p>
-                    El valor anterior será recaudado en <U>{F(data.numeroCuotas)}</U>{" "}
+                    El valor anterior será recaudado en <U>{F(data.numeroCuotas?.toString() || '')}</U>{" "}
                     cuotas mensuales consecutivas, por valor de{" "}
-                    <U>{FM(data.valorCuota)}</U> cada una, a partir del mes de{" "}
+                    <U>{FM(data.valorCuota?.toString() || '')}</U> cada una, a partir del mes de{" "}
                     <U>{F(data.mesCobro)}</U>, en el municipio de{" "}
                     <U>{F(data.municipioTrabajo)}</U>.
                 </p>
@@ -182,13 +182,13 @@ export default function PagarePreviewCompact({
                     <div className="rounded-lg border border-zinc-200 p-1 text-sm">
 
                         <p>
-                            <strong>Total a pagar:</strong> {FM(data.sumaTotal)}
+                            <strong>Total a pagar:</strong> {FM(data.sumaTotal?.toString()) ||''}
                         </p>
                         <p>
-                            <strong>Número de cuotas:</strong> {F(data.numeroCuotas)}
+                            <strong>Número de cuotas:</strong> {F(data.numeroCuotas?.toString()) || ''}
                         </p>
                         <p>
-                            <strong>Valor cuota:</strong> {FM(data.valorCuota)}
+                            <strong>Valor cuota:</strong> {FM(data.valorCuota?.toString()) ||''}
                         </p>
                         <p>
                             <strong>Inicio de cobro:</strong> {F(data.mesCobro)}

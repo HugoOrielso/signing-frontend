@@ -27,7 +27,7 @@ export default function LibranzaPreview({ data, signers = [], signatures: initia
     setSignatures(initialSignatures);
   }, [initialSignatures]);
 
-  const contractedSigner = signers.find((s) => s.partyRole === "CONTRACTED");
+  const contractedSigner = signers.find((s) => s.partyRole === "DEUDOR");
   const alreadySigned = !!signatures.find((sig) => sig.signerId === contractedSigner?.id);
 
   const isSignMode = mode === "sign";
