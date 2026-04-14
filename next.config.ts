@@ -1,8 +1,9 @@
 import type { NextConfig } from "next";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   async rewrites() {
     return [
       {
@@ -10,6 +11,9 @@ const nextConfig: NextConfig = {
         destination: `${API_URL}/:path*`,
       },
     ];
+  },
+  generateBuildId: async () => {
+    return process.env.BUILD_ID || crypto.randomUUID()
   },
 };
 
