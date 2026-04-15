@@ -12,17 +12,11 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-ARG NEXT_PUBLIC_API_URL
-ARG NEXT_PUBLIC_API_IMAGES
-ARG BUILD_ID
-ARG NEXTAUTH_URL
-ARG API_URL
-
-ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-ENV NEXT_PUBLIC_API_IMAGES=${NEXT_PUBLIC_API_IMAGES}
-ENV BUILD_ID=${BUILD_ID}
-ENV NEXTAUTH_URL=${NEXTAUTH_URL}
-ENV API_URL=${API_URL}
+# NEXT_PUBLIC_* van hardcodeadas aquí — se hornean en el bundle del cliente
+ENV NEXT_PUBLIC_API_URL=https://backend.hugoorielso.com/api
+ENV NEXT_PUBLIC_API_IMAGES=https://backend.hugoorielso.com
+ENV NEXTAUTH_URL=https://hugoorielso.com
+ENV API_URL=https://backend.hugoorielso.com/api
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
@@ -42,8 +36,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 ENV NEXTAUTH_URL=https://hugoorielso.com
+ENV NEXTAUTH_SECRET=tu-secret-aqui
 ENV NEXT_PUBLIC_API_URL=https://backend.hugoorielso.com/api
 ENV API_URL=https://backend.hugoorielso.com/api
+ENV AUTH_TRUST_HOST=true
 
 RUN addgroup --system --gid 1001 nodejs \
  && adduser --system --uid 1001 nextjs
