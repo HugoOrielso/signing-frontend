@@ -1,10 +1,5 @@
 import CreateUserForm from "@/components/dashboard/users/CreateUserForm";
-import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
-
 export default async function CreateUserPage() {
-  const session = await auth();
-  if (session?.user?.role !== "ADMIN") redirect("/dashboard");
 
   return (
     <div className="flex min-h-screen items-center justify-center w-full">

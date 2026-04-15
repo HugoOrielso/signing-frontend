@@ -10,8 +10,6 @@ const REFRESH_COOKIE_NAME = isProd
   ? "__Secure-admin_refreshToken"
   : "admin_refreshToken";
 
-
-
 const publicRoutes = [
   "/",
   "/login",

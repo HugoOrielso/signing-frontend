@@ -1,20 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Eye, EyeOff, LogIn, Mail, Lock } from "lucide-react";
 import api from "@/lib/axiosClient";
 
-export default function LoginForm({ expiredError }: { expiredError: boolean }) {
+export default function LoginForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    if (expiredError) {
-      toast.warning("Your session expired, please sign in again");
-    }
-  }, [expiredError]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
