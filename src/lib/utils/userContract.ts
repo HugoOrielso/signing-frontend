@@ -31,7 +31,7 @@ export type StatusMeta = {
 export const STATUS_META: Record<ContractStatus, StatusMeta> = {
   DRAFT: {
     label: "Borrador",
-    description: "Tu contrato está siendo preparado por el asesor.",
+    description: "Tu libranza está siendo preparado por el asesor.",
     step: 1,
     icon: FileText,
     className: "border-slate-200 bg-slate-50 text-slate-600",
@@ -83,14 +83,14 @@ export const STATUS_META: Record<ContractStatus, StatusMeta> = {
 
   READY_TO_SIGN: {
     label: "Listo para firmar",
-    description: "Tu contrato está listo para firmar.",
+    description: "Tu libranza está listo para firmar.",
     step: 5,
     icon: PenLine,
     className: "border-green-200 bg-green-50 text-green-700",
     cardClassName: "border-green-200 bg-green-50",
     progressClassName: "bg-green-500",
     action: {
-      label: "Firmar contrato",
+      label: "Firmar libranza",
       href: (token) => `/users/contracts/sign/${token}`,
       variant: "primary",
       icon: PenLine,

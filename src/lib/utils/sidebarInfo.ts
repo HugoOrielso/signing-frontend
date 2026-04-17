@@ -23,7 +23,7 @@ export const links: SidebarLink[] = [
     href: "/dashboard",
     label: "Dashboard",
     icon: LayoutDashboard,
-    roles: ["ADMIN", "OPERATOR"],
+    roles: ["ADMIN", "OPERATOR", "CREDIT_ANALYST"],
   },
   {
     href: "/dashboard/contracts/create",

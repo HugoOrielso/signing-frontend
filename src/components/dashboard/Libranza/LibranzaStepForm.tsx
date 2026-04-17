@@ -29,6 +29,9 @@ const errorTextClass = 'mt-1 text-xs text-red-600';
 
 type FormErrors = Record<string, string>;
 
+import { Calendar } from 'primereact/calendar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/common/select';
+
 export default function LibranzaStepForm() {
   const user = useSessionStore((s) => s.user);
   const form = useLibranzaStore((state) => state.form);
@@ -42,7 +45,30 @@ export default function LibranzaStepForm() {
   const [productos, setProductos] = useState<ProductoItem[]>(
     form.productos?.length ? form.productos : [{ codigo: '', descripcion: '', valor: '' }]
   );
+  type TipoCuenta = LibranzaForm["tipoCuenta"];
 
+  const tipoCuentaOptions: { value: Exclude<TipoCuenta, "">; label: string }[] = [
+    { value: "Ahorros", label: "Ahorros" },
+    { value: "Corriente", label: "Corriente" },
+  ];
+  const parseLocalDate = (value?: string) => {
+    if (!value) return null;
+
+    const [year, month, day] = value.split("-").map(Number);
+    return new Date(year, month - 1, day); // 👈 LOCAL, sin bug
+  };
+
+  const formatLocalDate = (date: Date | null) => {
+    if (!date) return "";
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`; // 👈 EXACTO como quieres
+  };
+
+  const setForm = useLibranzaStore((state) => state.setForm);
   const [formaPago, setFormaPago] = useState<LibranzaForm['formaPago']>(form.formaPago || '');
 
   const totalCompra = productos.reduce((sum, p) => {
@@ -91,7 +117,45 @@ export default function LibranzaStepForm() {
   const pathname = usePathname();
   const empresa = getEmpresaFromPath(pathname);
   const config = empresaConfig[empresa];
+  type TipoContrato = LibranzaForm["tipoContrato"];
 
+  const normalizeTipoContrato = (value?: string): TipoContrato => {
+    switch (value) {
+      case "Provisional":
+        return "PROVISIONAL";
+      case "Temporal":
+        return "TEMPORAL";
+      case "Provisional vacante definitiva":
+        return "PROVISIONAL_VACANTE_DEFINITIVA";
+      case "Carrera administrativa":
+        return "CARRERA_ADMINISTRATIVA";
+      case "Pensionado":
+        return "PENSIONADO";
+      case "PROVISIONAL":
+      case "TEMPORAL":
+      case "PROVISIONAL_VACANTE_DEFINITIVA":
+      case "CARRERA_ADMINISTRATIVA":
+      case "PENSIONADO":
+      case "":
+        return value;
+      default:
+        return "";
+    }
+  };
+  const contratoOptions = [
+    { value: "PROVISIONAL", label: "Provisional" },
+    { value: "TEMPORAL", label: "Temporal" },
+    {
+      value: "PROVISIONAL_VACANTE_DEFINITIVA",
+      label: "Provisional vacante definitiva",
+    },
+    {
+      value: "CARRERA_ADMINISTRATIVA",
+      label: "Carrera administrativa",
+    },
+    { value: "PENSIONADO", label: "Pensionado" },
+  ];
+  console.log("tipoContrato actual:", form.tipoContrato);
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -380,6 +444,31 @@ export default function LibranzaStepForm() {
 
           <div>
             <label className={labelClass}>Fecha de nacimiento</label>
+            <Calendar
+              inputId="clienteFechaNacimiento"
+              name="clienteFechaNacimiento"
+              value={parseLocalDate(form.clienteFechaNacimiento)}
+              onChange={(e) => {
+                const value = e.value as Date | null;
+
+                setForm({
+                  ...form,
+                  clienteFechaNacimiento: formatLocalDate(value),
+                });
+
+                setFieldErrorClear("clienteFechaNacimiento");
+              }}
+              dateFormat="yy-mm-dd"
+              className="w-full"
+              showIcon
+              placeholder="2019-01-08"
+            />
+
+            {renderError("clienteFechaNacimiento")}
+          </div>
+
+          {/* <div>
+            <label className={labelClass}>Fecha de nacimiento</label>
             <input
               name="clienteFechaNacimiento"
               type="date"
@@ -389,19 +478,32 @@ export default function LibranzaStepForm() {
               required
             />
             {renderError('clienteFechaNacimiento')}
-          </div>
+          </div> */}
 
           <div>
             <label className={labelClass}>Fecha de expedición del documento</label>
-            <input
+
+            <Calendar
+              inputId="clienteFechaExpedicionCC"
               name="clienteFechaExpedicionCC"
-              type="date"
-              className={getInputClass('clienteFechaExpedicionCC')}
-              defaultValue={form.clienteFechaExpedicionCC}
-              onChange={() => setFieldErrorClear('clienteFechaExpedicionCC')}
-              required
+              value={parseLocalDate(form.clienteFechaExpedicionCC)}
+              onChange={(e) => {
+                const value = e.value as Date | null;
+
+                setForm({
+                  ...form,
+                  clienteFechaExpedicionCC: formatLocalDate(value),
+                });
+
+                setFieldErrorClear("clienteFechaExpedicionCC");
+              }}
+              dateFormat="yy-mm-dd"
+              className="w-full"
+              showIcon
+              placeholder="2019-01-08"
             />
-            {renderError('clienteFechaExpedicionCC')}
+
+            {renderError("clienteFechaExpedicionCC")}
           </div>
         </div>
       </section>
@@ -517,25 +619,33 @@ export default function LibranzaStepForm() {
 
           <div>
             <label className={labelClass}>Tipo de contrato</label>
-            <select
+
+            <Select
+              value={normalizeTipoContrato(form.tipoContrato)}
+              onValueChange={(value) => {
+                setForm({
+                  ...form,
+                  tipoContrato: value as TipoContrato,
+                });
+
+                setFieldErrorClear("tipoContrato");
+              }}
               name="tipoContrato"
-              className={getInputClass('tipoContrato')}
-              defaultValue={form.tipoContrato}
-              onChange={() => setFieldErrorClear('tipoContrato')}
-              required
             >
-              <option value="">Seleccionar…</option>
-              <option value="PROVISIONAL">Provisional</option>
-              <option value="TEMPORAL">Temporal</option>
-              <option value="PROVISIONAL_VACANTE_DEFINITIVA">
-                Provisional vacante definitiva
-              </option>
-              <option value="CARRERA_ADMINISTRATIVA">
-                Carrera administrativa
-              </option>
-              <option value="PENSIONADO">Pensionado</option>
-            </select>
-            {renderError('tipoContrato')}
+              <SelectTrigger className="w-full p-3">
+                <SelectValue placeholder="Seleccionar…" />
+              </SelectTrigger>
+
+              <SelectContent>
+                {contratoOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {renderError("tipoContrato")}
           </div>
         </div>
       </section>
@@ -616,18 +726,40 @@ export default function LibranzaStepForm() {
         <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
           <div>
             <label className={labelClass}>Tipo de Cuenta</label>
-            <select
+
+            <Select
+              value={form.tipoCuenta || undefined}
+              onValueChange={(value) => {
+                setForm({
+                  ...form,
+                  tipoCuenta: value as TipoCuenta,
+                });
+
+                setFieldErrorClear("tipoCuenta");
+              }}
               name="tipoCuenta"
-              className={getInputClass('tipoCuenta')}
-              defaultValue={form.tipoCuenta}
-              onChange={() => setFieldErrorClear('tipoCuenta')}
-              required
             >
-              <option value="">Seleccionar…</option>
-              <option value="Ahorros">Ahorros</option>
-              <option value="Corriente">Corriente</option>
-            </select>
-            {renderError('tipoCuenta')}
+              <SelectTrigger className={getInputClass("tipoCuenta")}>
+                <SelectValue placeholder="Seleccionar…" />
+              </SelectTrigger>
+
+              <SelectContent>
+                {tipoCuentaOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* 🔥 ESTO ES LO QUE TE FALTABA */}
+            <input
+              type="hidden"
+              name="tipoCuenta"
+              value={form.tipoCuenta || ""}
+            />
+
+            {renderError("tipoCuenta")}
           </div>
 
           <div>

@@ -3,7 +3,12 @@
 import { Trash } from "lucide-react";
 import { ConfirmSignModal } from "./ConfirmSignModal";
 import { useEffect, useRef, useState } from "react";
+import { Great_Vibes } from "next/font/google";
 
+const greatVibes = Great_Vibes({
+    subsets: ["latin"],
+    weight: "400",
+});
 type SignatureType = "DRAWN" | "TYPED";
 type TabType = "draw" | "type";
 
@@ -217,7 +222,7 @@ export function SignaturePad({
 
                         <div className="p-5 border border-borderSoft rounded-xl bg-cream">
 
-                            <label className="block text-[11px] font-semibold uppercase tracking-wider text-muted mb-3">
+                            <label className="block text-[11px] font-semibold uppercase tracking-wider  mb-3">
                                 Escribe tu nombre completo
                             </label>
 
@@ -229,18 +234,13 @@ export function SignaturePad({
                                     setTyped(e.target.value)
                                 }
                                 disabled={disabled}
-                                className="w-full bg-transparent border-b-2 border-gold outline-none px-1 py-2 text-[30px] text-ink"
-                                style={{
-                                    fontFamily: "Dancing Script, cursive",
-                                }}
+                                className={`w-full bg-transparent border-b-2 border-gold outline-none px-1 py-2 text-[30px] text-ink ${greatVibes.className}`}
+
                             />
 
                             {typed && (
                                 <div
-                                    className="mt-4 pb-2 border-b border-borderSoft text-[40px] text-ink"
-                                    style={{
-                                        fontFamily: "Dancing Script, cursive",
-                                    }}
+                                    className={`mt-4 pb-2 border-b border-borderSoft text-[40px] text-ink ${greatVibes.className}`}
                                 >
                                     {typed}
                                 </div>

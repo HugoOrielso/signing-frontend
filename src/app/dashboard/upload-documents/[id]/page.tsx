@@ -170,25 +170,28 @@ export default function LibranzaUploadDocuments() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 p-4">
-      <h1 className="text-center text-xl font-bold">
-        Verifica tu identidad
-      </h1>
+    <div className="bg-zinc-50">
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {DOC_CONFIG.map((doc) => (
-          <DocumentBlock
-            key={doc.type}
-            label={doc.label}
-            type={doc.type}
-            doc={docs[doc.type]}
-            onChange={handleFileChange}
-            onUpload={uploadDocument}
-            required={doc.required}
-          />
-        ))}
+      <div className="mx-auto max-w-5xl space-y-6 p-4 ">
+        <h1 className="text-center text-xl font-bold">
+          Verifica tu identidad
+        </h1>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {DOC_CONFIG.map((doc) => (
+            <DocumentBlock
+              key={doc.type}
+              label={doc.label}
+              type={doc.type}
+              doc={docs[doc.type]}
+              onChange={handleFileChange}
+              onUpload={uploadDocument}
+              required={doc.required}
+            />
+          ))}
+        </div>
+
       </div>
-
     </div>
   );
 }

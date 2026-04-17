@@ -3,11 +3,16 @@
 import { useEffect, useState } from "react";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
-import { LibranzaDataPreview, LibranzaSignature, LibranzaSigner } from "@/types/libranza";
+import {
+  LibranzaDataPreview,
+  LibranzaSignature,
+  LibranzaSigner,
+} from "@/types/libranza";
 import { PublicContractLoading } from "@/components/libranza/LibranzaDocument/ContractLoading";
 import { PublicContractError } from "@/components/libranza/LibranzaDocument/ContractErrot";
 import LibranzaPreview from "@/components/libranza/LibranzaPreview";
 import publicApiNew from "@/lib/publicAxios";
+import PagarePreview from "@/components/pagare/pagarePreview";
 
 interface ContractData {
   id: string;
@@ -19,6 +24,7 @@ interface ContractData {
   signers: LibranzaSigner[];
   signatures: LibranzaSignature[];
   libranzaData?: LibranzaDataPreview | null;
+  isSigned?: boolean
 }
 
 export type ViewMode = "sign" | "view" | "preview";
@@ -31,10 +37,12 @@ interface Props {
 type Step = "loading" | "view" | "error";
 
 export default function PublicContractView({ token, pageMode }: Props) {
-
   const [step, setStep] = useState<Step>("loading");
   const [contract, setContract] = useState<ContractData | null>(null);
+  console.log(contract?.isSigned)
   const [signatures, setSignatures] = useState<LibranzaSignature[]>([]);
+
+  
 
   useEffect(() => {
     const load = async () => {
@@ -45,19 +53,13 @@ export default function PublicContractView({ token, pageMode }: Props) {
         setStep("view");
       } catch (err) {
         const error = err as AxiosError<{ message?: string }>;
-        toast.error(error.response?.data?.message ?? "No se pudo cargar el contrato");
+        toast.error(
+          error.response?.data?.message ?? "No se pudo cargar el contrato"
+        );
         setStep("error");
       }
     };
 
-    if (pageMode === "view") {
-      // Vista libre — carga directo sin validar sesión
-      load();
-      return;
-    }
-
-    // Modo sign — por ahora también carga directo, aquí irá la validación OTP después
-    // TODO: validar sesión antes de cargar
     load();
   }, [token, pageMode]);
 
@@ -71,13 +73,13 @@ export default function PublicContractView({ token, pageMode }: Props) {
   if (step === "loading") return <PublicContractLoading />;
   if (step === "error" || !contract) return <PublicContractError />;
 
-  const isLibranza = contract.contractType === "LIBRANZA" && !!contract.libranzaData;
   const mode = resolveMode();
+  const isLibranzaSigned = contract.isSigned
 
   return (
     <div className="min-h-screen font-sans">
-      <div className="mx-auto max-w-215 px-4 py-10 gap-2 flex flex-col">
-        {isLibranza ? (
+      <div className="mx-auto flex max-w-215 flex-col gap-2 px-4 py-10">
+        {!isLibranzaSigned ? (
           <LibranzaPreview
             data={contract.libranzaData!}
             signers={contract.signers}
@@ -86,30 +88,25 @@ export default function PublicContractView({ token, pageMode }: Props) {
             mode={mode}
             token={token}
             onSigned={() =>
-              setContract((prev) => prev ? { ...prev, status: "SIGNED" } : prev)
+              setContract((prev) =>
+                prev ? { ...prev, status: "SIGNED" } : prev
+              )
             }
           />
-        ) : (
-          <div className="rounded-2xl border border-border-soft bg-white px-13 py-10">
-            <p className="m-0 text-center text-sm text-muted">
-              Este tipo de contrato no es soportado en la vista pública.
-            </p>
-          </div>
-        )}
-        {/* 
-        {isLibranza ? (
+        ) :  (
           <PagarePreview
-            data={contract.libranzaData!}
+            contract={contract}
             signers={contract.signers}
             signatures={signatures}
+            mode={mode}
+            token={token}
+            onSigned={() =>
+              setContract((prev) =>
+                prev ? { ...prev, status: "SIGNED" } : prev
+              )
+            }
           />
-        ) : (
-          <div className="rounded-2xl border border-border-soft bg-white px-13 py-10">
-            <p className="m-0 text-center text-sm text-muted">
-              Este tipo de contrato no es soportado en la vista pública.
-            </p>
-          </div>
-        )} */}
+        ) }
       </div>
     </div>
   );
