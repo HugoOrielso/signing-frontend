@@ -269,18 +269,34 @@ export default function LibranzaReviewDocument() {
         <div className='h-full flex '>
             {
                 dataReviewStatus === 'PENDING' ?
-                    <div className="w-full h-full rounded-xl border border-yellow-300 bg-yellow-50 p-4 flex items-start gap-3">
+                    <div className="w-full h-[70vh] flex items-center justify-center">
 
-                        <div className="text-yellow-500 text-xl">⏳</div>
+                        <div className="max-w-xl w-full rounded-2xl border border-yellow-200 bg-linear-to-br from-yellow-50 to-white shadow-lg p-8 text-center space-y-6">
 
-                        <div className="flex flex-col">
-                            <p className="font-semibold text-yellow-800">
-                                Los datos están siendo revisados
+                            {/* ICON */}
+                            <div className="flex justify-center">
+                                <div className="w-16 h-16 flex items-center justify-center rounded-full bg-yellow-100 text-3xl">
+                                    ⏳
+                                </div>
+                            </div>
+
+                            {/* TITLE */}
+                            <h2 className="text-xl font-semibold text-yellow-900">
+                                Estamos revisando tu información
+                            </h2>
+
+                            {/* DESCRIPTION */}
+                            <p className="text-sm text-yellow-800 leading-relaxed">
+                                Nuestro equipo está validando los datos que enviaste para continuar con el proceso.
+                                <br />
+                                Te notificaremos muy pronto cuando esté listo.
                             </p>
-                            <p className="text-sm text-yellow-700">
-                                Nuestro equipo está validando la información enviada. Te estaremos
-                                comunicando el resultado muy pronto.
-                            </p>
+
+                            {/* EXTRA INFO */}
+                            <div className="text-xs text-yellow-700 bg-yellow-100 rounded-lg px-4 py-2">
+                                Este proceso puede tardar unos minutos dependiendo del volumen de solicitudes.
+                            </div>
+
                         </div>
 
                     </div>
@@ -752,7 +768,7 @@ export default function LibranzaReviewDocument() {
 
                                                 setForm({
                                                     ...form,
-                                                    valorCuota:  (value),
+                                                    valorCuota: (value),
                                                 });
 
                                                 setFieldErrorClear("valorCuota");

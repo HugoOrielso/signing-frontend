@@ -78,53 +78,53 @@ export default function ContractsTable() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <StatsBar contracts={contracts} />
+      <StatsBar contracts={contracts} />
 
-        <div className="flex flex-col gap-3 py-2 md:flex-row md:items-center md:justify-between">
-          <div className="w-full md:w-65">
-            <Select
-              value={filter}
-              onValueChange={(value: string) => setFilter(value as StatusFilter)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Filtrar por estado" />
-              </SelectTrigger>
-              <SelectContent>
-                {STATUS_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="w-full md:w-105">
-            <Input
-              placeholder="Buscar por nombre, cédula, teléfono..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="w-full md:w-72">
+          <Select
+            value={filter}
+            onValueChange={(value: string) => setFilter(value as StatusFilter)}
+          >
+            <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-white shadow-sm focus:ring-4 focus:ring-blue-100">
+              <SelectValue placeholder="Filtrar por estado" />
+            </SelectTrigger>
+            <SelectContent className="rounded-2xl border-slate-200">
+              {STATUS_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        {loading ? (
-          <div className="flex items-center justify-center rounded-xl border py-24">
-            <div className="h-7 w-7 animate-spin rounded-full border-2 border-muted border-t-primary" />
-          </div>
-        ) : (
-          <DataTable columns={columns} data={filteredContracts} />
-        )}
+        <div className="w-full md:w-104">
+          <Input
+            placeholder="Buscar por nombre, cédula, teléfono..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="h-11 rounded-2xl border-slate-200 bg-white shadow-sm placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-blue-100"
+          />
+        </div>
       </div>
 
+      {loading ? (
+        <div className="flex items-center justify-center rounded-[24px] border border-slate-200 bg-white py-24 shadow-sm">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-300 border-t-blue-600" />
+        </div>
+      ) : (
+        <DataTable columns={columns} data={filteredContracts} />
+      )}
+
       {!loading && (
-        <p className="text-right text-xs text-muted-foreground">
+        <p className="text-right text-xs font-medium text-slate-500">
           {filteredContracts.length} contrato
-          {filteredContracts.length !== 1 ? 's' : ''}
-          {filter !== 'ALL' && ' · filtrado'}
+          {filteredContracts.length !== 1 ? "s" : ""}
+          {filter !== "ALL" && " · filtrado"}
         </p>
       )}
     </div>
   );
 }
+

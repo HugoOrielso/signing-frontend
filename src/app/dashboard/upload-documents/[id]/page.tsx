@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import api from "@/lib/axiosClient";
 import { DocumentBlock } from "@/components/dashboard/Libranza/DocumentBlock";
 import { ContractDocumentItem, DocType, UploadState } from "@/types/libranza";
+import { BackgroundSurface } from "@/components/common/backgroudDecor";
 
 const DOC_CONFIG: {
   type: DocType;
@@ -170,12 +171,24 @@ export default function LibranzaUploadDocuments() {
   };
 
   return (
-    <div className="bg-zinc-50">
+    <div className="relative overflow-hidden bg-[linear-gradient(180deg,#f8fafc_0%,#f1f5f9_100%)]">
+      <BackgroundSurface />
 
-      <div className="mx-auto max-w-5xl space-y-6 p-4 ">
-        <h1 className="text-center text-xl font-bold">
-          Verifica tu identidad
-        </h1>
+      <div className="relative z-10 mx-auto max-w-5xl space-y-6 p-4">
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50/80 px-4 py-1.5 text-xs font-medium text-blue-700 shadow-sm">
+            Proceso seguro
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          </div>
+
+          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">
+            Verifica tu identidad
+          </h1>
+
+          <p className="text-sm text-slate-600 max-w-md mx-auto leading-6">
+            Sube los documentos requeridos para validar tu información y continuar con el proceso de tu contrato.
+          </p>
+        </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {DOC_CONFIG.map((doc) => (

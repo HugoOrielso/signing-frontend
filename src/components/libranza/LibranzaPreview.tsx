@@ -19,7 +19,7 @@ interface Props {
   onSigned?: () => void;
 }
 
-export default function LibranzaPreview({ data, signers = [], signatures: initialSignatures = [], templateKey, mode, token, onSigned }: Props) {
+export default function LibranzaPreview({ data, signers = [], signatures: initialSignatures = [], templateKey, mode, token }: Props) {
   const [signatures, setSignatures] = useState<LibranzaSignature[]>(initialSignatures);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -63,7 +63,9 @@ export default function LibranzaPreview({ data, signers = [], signatures: initia
       setSignatures((prev) => [...prev, newSig]);
       setShowPad(false);
       toast.success("✓ " + (res.message ?? "Firma registrada correctamente"));
-      onSigned?.();
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
     } catch (err) {
       const error = err as AxiosError<{ message?: string }>;
       setError(error?.response?.data?.message ?? "No se pudo guardar la firma");

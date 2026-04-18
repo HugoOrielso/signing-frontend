@@ -108,20 +108,17 @@ export default function PagarePreview({
   );
 
   const deudorSignature = useMemo(() => {
-    if (pagare?.signature) {
-      return {
-        id: "pagare-signature",
-        signerId: deudorSigner?.id ?? "deudor",
-        type: pagare.signature.type,
-        typedValue: pagare.signature.typedValue ?? null,
-        imageUrl: pagare.signature.imageUrl ?? null,
-        signedAt: pagare.signature.signedAt ?? new Date().toISOString(),
-      } as LibranzaSignature;
-    }
+    if (!pagare?.signature || !deudorSigner) return undefined;
 
-    if (!deudorSigner) return undefined;
-    return signatures.find((s) => s.signerId === deudorSigner.id);
-  }, [pagare?.signature, deudorSigner, signatures]);
+    return {
+      id: "pagare-signature",
+      signerId: deudorSigner.id,
+      type: pagare.signature.type,
+      typedValue: pagare.signature.typedValue ?? null,
+      imageUrl: pagare.signature.imageUrl ?? null,
+      signedAt: pagare.signature.signedAt ?? new Date().toISOString(),
+    } as LibranzaSignature;
+  }, [pagare?.signature, deudorSigner]);
 
   const acreedorSignature = useMemo(() => {
     if (!acreedorSigner) return undefined;
@@ -165,10 +162,13 @@ export default function PagarePreview({
       setSaving(true);
       setError("");
 
-      const response = await publicApiNew.post(`/users/contracts/pagare/${token}/sign`, {
-        type,
-        ...(type === "TYPED" ? { typedValue: value } : { imageUrl: value }),
-      });
+      const response = await publicApiNew.post(
+        `/users/contracts/pagare/${token}/sign`,
+        {
+          type,
+          ...(type === "TYPED" ? { typedValue: value } : { imageUrl: value }),
+        }
+      );
 
       const signedAt = response?.data?.signedAt ?? new Date().toISOString();
       const pagareNumber = response?.data?.pagareNumber ?? pagare?.number ?? null;
@@ -178,24 +178,26 @@ export default function PagarePreview({
       setPagare((prev) =>
         prev
           ? {
-              ...prev,
-              number: pagareNumber,
-              status: "SIGNED",
+            ...prev,
+            number: pagareNumber,
+            status: "SIGNED",
+            signedAt,
+            fechaSuscripcion: signedAt,
+            signature: {
+              type,
+              typedValue: type === "TYPED" ? value : null,
+              imageUrl: type === "DRAWN" ? value : null,
               signedAt,
-              fechaSuscripcion: signedAt,
-              signature: {
-                type,
-                typedValue: type === "TYPED" ? value : null,
-                imageUrl: type === "DRAWN" ? value : null,
-                signedAt,
-              },
-            }
+            },
+          }
           : null
       );
-      setShowPad(false);
 
+      setShowPad(false);
       toast.success("Pagaré firmado correctamente");
-      setTimeout(()=>{location.reload()},500)
+      setTimeout(() => {
+        location.reload();
+      }, 500);
     } catch {
       toast.error("Ocurrió un error al firmar");
     } finally {
@@ -209,8 +211,8 @@ export default function PagarePreview({
 
   if (!hasPagare || !pagare) {
     return (
-      <div className="rounded-2xl border border-border-soft bg-white px-13 py-10">
-        <p className="m-0 text-center text-sm ">
+      <div className="rounded-md border border-neutral-300 bg-white px-10 py-12 shadow-[0_6px_24px_rgba(0,0,0,0.05)]">
+        <p className="m-0 text-center text-sm text-neutral-700">
           El pagaré aún no ha sido generado. Firma primero la libranza para
           habilitar este documento.
         </p>
@@ -255,9 +257,7 @@ export default function PagarePreview({
     pagare.deudorEmail || fallbackData?.clienteEmail
   );
 
-  const ciudadFirma = safeText(
-    pagare.ciudadFirma || fallbackData?.ciudad
-  );
+  const ciudadFirma = safeText(pagare.ciudadFirma || fallbackData?.ciudad);
 
   const fechaSuscripcionTexto = pagare.fechaSuscripcion
     ? formatDateTimeText(pagare.fechaSuscripcion)
@@ -270,52 +270,74 @@ export default function PagarePreview({
   const showReadonlyMode = isSigned;
 
   return (
-    <section className="rounded-2xl border border-border-soft bg-white px-6 py-8 shadow-sm md:px-10">
-      <header className="mb-8 text-center">
-        <h1 className="text-2xl font-bold tracking-tight text-neutral-950">
+    <section className="mx-auto max-w-225 border border-neutral-300 bg-white px-6 py-8 shadow-[0_10px_40px_rgba(0,0,0,0.08)] md:px-12 md:py-12">
+      <div className="mb-8 h-px w-full bg-neutral-300" />
+
+      <header className="mb-10 text-center">
+        <h1 className="text-[26px] font-semibold tracking-[0.22em] text-neutral-900">
           PAGARÉ
         </h1>
-        <p className="mt-2 text-sm text-neutral-600">
-          Documento de obligación de pago
+        <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-neutral-500">
+          Documento privado de obligación de pago
         </p>
       </header>
 
-      <div className="grid gap-3 rounded-xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-800 md:grid-cols-2">
+      <div className="grid gap-3 rounded-md border border-neutral-300 bg-neutral-50 px-5 py-4 text-[13px] leading-6 text-neutral-800 md:grid-cols-2">
         <p>
-          <span className="font-semibold">Pagaré No.:</span>{" "}
+          <span className="font-semibold text-neutral-900">Pagaré No.:</span>{" "}
           {pagare.number}
         </p>
+
         <p>
-          <span className="font-semibold">Lugar y fecha de suscripción:</span>{" "}
+          <span className="font-semibold text-neutral-900">
+            Lugar y fecha de suscripción:
+          </span>{" "}
           {ciudadFirma}, {fechaSuscripcionTexto}
         </p>
+
         <p>
-          <span className="font-semibold">Valor total:</span> {valorTotalLetras} (
-          {formatCurrency(valorTotal)})
+          <span className="font-semibold text-neutral-900">Valor total:</span>{" "}
+          {valorTotalLetras} ({formatCurrency(valorTotal)})
         </p>
+
         <p>
-          <span className="font-semibold">Plazo:</span> {numeroCuotas} cuotas
-          mensuales
+          <span className="font-semibold text-neutral-900">Plazo:</span>{" "}
+          {numeroCuotas} cuotas mensuales
         </p>
+
         <p>
-          <span className="font-semibold">Interés corriente:</span>{" "}
+          <span className="font-semibold text-neutral-900">
+            Interés corriente:
+          </span>{" "}
           {interesCorriente}
         </p>
+
         <p>
-          <span className="font-semibold">Interés de mora:</span> {interesMora}
+          <span className="font-semibold text-neutral-900">
+            Interés de mora:
+          </span>{" "}
+          {interesMora}
         </p>
+
         <p>
-          <span className="font-semibold">Acreedor:</span> {acreedorNombre}
+          <span className="font-semibold text-neutral-900">Acreedor:</span>{" "}
+          {acreedorNombre}
         </p>
+
         <p>
-          <span className="font-semibold">NIT acreedor:</span> {acreedorNit}
+          <span className="font-semibold text-neutral-900">
+            NIT acreedor:
+          </span>{" "}
+          {acreedorNit}
         </p>
+
         <p className="md:col-span-2">
-          <span className="font-semibold">Lugar de pago:</span> {ciudadPago}
+          <span className="font-semibold text-neutral-900">Lugar de pago:</span>{" "}
+          {ciudadPago}
         </p>
       </div>
 
-      <article className="mt-8 space-y-5 text-justify text-[15px] leading-7 text-neutral-900">
+      <article className="mt-10 space-y-6 text-justify text-[14px] leading-7 text-neutral-900">
         <p>
           Yo, <strong>{deudorNombre}</strong>, mayor de edad, identificado(a) con
           cédula de ciudadanía No. <strong>{deudorDocumento}</strong> de{" "}
@@ -327,38 +349,48 @@ export default function PagarePreview({
         </p>
 
         <p>
-          <strong>PRIMERO. OBJETO:</strong> Que pagaré incondicionalmente, de
-          manera indivisible y a la orden de <strong>{acreedorNombre}</strong>, o
-          de quien represente sus derechos, o de quien en el futuro ostente
-          legítimamente la calidad de acreedor, la suma de{" "}
-          <strong>{valorTotalLetras}</strong> ({formatCurrency(valorTotal)}),
-          junto con los intereses corrientes y moratorios a que haya lugar, de
-          conformidad con las condiciones aquí pactadas.
+          <span className="font-semibold tracking-wide text-neutral-900">
+            PRIMERO. OBJETO:
+          </span>{" "}
+          Que pagaré incondicionalmente, de manera indivisible y a la orden de{" "}
+          <strong>{acreedorNombre}</strong>, o de quien represente sus derechos,
+          o de quien en el futuro ostente legítimamente la calidad de acreedor,
+          la suma de <strong>{valorTotalLetras}</strong>{" "}
+          ({formatCurrency(valorTotal)}), junto con los intereses corrientes y
+          moratorios a que haya lugar, de conformidad con las condiciones aquí
+          pactadas.
         </p>
 
         <p>
-          <strong>SEGUNDO. INTERESES:</strong> Sobre la suma adeudada reconoceré
-          intereses corrientes a la tasa de <strong>{interesCorriente}</strong>,
-          sin que exceda la tasa máxima legal permitida. En caso de mora en el
-          pago total o parcial de cualquiera de las cuotas pactadas, reconoceré
-          intereses moratorios a la tasa de <strong>{interesMora}</strong>,
-          liquidados sobre las sumas vencidas y no pagadas.
+          <span className="font-semibold tracking-wide text-neutral-900">
+            SEGUNDO. INTERESES:
+          </span>{" "}
+          Sobre la suma adeudada reconoceré intereses corrientes a la tasa de{" "}
+          <strong>{interesCorriente}</strong>, sin que exceda la tasa máxima legal
+          permitida. En caso de mora en el pago total o parcial de cualquiera de
+          las cuotas pactadas, reconoceré intereses moratorios a la tasa de{" "}
+          <strong>{interesMora}</strong>, liquidados sobre las sumas vencidas y no
+          pagadas.
         </p>
 
         <p>
-          <strong>TERCERO. PLAZO Y FORMA DE PAGO:</strong> La obligación
-          contenida en este pagaré será pagada en <strong>{numeroCuotas}</strong>{" "}
-          cuotas mensuales, iguales y sucesivas, cada una por valor de{" "}
-          <strong>{valorCuotaLetras}</strong> ({formatCurrency(valorCuota)}). La
-          primera cuota deberá pagarse a partir del mes de{" "}
-          <strong>{fechaPrimeraCuota}</strong> y las demás en forma mensual y
-          consecutiva hasta la cancelación total de la obligación.
+          <span className="font-semibold tracking-wide text-neutral-900">
+            TERCERO. PLAZO Y FORMA DE PAGO:
+          </span>{" "}
+          La obligación contenida en este pagaré será pagada en{" "}
+          <strong>{numeroCuotas}</strong> cuotas mensuales, iguales y sucesivas,
+          cada una por valor de <strong>{valorCuotaLetras}</strong>{" "}
+          ({formatCurrency(valorCuota)}). La primera cuota deberá pagarse a partir
+          del mes de <strong>{fechaPrimeraCuota}</strong> y las demás en forma
+          mensual y consecutiva hasta la cancelación total de la obligación.
         </p>
 
         <p>
-          <strong>CUARTO. RELACIÓN CON LA LIBRANZA:</strong> El presente pagaré
-          respalda las obligaciones derivadas de la libranza y/o autorización de
-          descuento suscrita por el deudor a favor de{" "}
+          <span className="font-semibold tracking-wide text-neutral-900">
+            CUARTO. RELACIÓN CON LA LIBRANZA:
+          </span>{" "}
+          El presente pagaré respalda las obligaciones derivadas de la libranza
+          y/o autorización de descuento suscrita por el deudor a favor de{" "}
           <strong>{acreedorNombre}</strong>. En consecuencia, el deudor reconoce
           que los pagos podrán ser recaudados mediante descuento de nómina
           conforme a la autorización otorgada de manera separada. La existencia de
@@ -367,52 +399,67 @@ export default function PagarePreview({
         </p>
 
         <p>
-          <strong>QUINTO. MORA:</strong> El simple retardo en el pago de
-          cualquiera de las cuotas pactadas constituirá en mora al deudor, sin
-          necesidad de requerimiento judicial o extrajudicial, ni constitución en
-          mora previa.
+          <span className="font-semibold tracking-wide text-neutral-900">
+            QUINTO. MORA:
+          </span>{" "}
+          El simple retardo en el pago de cualquiera de las cuotas pactadas
+          constituirá en mora al deudor, sin necesidad de requerimiento judicial o
+          extrajudicial, ni constitución en mora previa.
         </p>
 
         <p>
-          <strong>SEXTO. CLÁUSULA ACELERATORIA:</strong> El tenedor legítimo de
-          este pagaré podrá declarar vencido anticipadamente el plazo de todas las
-          cuotas pendientes y exigir de inmediato el pago total de la obligación,
-          judicial o extrajudicialmente, en cualquiera de los siguientes casos: a)
-          cuando el deudor incurra en mora en el pago de una o más cuotas; b)
-          cuando el deudor incumpla cualquiera de las obligaciones contenidas en
-          este pagaré o en la libranza relacionada; c) cuando termine, se suspenda
-          o se modifique la relación laboral o contractual que sirve de base al
-          descuento por nómina; d) cuando los descuentos de nómina no puedan
-          realizarse por cualquier causa; e) cuando se inicie proceso de
-          insolvencia, embargo o persecución judicial de bienes del deudor; f) en
-          los demás casos previstos en la ley.
+          <span className="font-semibold tracking-wide text-neutral-900">
+            SEXTO. CLÁUSULA ACELERATORIA:
+          </span>{" "}
+          El tenedor legítimo de este pagaré podrá declarar vencido
+          anticipadamente el plazo de todas las cuotas pendientes y exigir de
+          inmediato el pago total de la obligación, judicial o extrajudicialmente,
+          en cualquiera de los siguientes casos: a) cuando el deudor incurra en
+          mora en el pago de una o más cuotas; b) cuando el deudor incumpla
+          cualquiera de las obligaciones contenidas en este pagaré o en la
+          libranza relacionada; c) cuando termine, se suspenda o se modifique la
+          relación laboral o contractual que sirve de base al descuento por
+          nómina; d) cuando los descuentos de nómina no puedan realizarse por
+          cualquier causa; e) cuando se inicie proceso de insolvencia, embargo o
+          persecución judicial de bienes del deudor; f) en los demás casos
+          previstos en la ley.
         </p>
 
         <p>
-          <strong>SÉPTIMO. PAGO DIRECTO EN AUSENCIA DE DESCUENTO:</strong> En caso
-          de que por cualquier motivo no sea posible efectuar el descuento por
-          nómina, el deudor se obliga a pagar directamente las cuotas pendientes
-          en las fechas pactadas, sin que ello implique novación de la obligación
-          ni modificación de las condiciones del presente pagaré.
+          <span className="font-semibold tracking-wide text-neutral-900">
+            SÉPTIMO. PAGO DIRECTO EN AUSENCIA DE DESCUENTO:
+          </span>{" "}
+          En caso de que por cualquier motivo no sea posible efectuar el descuento
+          por nómina, el deudor se obliga a pagar directamente las cuotas
+          pendientes en las fechas pactadas, sin que ello implique novación de la
+          obligación ni modificación de las condiciones del presente pagaré.
         </p>
 
         <p>
-          <strong>OCTAVO. GASTOS DE COBRANZA:</strong> Serán a cargo del deudor
-          todos los gastos y costos que ocasione el cobro judicial o extrajudicial
-          de la obligación, incluidos honorarios de abogado, costas, agencias en
-          derecho, impuestos y demás erogaciones legalmente procedentes.
+          <span className="font-semibold tracking-wide text-neutral-900">
+            OCTAVO. GASTOS DE COBRANZA:
+          </span>{" "}
+          Serán a cargo del deudor todos los gastos y costos que ocasione el cobro
+          judicial o extrajudicial de la obligación, incluidos honorarios de
+          abogado, costas, agencias en derecho, impuestos y demás erogaciones
+          legalmente procedentes.
         </p>
 
         <p>
-          <strong>NOVENO. CESIÓN Y ENDOSO:</strong> El acreedor queda expresamente
-          facultado para ceder, negociar, endosar, transferir o enajenar a
-          cualquier título el presente pagaré y los derechos incorporados en él,
-          sin necesidad de notificación previa al deudor.
+          <span className="font-semibold tracking-wide text-neutral-900">
+            NOVENO. CESIÓN Y ENDOSO:
+          </span>{" "}
+          El acreedor queda expresamente facultado para ceder, negociar, endosar,
+          transferir o enajenar a cualquier título el presente pagaré y los
+          derechos incorporados en él, sin necesidad de notificación previa al
+          deudor.
         </p>
 
         <p>
-          <strong>DÉCIMO. AUTORIZACIÓN DE CONSULTA Y REPORTE:</strong> El deudor
-          autoriza de manera expresa, previa, informada e irrevocable a{" "}
+          <span className="font-semibold tracking-wide text-neutral-900">
+            DÉCIMO. AUTORIZACIÓN DE CONSULTA Y REPORTE:
+          </span>{" "}
+          El deudor autoriza de manera expresa, previa, informada e irrevocable a{" "}
           <strong>{acreedorNombre}</strong>, o a quien represente sus derechos, o
           a quien en el futuro ostente la calidad de acreedor, para consultar,
           reportar, procesar, solicitar, actualizar, aclarar, retirar y divulgar
@@ -424,21 +471,28 @@ export default function PagarePreview({
         </p>
 
         <p>
-          <strong>DÉCIMO PRIMERO. LUGAR DE CUMPLIMIENTO:</strong> Para todos los
-          efectos legales, el lugar de cumplimiento de las obligaciones derivadas
-          del presente pagaré será la ciudad de <strong>{ciudadPago}</strong>.
+          <span className="font-semibold tracking-wide text-neutral-900">
+            DÉCIMO PRIMERO. LUGAR DE CUMPLIMIENTO:
+          </span>{" "}
+          Para todos los efectos legales, el lugar de cumplimiento de las
+          obligaciones derivadas del presente pagaré será la ciudad de{" "}
+          <strong>{ciudadPago}</strong>.
         </p>
 
         <p>
-          <strong>DÉCIMO SEGUNDO. MÉRITO EJECUTIVO:</strong> El deudor reconoce
-          expresamente que el presente documento presta mérito ejecutivo y contiene
-          una obligación clara, expresa y exigible.
+          <span className="font-semibold tracking-wide text-neutral-900">
+            DÉCIMO SEGUNDO. MÉRITO EJECUTIVO:
+          </span>{" "}
+          El deudor reconoce expresamente que el presente documento presta mérito
+          ejecutivo y contiene una obligación clara, expresa y exigible.
         </p>
 
         <p>
-          <strong>DÉCIMO TERCERO. ACEPTACIÓN:</strong> Declaro que he leído,
-          entendido y aceptado integralmente el contenido del presente pagaré, y
-          que lo suscribo de manera libre y voluntaria.
+          <span className="font-semibold tracking-wide text-neutral-900">
+            DÉCIMO TERCERO. ACEPTACIÓN:
+          </span>{" "}
+          Declaro que he leído, entendido y aceptado integralmente el contenido
+          del presente pagaré, y que lo suscribo de manera libre y voluntaria.
         </p>
 
         <p>
@@ -447,47 +501,60 @@ export default function PagarePreview({
         </p>
       </article>
 
-      <div className="mt-12 grid gap-10 md:grid-cols-2">
+      <div className="mt-14 grid gap-12 md:grid-cols-2">
         <div>
-          <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-neutral-600">
+          <h3 className="mb-6 text-[12px] font-semibold uppercase tracking-[0.15em] text-neutral-600">
             El deudor
           </h3>
-          <SignatureBlock signer={deudorSigner} signature={deudorSignature} />
-          <div className="mt-3 text-sm text-neutral-700">
+
+          <div className="min-h-27.5">
+            <SignatureBlock signer={deudorSigner} signature={deudorSignature} />
+          </div>
+
+          <div className="mt-3 w-full max-w-[320px] border-t border-neutral-400 pt-3 text-sm text-neutral-700">
             <p>
-              <span className="font-medium">Nombre:</span> {deudorNombre}
+              <span className="font-medium text-neutral-900">Nombre:</span>{" "}
+              {deudorNombre}
             </p>
             <p>
-              <span className="font-medium">C.C.:</span> {deudorDocumento} de{" "}
-              {deudorDocumentoDe}
+              <span className="font-medium text-neutral-900">C.C.:</span>{" "}
+              {deudorDocumento} de {deudorDocumentoDe}
             </p>
           </div>
         </div>
 
         <div>
-          <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-neutral-600">
+          <h3 className="mb-6 text-[12px] font-semibold uppercase tracking-[0.15em] text-neutral-600">
             El acreedor
           </h3>
-          <SignatureBlock signer={acreedorSigner} signature={acreedorSignature} />
-          <div className="mt-3 text-sm text-neutral-700">
+
+          <div className="min-h-27.5">
+            <SignatureBlock signer={acreedorSigner} signature={acreedorSignature} />
+          </div>
+
+          <div className="mt-3 w-full max-w-[320px] border-t border-neutral-400 pt-3 text-sm text-neutral-700">
             <p>
-              <span className="font-medium">Razón social:</span> {acreedorNombre}
+              <span className="font-medium text-neutral-900">
+                Razón social:
+              </span>{" "}
+              {acreedorNombre}
             </p>
             <p>
-              <span className="font-medium">NIT:</span> {acreedorNit}
+              <span className="font-medium text-neutral-900">NIT:</span>{" "}
+              {acreedorNit}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="mt-5 overflow-hidden rounded-2xl border border-border-soft bg-white shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
-        <div className="h-1 bg-linear-to-r from-gold to-gold-dark" />
+      <div className="mt-10 overflow-hidden rounded-md border border-neutral-300 bg-white shadow-[0_4px_18px_rgba(0,0,0,0.05)]">
+        <div className="h-0.5 bg-neutral-800" />
 
-        <div className="relative px-8 py-7">
+        <div className="relative px-6 py-6 md:px-8">
           {saving && (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-2xl bg-white/80 backdrop-blur-sm">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/85 backdrop-blur-sm">
               <svg
-                className="h-8 w-8 animate-spin text-gold"
+                className="h-8 w-8 animate-spin text-neutral-700"
                 viewBox="0 0 24 24"
                 fill="none"
               >
@@ -505,7 +572,7 @@ export default function PagarePreview({
                   d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                 />
               </svg>
-              <p className="text-[13px] font-semibold text-ink">
+              <p className="text-[13px] font-semibold text-neutral-800">
                 Guardando firma del pagaré...
               </p>
             </div>
@@ -514,13 +581,13 @@ export default function PagarePreview({
           {showReadonlyMode ? (
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#e8f5ee]">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50">
                   <svg
                     width="22"
                     height="22"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#2d6a4f"
+                    stroke="#166534"
                     strokeWidth={2.5}
                   >
                     <path
@@ -532,35 +599,36 @@ export default function PagarePreview({
                 </div>
 
                 <div>
-                  <h3 className="m-0 font-serif text-[17px] text-ink">
+                  <h3 className="m-0 text-[17px] font-semibold text-neutral-900">
                     {mode === "view"
                       ? "Pagaré firmado"
                       : "¡Pagaré firmado correctamente!"}
                   </h3>
-                  <p className="mt-1 mb-0 text-[13px]">
+
+                  <p className="mt-1 mb-0 text-[13px] text-neutral-600">
                     {mode === "view"
                       ? "Este pagaré ya fue firmado y se muestra en modo solo lectura."
                       : "Tu firma ha sido registrada correctamente."}
                   </p>
 
-                  <p className="mt-2 mb-0 text-[12px] ">
+                  <p className="mt-2 mb-0 text-[12px] text-neutral-600">
                     Número de pagaré:{" "}
-                    <span className="font-semibold text-ink">
+                    <span className="font-semibold text-neutral-900">
                       {pagare.number}
                     </span>
                   </p>
 
                   {pagare.signedAt ? (
-                    <p className="mt-1 mb-0 text-[12px] ">
+                    <p className="mt-1 mb-0 text-[12px] text-neutral-600">
                       Fecha de firma:{" "}
-                      <span className="font-semibold text-ink">
+                      <span className="font-semibold text-neutral-900">
                         {formatDateTimeText(pagare.signedAt)}
                       </span>
                     </p>
                   ) : (
-                    <p className="mt-1 mb-0 text-[12px] ">
+                    <p className="mt-1 mb-0 text-[12px] text-neutral-600">
                       Estado:{" "}
-                      <span className="font-semibold text-ink">
+                      <span className="font-semibold text-neutral-900">
                         Listo para firma
                       </span>
                     </p>
@@ -571,17 +639,16 @@ export default function PagarePreview({
           ) : (
             <div>
               <div
-                className={`flex flex-wrap items-center justify-between gap-4 ${
-                  showPad ? "mb-5" : ""
-                }`}
+                className={`flex flex-wrap items-center justify-between gap-4 ${showPad ? "mb-5" : ""
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <span className="text-[22px]">✍️</span>
                   <div>
-                    <h2 className="m-0 font-serif text-[19px] text-ink">
+                    <h2 className="m-0 text-[18px] font-semibold text-neutral-900">
                       Firmar Pagaré
                     </h2>
-                    <p className="mt-0.75 mb-0 text-[13px]">
+                    <p className="mt-1 mb-0 text-[13px] text-neutral-600">
                       Pagaré No. {pagare.number} listo para firma
                     </p>
                   </div>
@@ -590,21 +657,21 @@ export default function PagarePreview({
                 {!showPad && (
                   <button
                     onClick={() => setShowPad(true)}
-                    className="cursor-pointer rounded-lg border-none bg-ink px-6 py-2.5 text-[13px] font-semibold text-gold"
+                    className="cursor-pointer rounded-md border border-neutral-800 bg-neutral-900 px-6 py-2.5 text-[13px] font-semibold text-white transition hover:bg-neutral-800"
                   >
-                    ✍️ Firmar ahora
+                    Firmar ahora
                   </button>
                 )}
               </div>
 
               {showPad && (
                 <div>
-                  <div className="rounded-xl border border-border-soft bg-[#fcfcfc] p-4">
+                  <div className="rounded-md border border-neutral-300 bg-neutral-50 p-4">
                     <SignaturePad onSave={handleSign} disabled={saving} />
                   </div>
 
                   {error && (
-                    <p className="mt-3 text-[13px] font-medium text-[#8b3a3a]">
+                    <p className="mt-3 text-[13px] font-medium text-red-700">
                       ⚠ {error}
                     </p>
                   )}
@@ -615,7 +682,7 @@ export default function PagarePreview({
                         setShowPad(false);
                         setError("");
                       }}
-                      className="cursor-pointer rounded-lg border border-border-soft bg-red-500 px-4 py-1.5 text-xs text-white"
+                      className="cursor-pointer rounded-md border border-neutral-300 bg-white px-4 py-2 text-xs font-medium text-neutral-700 transition hover:bg-neutral-100"
                     >
                       Cancelar
                     </button>

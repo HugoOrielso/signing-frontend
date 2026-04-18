@@ -155,7 +155,6 @@ export default function LibranzaStepForm() {
     },
     { value: "PENSIONADO", label: "Pensionado" },
   ];
-  console.log("tipoContrato actual:", form.tipoContrato);
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 

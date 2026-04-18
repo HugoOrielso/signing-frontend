@@ -41,9 +41,9 @@ export default function UserSidebar() {
     const { href, label, icon: Icon, children = [] } = link;
 
     const hasChildren = children.length > 0;
-    const isOpen = openMenus[href] ?? false;
     const isActive = pathname === href;
     const isChildActive = children.some((child) => pathname === child.href);
+    const isOpen = openMenus[href] ?? isChildActive;
 
     if (hasChildren && state === "expanded") {
       return (
@@ -51,38 +51,40 @@ export default function UserSidebar() {
           <SidebarMenuButton
             onClick={() => toggleMenu(href)}
             className={cn(
-              "w-full border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-pointer",
+              "w-full cursor-pointer rounded-xl border border-transparent shadow-none transition-all duration-200",
+              "hover:bg-slate-100 hover:text-slate-900",
+              "focus-visible:ring-0 focus-visible:ring-offset-0",
               (isActive || isChildActive) &&
-              "text-main hover:bg-gray-50 hover:text-main"
+              "border-blue-100 bg-blue-50 text-blue-700"
             )}
           >
-            <Icon className="w-5 h-5 shrink-0" />
+            <Icon className="h-5 w-5 shrink-0" />
             <span className="flex-1 text-sm font-medium">{label}</span>
             {isOpen ? (
-              <ChevronDown className="w-4 h-4 shrink-0" />
+              <ChevronDown className="h-4 w-4 shrink-0" />
             ) : (
-              <ChevronRight className="w-4 h-4 shrink-0" />
+              <ChevronRight className="h-4 w-4 shrink-0" />
             )}
           </SidebarMenuButton>
 
           {isOpen && (
-            <SidebarMenu className="ml-4 mt-1 border-l border-gray-200 dark:border-white/10 pl-2">
+            <SidebarMenu className="ml-4 mt-2 space-y-1 border-l border-blue-100 pl-3">
               {children.map(
                 ({ href: childHref, label: childLabel, icon: ChildIcon }) => (
                   <SidebarMenuItem key={childHref}>
                     <SidebarMenuButton
                       asChild
-                      className={cn(
-                        "border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:ring-0 focus-visible:ring-offset-0",
-                        pathname === childHref &&
-                        "text-main hover:bg-gray-50 hover:text-main"
-                      )}
+                      className="rounded-lg border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
                     >
                       <Link
                         href={childHref}
-                        className="flex items-center gap-3 py-2 text-sm font-medium transition"
+                        className={cn(
+                          "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition",
+                          "hover:bg-slate-100",
+                          pathname === childHref && "bg-blue-50 text-blue-700"
+                        )}
                       >
-                        <ChildIcon className="w-4 h-4 shrink-0" />
+                        <ChildIcon className="h-4 w-4 shrink-0" />
                         <span>{childLabel}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -103,21 +105,24 @@ export default function UserSidebar() {
               <SidebarMenuButton
                 tooltip={label}
                 className={cn(
-                  "w-full border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-pointer justify-center",
-                  (isActive || isChildActive) &&
-                  "text-main hover:bg-gray-50 hover:text-main"
+                  "w-full justify-center rounded-xl border border-transparent shadow-none transition-all",
+                  "hover:bg-slate-100",
+                  "focus-visible:ring-0 focus-visible:ring-offset-0",
+                  (isActive || isChildActive) && "bg-blue-50 text-blue-700"
                 )}
               >
-                <Icon className="w-5 h-5 shrink-0" />
+                <Icon className="h-5 w-5 shrink-0" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
               side="right"
               align="start"
-              className="w-64 rounded-xl p-2"
+              className="w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-xl"
             >
-              <div className="px-2 py-2 text-sm font-semibold">{label}</div>
+              <div className="px-2 py-2 text-sm font-semibold text-slate-900">
+                {label}
+              </div>
 
               <div className="mt-1 flex flex-col gap-1">
                 {children.map((sub) => {
@@ -129,11 +134,12 @@ export default function UserSidebar() {
                       key={sub.href}
                       href={sub.href}
                       className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition hover:bg-gray-100 dark:hover:bg-white/10",
-                        subActive && "text-main hover:bg-gray-50 hover:text-main"
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition",
+                        "hover:bg-slate-100",
+                        subActive && "bg-blue-50 text-blue-700"
                       )}
                     >
-                      <SubIcon className="w-4 h-4 shrink-0" />
+                      <SubIcon className="h-4 w-4 shrink-0" />
                       <span>{sub.label}</span>
                     </Link>
                   );
@@ -151,15 +157,17 @@ export default function UserSidebar() {
           asChild
           tooltip={state === "collapsed" ? label : undefined}
           className={cn(
-            "border-none shadow-none hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:ring-0 focus-visible:ring-offset-0",
-            isActive && "text-main hover:bg-gray-50 hover:text-main"
+            "rounded-xl border border-transparent shadow-none transition-all duration-200",
+            "hover:bg-slate-100 hover:text-slate-900",
+            "focus-visible:ring-0 focus-visible:ring-offset-0",
+            isActive && "border-blue-100 bg-blue-50 text-blue-700"
           )}
         >
           <Link
             href={href}
-            className="flex items-center gap-3 py-3 text-sm font-medium transition"
+            className="flex items-center gap-3 py-2.5 text-sm font-medium transition"
           >
-            <Icon className="w-5 h-5 shrink-0" />
+            <Icon className="h-5 w-5 shrink-0" />
             <span>{label}</span>
           </Link>
         </SidebarMenuButton>
@@ -168,12 +176,19 @@ export default function UserSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon" className="hidden lg:flex"  >
-      <SidebarHeader className="bg-white dark:bg-[#0A0A0A]">
-        <div className="flex items-center px-2 py-1 group-data-[collapsible=icon]:justify-center">
-          <span className="group-data-[collapsible=icon]:hidden text-main font-semibold">
-            Dimcultura
-          </span>
+    <Sidebar
+      collapsible="icon"
+      className="hidden border-r border-slate-200 bg-white lg:flex"
+    >
+      <SidebarHeader className="bg-white">
+        <div className="flex items-center gap-3 p-1 group-data-[collapsible=icon]:justify-center">
+          <div className="flex size-8 items-center justify-center rounded-2xl bg-linear-to-br from-blue-700 to-blue-500 text-white shadow-[0_12px_24px_rgba(37,99,235,0.22)]">
+            <span className="text-sm font-bold">D</span>
+          </div>
+
+          <div className="group-data-[collapsible=icon]:hidden">
+            <p className="text-sm font-semibold text-slate-900">Dimcultura</p>
+          </div>
         </div>
       </SidebarHeader>
 
@@ -185,8 +200,10 @@ export default function UserSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 border-t border-gray-200 dark:border-white/10">
-        <LogoutButton />
+      <SidebarFooter className="border-t border-slate-200 p-3">
+        <div className="rounded-2xl bg-slate-50 p-2">
+          <LogoutButton />
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

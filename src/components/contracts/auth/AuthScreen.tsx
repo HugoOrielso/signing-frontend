@@ -1,5 +1,6 @@
 "use client";
 
+import { BackgroundDecor } from "@/components/common/backgroudDecor";
 import OtpComponent from "@/components/otp/OtpComponent";
 import publicApiNew from "@/lib/publicAxios";
 import { AxiosError } from "axios";
@@ -18,9 +19,8 @@ function isEmail(value: string) {
 function normalizePhone(value: string) {
   let digits = value.replace(/\D/g, "");
 
-  // Si escriben 3001234567 => 573001234567
   if (digits.length === 10) {
-    digits = `57${digits}`;
+    digits = `${digits}`;
   }
 
   return digits;
@@ -144,142 +144,177 @@ export default function AuthScreen() {
     detectedChannel === "PHONE" ? "Teléfono" : "Correo o teléfono";
 
   return (
-    <div className="min-h-dvh grid grid-rows-[auto_1fr] w-full h-full">
-      <div className="text-center mb-7 flex items-center justify-start px-4 border-b shadow">
-        <div className="flex items-center">
-          <Image src={"/assets/logo.webp"} alt="logo" width={35} height={35} />
-          <div>
-            <div className="font-serif text-start text-ink font-bold">
-              Dimcultura <em className="text-gold-dark">S.A.S</em>
+    <div className="relative min-h-dvh overflow-hidden bg-white text-slate-900">
+      <BackgroundDecor />
+
+      <div className="relative z-10 grid min-h-dvh grid-rows-[auto_1fr]">
+        <header className="sticky top-0 z-30 border-b border-white/20 bg-white/70 px-4 backdrop-blur-xl supports-backdrop-filter:bg-white/60">
+          <div className="mx-auto flex max-w-7xl items-center justify-between py-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-linear-to-br from-blue-700 to-blue-500 shadow-[0_16px_35px_rgba(37,99,235,0.20)]">
+                <Image src="/assets/logo.webp" alt="logo" width={24} height={24} />
+              </div>
+
+              <div>
+                <div className="text-sm font-semibold text-slate-900">
+                  Dimcultura S.A.S
+                </div>
+                <p className="text-xs text-slate-500">
+                  Acceso seguro de verificación
+                </p>
+              </div>
             </div>
-            <p className="text-sm italic">
-              &ldquo;Un mundo en el que debes estar&rdquo;
-            </p>
+
+            <div className="hidden md:flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50/80 px-3 py-1.5 text-xs text-blue-700">
+              Verificación activa
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            </div>
           </div>
-        </div>
-      </div>
+        </header>
 
-      <div className="w-full flex items-center justify-center">
-        <div className="max-w-105">
-          <div className="bg-white rounded-sm border shadow-[0_8px_40px_rgba(26,26,46,0.1)] overflow-hidden">
-            <div className="h-1 bg-linear-to-r from-blue-600 via-blue-700 to-ink" />
+        <div className="flex items-center justify-center px-4 py-10">
+          <div className="w-full max-w-md">
+            <div className="overflow-hidden rounded-[30px] border border-slate-200/80 bg-white/85 shadow-[0_30px_80px_rgba(15,23,42,0.10)] backdrop-blur-xl">
+              <div className="h-1.5 bg-linear-to-r from-blue-700 via-blue-500 to-indigo-500" />
 
-            <div className="px-8 py-9">
-              {authStep === "identifier" ? (
-                <form onSubmit={handleRequestOtp}>
-                  <h1 className="font-serif text-[21px] text-ink text-center mb-2">
-                    Verificar Identidad
-                  </h1>
+              <div className="px-8 py-9">
+                {authStep === "identifier" ? (
+                  <form onSubmit={handleRequestOtp}>
+                    <div className="mb-7 text-center">
+                      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
+                        <span className="text-lg font-bold">ID</span>
+                      </div>
 
-                  <p className="text-[13px] text-center leading-relaxed mb-7">
-                    Ingresa tu correo o teléfono para recibir tu código de acceso.
-                  </p>
+                      <h1 className="text-[28px] font-semibold tracking-tight text-slate-900">
+                        Verificar identidad
+                      </h1>
 
-                  <label className="text-[11px] font-semibold uppercase tracking-widest block mb-2">
-                    {identifierLabel}
-                  </label>
-
-                  <input
-                    type="text"
-                    required
-                    placeholder="tu@correo.com o 3001234567"
-                    value={identifier}
-                    onChange={(e) => {
-                      setIdentifier(e.target.value);
-                      setError("");
-                    }}
-                    disabled={loading}
-                    autoFocus
-                    className={`w-full border rounded-[10px] px-3.5 py-3 text-sm text-ink outline-none bg-white box-border transition-colors
-                      ${error ? "border-red-300" : "border-border-soft"}`}
-                  />
-
-                  {error && <p className="text-xs text-red-600 mt-2">⚠ {error}</p>}
-
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className={`w-full mt-5 py-3.25 rounded-[10px] border-none text-gold text-sm font-semibold transition-all duration-200
-                      ${loading ? "bg-[#2d2d4e] cursor-not-allowed" : "bg-ink cursor-pointer"}`}
-                  >
-                    {loading ? "Enviando código…" : "Enviar código →"}
-                  </button>
-                </form>
-              ) : (
-                <>
-                  <button
-                    onClick={() => {
-                      setAuthStep("identifier");
-                      setOtp("");
-                      setError("");
-                    }}
-                    className="flex items-center gap-1 bg-transparent border-none cursor-pointer text-xs mb-5 p-0"
-                  >
-                    ← Cambiar dato
-                  </button>
-
-                  <h1 className="font-serif text-[21px] text-ink text-center mb-2">
-                    Código de Verificación
-                  </h1>
-
-                  <p className="text-[13px] text-center leading-relaxed mb-1">
-                    Enviamos un código a
-                  </p>
-
-                  <p className="text-sm font-semibold text-ink text-center mb-1">
-                    {maskedDestination || identifier}
-                  </p>
-
-                  <p className="text-xs text-center text-slate-500 mb-7">
-                    vía {channel === "PHONE" ? "SMS" : "correo electrónico"}
-                  </p>
-
-                  <OtpComponent
-                    value={otp}
-                    onChange={(v) => {
-                      setOtp(v);
-                      setError("");
-                    }}
-                    disabled={loading}
-                  />
-
-                  {error && (
-                    <p className="text-xs text-red-600 text-center mt-3">⚠ {error}</p>
-                  )}
-
-                  <button
-                    onClick={handleVerify}
-                    disabled={!otpComplete || loading}
-                    className={`w-full mt-6 py-3.25 rounded-[10px] border-none text-sm font-semibold transition-all duration-200
-                      ${
-                        otpComplete && !loading
-                          ? "bg-ink text-gold cursor-pointer"
-                          : "bg-[#e8e4da] cursor-not-allowed"
-                      }`}
-                  >
-                    {loading ? "Verificando…" : "Verificar y acceder →"}
-                  </button>
-
-                  <div className="text-center mt-5">
-                    {countdown > 0 ? (
-                      <p className="text-xs text-border-soft m-0">
-                        Reenviar en {countdown}s
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        Ingresa tu correo o teléfono para recibir un código de acceso.
                       </p>
-                    ) : (
-                      <button
-                        onClick={() => handleRequestOtp()}
-                        className="bg-transparent border-none cursor-pointer text-gold-dark text-xs font-semibold"
-                      >
-                        ¿No recibiste el código? Reenviar →
-                      </button>
-                    )}
-                  </div>
-                </>
-              )}
+                    </div>
 
-              <p className="text-center text-[11px] mt-5">
-                Acceso exclusivo para usuarios
-              </p>
+                    <label className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      {identifierLabel}
+                    </label>
+
+                    <input
+                      type="text"
+                      required
+                      placeholder="tu@correo.com o 3001234567"
+                      value={identifier}
+                      onChange={(e) => {
+                        setIdentifier(e.target.value);
+                        setError("");
+                      }}
+                      disabled={loading}
+                      autoFocus
+                      className={`h-12 w-full rounded-2xl border bg-white px-4 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 ${
+                        error
+                          ? "border-red-300 ring-4 ring-red-50"
+                          : "border-slate-200 shadow-sm focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                      }`}
+                    />
+
+                    {error && (
+                      <p className="mt-2 text-xs text-red-600">⚠ {error}</p>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className={`mt-5 inline-flex h-12 w-full items-center justify-center rounded-2xl text-sm font-semibold text-white transition-all ${
+                        loading
+                          ? "cursor-not-allowed bg-slate-400"
+                          : "bg-linear-to-r from-blue-700 to-blue-500 shadow-[0_16px_35px_rgba(37,99,235,0.22)] hover:scale-[1.01]"
+                      }`}
+                    >
+                      {loading ? "Enviando código…" : "Enviar código"}
+                    </button>
+                  </form>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        setAuthStep("identifier");
+                        setOtp("");
+                        setError("");
+                      }}
+                      className="mb-5 text-xs font-medium text-blue-700 transition hover:text-blue-800"
+                    >
+                      ← Cambiar dato
+                    </button>
+
+                    <div className="mb-7 text-center">
+                      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
+                        <span className="text-lg font-bold">OTP</span>
+                      </div>
+
+                      <h1 className="text-[28px] font-semibold tracking-tight text-slate-900">
+                        Código de verificación
+                      </h1>
+
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        Enviamos un código a
+                      </p>
+
+                      <p className="mt-1 text-sm font-semibold text-slate-900">
+                        {maskedDestination || identifier}
+                      </p>
+
+                      <p className="mt-1 text-xs text-slate-500">
+                        vía {channel === "PHONE" ? "SMS" : "correo electrónico"}
+                      </p>
+                    </div>
+
+                    <OtpComponent
+                      value={otp}
+                      onChange={(v) => {
+                        setOtp(v);
+                        setError("");
+                      }}
+                      disabled={loading}
+                    />
+
+                    {error && (
+                      <p className="mt-3 text-center text-xs text-red-600">
+                        ⚠ {error}
+                      </p>
+                    )}
+
+                    <button
+                      onClick={handleVerify}
+                      disabled={!otpComplete || loading}
+                      className={`mt-6 inline-flex h-12 w-full items-center justify-center rounded-2xl text-sm font-semibold text-white transition-all ${
+                        otpComplete && !loading
+                          ? "bg-linear-to-r from-blue-700 to-blue-500 shadow-[0_16px_35px_rgba(37,99,235,0.22)] hover:scale-[1.01]"
+                          : "cursor-not-allowed bg-slate-300"
+                      }`}
+                    >
+                      {loading ? "Verificando…" : "Verificar y acceder"}
+                    </button>
+
+                    <div className="mt-5 text-center">
+                      {countdown > 0 ? (
+                        <p className="text-xs text-slate-500">
+                          Reenviar en {countdown}s
+                        </p>
+                      ) : (
+                        <button
+                          onClick={() => handleRequestOtp()}
+                          className="text-xs font-semibold text-blue-700 transition hover:text-blue-800"
+                        >
+                          ¿No recibiste el código? Reenviar
+                        </button>
+                      )}
+                    </div>
+                  </>
+                )}
+
+                <p className="mt-6 text-center text-[11px] text-slate-500">
+                  Acceso exclusivo para usuarios autorizados
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -287,3 +322,4 @@ export default function AuthScreen() {
     </div>
   );
 }
+

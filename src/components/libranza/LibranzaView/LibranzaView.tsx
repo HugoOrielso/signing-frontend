@@ -39,10 +39,7 @@ type Step = "loading" | "view" | "error";
 export default function PublicContractView({ token, pageMode }: Props) {
   const [step, setStep] = useState<Step>("loading");
   const [contract, setContract] = useState<ContractData | null>(null);
-  console.log(contract?.isSigned)
   const [signatures, setSignatures] = useState<LibranzaSignature[]>([]);
-
-  
 
   useEffect(() => {
     const load = async () => {
@@ -89,11 +86,17 @@ export default function PublicContractView({ token, pageMode }: Props) {
             token={token}
             onSigned={() =>
               setContract((prev) =>
-                prev ? { ...prev, status: "SIGNED" } : prev
+                prev
+                  ? {
+                    ...prev,
+                    status: "SIGNED",
+                    isSigned: true,
+                  }
+                  : prev
               )
             }
           />
-        ) :  (
+        ) : (
           <PagarePreview
             contract={contract}
             signers={contract.signers}
@@ -106,7 +109,7 @@ export default function PublicContractView({ token, pageMode }: Props) {
               )
             }
           />
-        ) }
+        )}
       </div>
     </div>
   );

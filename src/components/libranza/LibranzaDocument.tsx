@@ -1,16 +1,15 @@
-import {  LibranzaDataPreview, LibranzaSignature, LibranzaSigner } from "@/types/libranza";
+import { LibranzaDataPreview, LibranzaSignature, LibranzaSigner } from "@/types/libranza";
 import { LibranzaHeader } from "./LibranzaDocument/LibranzaHeader";
 import { LibranzaBody } from "./LibranzaDocument/LibranzaBody";
 import { LibranzaSignatureSection } from "./LibranzaDocument/LibranzaSignatureSection";
 import { LibranzaProductsTable } from "./LibranzaDocument/LibranzaProductsTable";
-import { LibranzaPaymentSection } from "./LibranzaDocument/LibranzaPaymentSection";
 
 interface Props {
   data: LibranzaDataPreview;
   signatures?: LibranzaSignature[];
   signers?: LibranzaSigner[];
   showSignatureZone: boolean;
-  templateKey?:string
+  templateKey?: string
 }
 
 export function LibranzaDocument({
@@ -21,9 +20,9 @@ export function LibranzaDocument({
   templateKey
 }: Props) {
   return (
-    <div className="text-[11px] text-white w-full p-1 bg-white">
+    <div className="w-full bg-white p-6 text-[11px] text-black">
       <LibranzaHeader data={data} templateKey={templateKey} />
-      <LibranzaBody data={data}  templateKey={templateKey ?? ''} />
+      <LibranzaBody data={data} templateKey={templateKey ?? ''} />
       <LibranzaSignatureSection
         data={data}
         signatures={signatures}
@@ -31,7 +30,6 @@ export function LibranzaDocument({
         showSignatureZone={showSignatureZone}
       />
       <LibranzaProductsTable productos={data.productos ?? []} />
-      <LibranzaPaymentSection data={data} />
     </div>
   );
 }

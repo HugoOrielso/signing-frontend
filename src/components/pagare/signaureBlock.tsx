@@ -8,8 +8,8 @@ export function SignatureBlock({
   signature?: LibranzaSignature;
 }) {
   return (
-    <div className="flex min-h-[120px] flex-col justify-end border-t border-neutral-300 pt-3">
-      <div className="min-h-[56px]">
+    <div className="flex min-h-30 flex-col justify-end border-t border-neutral-300 pt-3">
+      <div className="min-h-14">
         {signature?.type === "DRAWN" && signature.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img

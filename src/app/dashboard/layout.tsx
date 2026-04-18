@@ -1,10 +1,14 @@
 // DashboardLayout.tsx
 import SessionInitializer from "@/components/dashboard/SessionInitializer";
 import DashboardSidebar from "@/components/dashboard/Sidebar";
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/common/sidebar";
+import {
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from "@/components/ui/common/sidebar";
 import { TooltipProvider } from "@/components/ui/common/tooltip";
 
-import { PrimeReactProvider } from 'primereact/api';
+import { PrimeReactProvider } from "primereact/api";
 
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 
@@ -20,14 +24,48 @@ export default async function DashboardLayout({
         <TooltipProvider>
           <DashboardSidebar />
 
-          <SidebarInset>
-            {/* Header dentro del main — visible en desktop y mobile */}
-            <header className="flex p-2.5 shrink-0 items-center gap-3 border-b bg-white dark:bg-[#0A0A0A] ">
-              {/* ✅ SidebarTrigger aquí, fuera del Sidebar, controla el collapse */}
-              <SidebarTrigger className="cursor-pointer border-none shadow-none bg-transparent hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0" />
+          <SidebarInset className="bg-slate-50/60">
+            <header
+              className="
+                sticky top-0 z-40
+                flex shrink-0 items-center justify-between
+                border-b border-white/20
+                bg-white/70 px-4 py-2.5
+                backdrop-blur-xl
+                supports-backdrop-filter:bg-white/60
+                md:px-6
+              "
+            >
+              {/* capa visual suave */}
+              <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-white/80 via-white/60 to-white/80" />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-slate-200 to-transparent" />
+
+              {/* IZQUIERDA */}
+              <div className="relative z-10 flex items-center gap-3">
+                <SidebarTrigger className="cursor-pointer rounded-xl border border-transparent bg-white/40 p-2 transition hover:bg-white/70" />
+
+                <div className="hidden md:block">
+                  <p className="text-sm text-slate-500">Panel administrativo</p>
+                </div>
+              </div>
+
+              {/* DERECHA */}
+              <div className="relative z-10 flex items-center gap-3">
+                <div className="hidden items-center gap-2 rounded-full border border-white/40 bg-white/50 px-3 py-1.5 text-xs text-slate-600 shadow-sm backdrop-blur md:flex">
+                  Sistema activo
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                </div>
+
+                <div className="flex items-center gap-2 rounded-full border border-white/40 bg-white/50 px-3 py-1.5 text-sm shadow-sm backdrop-blur">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
+                    A
+                  </span>
+                  Admin
+                </div>
+              </div>
             </header>
 
-            <main className="flex-1 overflow-y-auto">
+            <main className="flex-1 overflow-y-auto ">
               {children}
             </main>
           </SidebarInset>
