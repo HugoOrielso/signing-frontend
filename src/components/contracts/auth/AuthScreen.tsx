@@ -172,12 +172,12 @@ export default function AuthScreen() {
           </div>
         </header>
 
-        <div className="flex items-center justify-center px-4 py-10">
+        <div className="flex items-center justify-center p-2">
           <div className="w-full max-w-md">
             <div className="overflow-hidden rounded-[30px] border border-slate-200/80 bg-white/85 shadow-[0_30px_80px_rgba(15,23,42,0.10)] backdrop-blur-xl">
               <div className="h-1.5 bg-linear-to-r from-blue-700 via-blue-500 to-indigo-500" />
 
-              <div className="px-8 py-9">
+              <div className="p-2">
                 {authStep === "identifier" ? (
                   <form onSubmit={handleRequestOtp}>
                     <div className="mb-7 text-center">
@@ -185,7 +185,7 @@ export default function AuthScreen() {
                         <span className="text-lg font-bold">ID</span>
                       </div>
 
-                      <h1 className="text-[28px] font-semibold tracking-tight text-slate-900">
+                      <h1 className="text-[20px] font-semibold tracking-tight text-slate-900">
                         Verificar identidad
                       </h1>
 
@@ -246,7 +246,7 @@ export default function AuthScreen() {
                     </button>
 
                     <div className="mb-7 text-center">
-                      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
+                      <div className="mx-auto mb-4 flex  items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
                         <span className="text-lg font-bold">OTP</span>
                       </div>
 

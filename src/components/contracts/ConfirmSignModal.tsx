@@ -14,13 +14,13 @@ export function ConfirmSignModal({ signerName, onConfirm, onCancel, confirming }
       <div className="bg-white rounded-[20px] w-full max-w-130 overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.25)]">
 
         {/* Top gradient bar */}
-        <div className="h-1.25 bg-linear-to-r from-gold via-gold-dark to-ink" />
+        <div className="h-1.25 bg-linear-to-r from-blue-500 via-blue-700 to-ink" />
 
-        <div className="px-8 pt-7">
+        <div className="p-3">
 
           {/* Title row */}
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-11 h-11 rounded-full bg-cream flex items-center justify-center shrink-0">
+            <div className="rounded-full flex items-center justify-center shrink-0">
               <span className="text-[22px]">✍️</span>
             </div>
             <div>
@@ -93,14 +93,14 @@ export function ConfirmSignModal({ signerName, onConfirm, onCancel, confirming }
           <button
             onClick={onCancel}
             disabled={confirming}
-            className="flex-1 py-3 rounded-[10px] border border-border-soft  text-muted text-[13px] font-semibold cursor-pointer bg-red-500 "
+            className="flex-1 py-3 rounded-[10px] border border-border-soft  text-muted text-[10px] font-semibold cursor-pointer bg-red-500 "
           >
             Cancelar
           </button>
           <button
             onClick={onConfirm}
             disabled={!accepted || confirming}
-            className={`flex-2 py-3 rounded-[10px] border-none text-[13px] font-semibold flex items-center justify-center gap-2 transition-all duration-200
+            className={`flex-2 py-3 rounded-[10px] border-none text-[10px] font-semibold flex items-center justify-center gap-2 transition-all duration-200
               ${accepted && !confirming
                 ? "bg-ink text-gold cursor-pointer"
                 : "bg-[#e8e4da] text-muted cursor-not-allowed"
@@ -108,7 +108,7 @@ export function ConfirmSignModal({ signerName, onConfirm, onCancel, confirming }
           >
             {confirming ? (
               <>
-                <div className="w-3.5 h-3.5 rounded-full border-2 border-gold border-t-transparent animate-spin" />
+                <div className="w-3.5 h-3.5 rounded-full  border border-t-transparent animate-spin" />
                 Registrando firma…
               </>
             ) : (

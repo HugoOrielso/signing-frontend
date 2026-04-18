@@ -1,31 +1,56 @@
-// hooks/useDocumentScale.ts
-import { useEffect, useRef, useState } from 'react';
+"use client";
 
-const DOC_WIDTH = 816;  // 8.5in a 96dpi
-const DOC_HEIGHT = 1056; // 11in a 96dpi
+import { useEffect, useRef, useState } from "react";
 
 export function useDocumentScale() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const DOC_WIDTH = 794;   // ejemplo A4 render base
+  const DOC_HEIGHT = 1123;
+
   const [scale, setScale] = useState(1);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    const el = containerRef.current;
+    if (!el) return;
 
-    const observer = new ResizeObserver(([entry]) => {
-      const availableWidth = entry.contentRect.width;
-      const availableHeight = entry.contentRect.height;
+    const updateScale = () => {
+      const containerWidth = el.clientWidth;
 
-      const scaleX = availableWidth / DOC_WIDTH;
-      const scaleY = availableHeight / DOC_HEIGHT;
+      // padding visual aproximado del contenedor
+      const horizontalPadding = window.innerWidth < 640 ? 16 : 32;
 
-      // Usa el menor para que quepa completo
-      setScale(Math.min(scaleX, scaleY, 1)); // max 1 = no agrandar
-    });
+      const availableWidth = containerWidth - horizontalPadding;
 
-    observer.observe(container);
-    return () => observer.disconnect();
+      const nextScale = availableWidth / DOC_WIDTH;
+
+      // En móvil no lo dejes demasiado pequeño.
+      // En desktop tampoco exageradamente grande.
+      const clampedScale =
+        window.innerWidth < 640
+          ? Math.max(0.55, Math.min(nextScale, 0.9))
+          : Math.max(0.75, Math.min(nextScale, 1));
+
+      setScale(clampedScale);
+    };
+
+    updateScale();
+
+    const resizeObserver = new ResizeObserver(updateScale);
+    resizeObserver.observe(el);
+
+    window.addEventListener("resize", updateScale);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateScale);
+    };
   }, []);
 
-  return { containerRef, scale, DOC_WIDTH, DOC_HEIGHT };
+  return {
+    containerRef,
+    scale,
+    DOC_WIDTH,
+    DOC_HEIGHT,
+  };
 }

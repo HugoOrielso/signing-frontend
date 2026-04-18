@@ -83,7 +83,6 @@ interface PagareStatusResponse {
 export default function PagarePreview({
   contract,
   signers,
-  signatures,
   mode,
   token,
 }: PagarePreviewProps) {
@@ -102,11 +101,6 @@ export default function PagarePreview({
     [signers]
   );
 
-  const acreedorSigner = useMemo(
-    () => signers.find((s) => s.partyRole === "CONTRACTOR"),
-    [signers]
-  );
-
   const deudorSignature = useMemo(() => {
     if (!pagare?.signature || !deudorSigner) return undefined;
 
@@ -119,11 +113,6 @@ export default function PagarePreview({
       signedAt: pagare.signature.signedAt ?? new Date().toISOString(),
     } as LibranzaSignature;
   }, [pagare?.signature, deudorSigner]);
-
-  const acreedorSignature = useMemo(() => {
-    if (!acreedorSigner) return undefined;
-    return signatures.find((s) => s.signerId === acreedorSigner.id);
-  }, [acreedorSigner, signatures]);
 
   useEffect(() => {
     if (!token) {
@@ -270,7 +259,7 @@ export default function PagarePreview({
   const showReadonlyMode = isSigned;
 
   return (
-    <section className="mx-auto max-w-225 border border-neutral-300 bg-white px-6 py-8 shadow-[0_10px_40px_rgba(0,0,0,0.08)] md:px-12 md:py-12">
+    <section className="mx-auto max-w-225 border border-neutral-300 bg-white p-3 shadow-[0_10px_40px_rgba(0,0,0,0.08)]  ">
       <div className="mb-8 h-px w-full bg-neutral-300" />
 
       <header className="mb-10 text-center">
@@ -507,11 +496,11 @@ export default function PagarePreview({
             El deudor
           </h3>
 
-          <div className="min-h-27.5">
+          <div className="min-h-27.5 border rounded p-1">
             <SignatureBlock signer={deudorSigner} signature={deudorSignature} />
           </div>
 
-          <div className="mt-3 w-full max-w-[320px] border-t border-neutral-400 pt-3 text-sm text-neutral-700">
+          <div className="mt-3 w-full max-w-[320px] pt-3 text-sm text-neutral-700">
             <p>
               <span className="font-medium text-neutral-900">Nombre:</span>{" "}
               {deudorNombre}
@@ -524,13 +513,9 @@ export default function PagarePreview({
         </div>
 
         <div>
-          <h3 className="mb-6 text-[12px] font-semibold uppercase tracking-[0.15em] text-neutral-600">
-            El acreedor
+          <h3 className=" text-[12px] font-semibold uppercase tracking-[0.15em] text-neutral-600">
+            Acreedor
           </h3>
-
-          <div className="min-h-27.5">
-            <SignatureBlock signer={acreedorSigner} signature={acreedorSignature} />
-          </div>
 
           <div className="mt-3 w-full max-w-[320px] border-t border-neutral-400 pt-3 text-sm text-neutral-700">
             <p>
@@ -550,7 +535,7 @@ export default function PagarePreview({
       <div className="mt-10 overflow-hidden rounded-md border border-neutral-300 bg-white shadow-[0_4px_18px_rgba(0,0,0,0.05)]">
         <div className="h-0.5 bg-neutral-800" />
 
-        <div className="relative px-6 py-6 md:px-8">
+        <div className="relative p-2">
           {saving && (
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/85 backdrop-blur-sm">
               <svg
@@ -666,7 +651,7 @@ export default function PagarePreview({
 
               {showPad && (
                 <div>
-                  <div className="rounded-md border border-neutral-300 bg-neutral-50 p-4">
+                  <div className="rounded-md border  bg-neutral-50 p-4">
                     <SignaturePad onSave={handleSign} disabled={saving} />
                   </div>
 

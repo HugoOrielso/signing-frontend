@@ -168,7 +168,7 @@ export function SignaturePad({
                                 ref={canvasRef}
                                 width={600}
                                 height={140}
-                                className="block w-full h-35 touch-none"
+                                className="block w-full h-35 touch-none border"
                                 onMouseDown={disabled ? undefined : down}
                                 onMouseMove={disabled ? undefined : move}
                                 onMouseUp={stop}
@@ -191,7 +191,7 @@ export function SignaturePad({
                             <button
                                 onClick={clear}
                                 disabled={disabled}
-                                className="px-3 py-1 text-sm flex items-center gap-1 border bg-red-500 rounded-lg text-white"
+                                className="p-2 text-xs lg:ext-sm flex items-center gap-1 border bg-red-500 rounded-lg text-white"
                             >
                                 <span>
                                     Limpiar
@@ -202,7 +202,7 @@ export function SignaturePad({
                             <button
                                 onClick={requestDrawn}
                                 disabled={disabled || !hasDrawn}
-                                className={`px-5 py-2 rounded-lg text-sm font-semibold
+                                className={`p-2 rounded-lg text-xs lg:text-sm font-semibold
                 bg-ink text-gold
                 ${!hasDrawn ? "opacity-40" : ""}
                 `}
@@ -220,7 +220,7 @@ export function SignaturePad({
                 {tab === "type" && (
                     <div>
 
-                        <div className="p-5 border border-borderSoft rounded-xl bg-cream">
+                        <div className="p-1 border border-borderSoft rounded-xl bg-cream">
 
                             <label className="block text-[11px] font-semibold uppercase tracking-wider  mb-3">
                                 Escribe tu nombre completo
@@ -240,7 +240,7 @@ export function SignaturePad({
 
                             {typed && (
                                 <div
-                                    className={`mt-4 pb-2 border-b border-borderSoft text-[40px] text-ink ${greatVibes.className}`}
+                                    className={`mt-4 pb-2 border-b border-borderSoft text-[25px] text-ink ${greatVibes.className}`}
                                 >
                                     {typed}
                                 </div>

@@ -1,7 +1,6 @@
-// components/libranza/ScaledDocumentViewer.tsx
-'use client';
+"use client";
 
-import { useDocumentScale } from '@/hooks/useDocumentScale';
+import { useDocumentScale } from "@/hooks/useDocumentScale";
 
 interface Props {
   children: React.ReactNode;
@@ -10,36 +9,47 @@ interface Props {
 export function ScaledDocumentViewer({ children }: Props) {
   const { containerRef, scale, DOC_WIDTH, DOC_HEIGHT } = useDocumentScale();
 
+  const scaledWidth = DOC_WIDTH * scale;
+  const scaledHeight = DOC_HEIGHT * scale;
+
   return (
-    // Contenedor exterior — ocupa el espacio disponible
     <div
       ref={containerRef}
-      className="w-full overflow-hidden bg-neutral-300 p-4 md:p-8"
-      // La altura del contenedor se adapta al doc escalado
-      style={{ minHeight: DOC_HEIGHT * scale + 64 }}
+      className="
+        w-full
+        overflow-x-auto
+        overflow-y-hidden
+        bg-neutral-200
+        px-2 py-3
+        sm:px-4 sm:py-4
+        md:px-6 md:py-8
+      "
     >
-      {/* Centrador */}
-      <div className="flex justify-center items-start">
-        {/* Caja que ocupa el espacio "real" del doc escalado */}
+      <div
+        className="mx-auto flex justify-center"
+        style={{
+          minWidth: scaledWidth,
+          minHeight: scaledHeight,
+        }}
+      >
         <div
           style={{
-            width: DOC_WIDTH * scale,
-            height: DOC_HEIGHT * scale,
-            position: 'relative',
+            width: scaledWidth,
+            height: scaledHeight,
+            position: "relative",
           }}
         >
-          {/* El doc en tamaño real, escalado desde la esquina superior izquierda */}
           <div
+            className="bg-white shadow-xl rounded-lg border border-neutral-300"
             style={{
               width: DOC_WIDTH,
               height: DOC_HEIGHT,
               transform: `scale(${scale})`,
-              transformOrigin: 'top left',
-              position: 'absolute',
+              transformOrigin: "top left",
+              position: "absolute",
               top: 0,
               left: 0,
             }}
-            className="bg-white shadow-2xl rounded-sm border border-neutral-300"
           >
             {children}
           </div>

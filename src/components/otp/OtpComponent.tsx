@@ -51,7 +51,7 @@ const OtpComponent = ({ value, onChange, disabled }: {
                         onKeyDown={e => handleKey(i, e)}
                         onPaste={handlePaste}
                         onClick={() => refs[i].current?.select()}
-                        className={`w-11.5 h-13.5 text-center text-2xl font-bold font-mono rounded-[10px] outline-none border-2 transition-[border-color,background] duration-150 text-ink
+                        className={`w-10 h-11 text-center text-2xl font-bold font-mono rounded-[10px] outline-none border-2 transition-[border-color,background] duration-150 text-ink
                             ${filled
                                 ? "border-gold bg-[#fffdf5]"
                                 : "border-border-soft bg-white"

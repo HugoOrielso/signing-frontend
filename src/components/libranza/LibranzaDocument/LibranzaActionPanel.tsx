@@ -32,7 +32,7 @@ export function LibranzaActionPanel({
       {/* Top gradient bar */}
       <div className="h-1 bg-linear-to-r from-gold to-gold-dark" />
 
-      <div className="px-8 py-7">
+      <div className="p-3">
 
         {saving && (
           <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-3 rounded-2xl">
