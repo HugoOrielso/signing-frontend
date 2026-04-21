@@ -8,10 +8,10 @@ export const metadata: Metadata = {
 
 export default function DashboardPage() {
   return (
-    <div className="relative overflow-hidden px-4 py-6 md:px-6 md:py-8">
+    <div className="w-full min-w-0 px-4 py-6 md:px-6 md:py-8">
       <BackgroundDecor />
 
-      <div className="relative z-10 mx-auto max-w-7xl space-y-6">
+      <div className=" mx-auto max-w-7xl space-y-6">
         <div>
           <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50/80 px-4 py-2 text-sm font-medium text-blue-700 shadow-sm">
             <FileText className="h-4 w-4" />
@@ -28,7 +28,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <div className="rounded-[30px] border border-slate-200/80 bg-white/90 p-4 shadow-[0_20px_60px_rgba(15,23,42,0.06)] backdrop-blur-xl md:p-6">
+        <div className="rounded-[30px] border border-slate-200/80 bg-white/90 p-4  md:p-6 mx-auto">
           <ContractsTable />
         </div>
       </div>

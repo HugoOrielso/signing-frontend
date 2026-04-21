@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/common/dropDown";
 import { linksUser, SidebarLink } from "@/lib/utils/userSidebarInfo";
+import Image from "next/image";
 
 export default function UserSidebar() {
   const pathname = usePathname();
@@ -180,15 +181,9 @@ export default function UserSidebar() {
       collapsible="icon"
       className="hidden border-r border-slate-200 bg-white lg:flex"
     >
-      <SidebarHeader className="bg-white">
-        <div className="flex items-center gap-3 p-1 group-data-[collapsible=icon]:justify-center">
-          <div className="flex size-8 items-center justify-center rounded-2xl bg-linear-to-br from-blue-700 to-blue-500 text-white shadow-[0_12px_24px_rgba(37,99,235,0.22)]">
-            <span className="text-sm font-bold">D</span>
-          </div>
-
-          <div className="group-data-[collapsible=icon]:hidden">
-            <p className="text-sm font-semibold text-slate-900">Dimcultura</p>
-          </div>
+      <SidebarHeader className="bg-white group-data-[collapsible=icon]:hidden">
+        <div className="flex items-center gap-3 p-1 justify-center">
+          <Image src={"/assets/logo_dimcultura.png"} alt="Logo Dimcultura" width={72} height={52} />
         </div>
       </SidebarHeader>
 

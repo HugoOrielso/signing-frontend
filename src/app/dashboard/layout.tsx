@@ -24,7 +24,7 @@ export default async function DashboardLayout({
         <TooltipProvider>
           <DashboardSidebar />
 
-          <SidebarInset className="bg-slate-50/60">
+          <SidebarInset className="min-w-0 overflow-hidden bg-slate-50/60">
             <header
               className="
                 sticky top-0 z-40
@@ -36,11 +36,9 @@ export default async function DashboardLayout({
                 md:px-6
               "
             >
-              {/* capa visual suave */}
               <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-white/80 via-white/60 to-white/80" />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-slate-200 to-transparent" />
 
-              {/* IZQUIERDA */}
               <div className="relative z-10 flex items-center gap-3">
                 <SidebarTrigger className="cursor-pointer rounded-xl border border-transparent bg-white/40 p-2 transition hover:bg-white/70" />
 
@@ -49,7 +47,6 @@ export default async function DashboardLayout({
                 </div>
               </div>
 
-              {/* DERECHA */}
               <div className="relative z-10 flex items-center gap-3">
                 <div className="hidden items-center gap-2 rounded-full border border-white/40 bg-white/50 px-3 py-1.5 text-xs text-slate-600 shadow-sm backdrop-blur md:flex">
                   Sistema activo
@@ -65,7 +62,7 @@ export default async function DashboardLayout({
               </div>
             </header>
 
-            <main className="flex-1 overflow-y-auto ">
+            <main className="flex-1 min-w-0 overflow-x-hidden overflow-y-auto">
               {children}
             </main>
           </SidebarInset>

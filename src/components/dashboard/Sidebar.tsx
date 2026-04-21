@@ -30,6 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/common/dropDown";
 import { useSessionStore } from "@/store/adminSession";
+import Image from "next/image";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
@@ -83,7 +84,7 @@ export default function DashboardSidebar() {
               "hover:bg-slate-100 hover:text-slate-900",
               "focus-visible:ring-0 focus-visible:ring-offset-0",
               (isActive || isChildActive) &&
-                "border-blue-100 bg-blue-50 text-blue-700"
+              "border-blue-100 bg-blue-50 text-blue-700"
             )}
           >
             <Icon className="h-5 w-5 shrink-0" />
@@ -207,15 +208,9 @@ export default function DashboardSidebar() {
       collapsible="icon"
       className="border-r border-slate-200 bg-white"
     >
-      <SidebarHeader className="bg-white">
-        <div className="flex items-center gap-3 p-1 group-data-[collapsible=icon]:justify-center">
-          <div className="flex size-8 items-center justify-center rounded-2xl bg-linear-to-br from-blue-700 to-blue-500 text-white shadow-[0_12px_24px_rgba(37,99,235,0.22)]">
-            <span className="text-sm font-bold">D</span>
-          </div>
-
-          <div className="group-data-[collapsible=icon]:hidden">
-            <p className="text-sm font-semibold text-slate-900">Dimcultura</p>
-          </div>
+      <SidebarHeader className="bg-white group-data-[collapsible=icon]:hidden">
+        <div className="flex items-center gap-3 p-1 justify-center">
+          <Image src={"/assets/logo_dimcultura.png"} alt="Logo Dimcultura" width={72} height={52} />
         </div>
       </SidebarHeader>
 
@@ -228,7 +223,7 @@ export default function DashboardSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-slate-200 p-3">
-        <div className="rounded-2xl bg-slate-50 p-2">
+        <div className="rounded-2xl bg-slate-50 p-2 group-data-[collapsible=icon]:hidden">
           <LogoutButton />
         </div>
       </SidebarFooter>

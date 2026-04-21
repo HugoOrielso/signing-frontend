@@ -41,7 +41,7 @@ export default function LibranzaUploadDocuments() {
 
     const loadDocs = async () => {
       try {
-        const { data } = await api.get(`/contracts/public/${token}/documents`);
+        const { data } = await api.get(`/contracts/contract/${token}/documents`);
         const serverDocs = data?.data as Record<DocType, ContractDocumentItem>;
 
         if (!isMounted) return;

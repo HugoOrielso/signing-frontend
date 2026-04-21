@@ -74,42 +74,46 @@ export default function PublicContractView({ token, pageMode }: Props) {
   const isLibranzaSigned = contract.isSigned
 
   return (
-    <div className="min-h-screen font-sans">
-      <div className="mx-auto flex max-w-215 flex-col gap-2 px-4 py-10">
-        {!isLibranzaSigned ? (
-          <LibranzaPreview
-            data={contract.libranzaData!}
-            signers={contract.signers}
-            signatures={signatures}
-            templateKey={contract.templateKey ?? ""}
-            mode={mode}
-            token={token}
-            onSigned={() =>
-              setContract((prev) =>
-                prev
-                  ? {
-                    ...prev,
-                    status: "SIGNED",
-                    isSigned: true,
-                  }
-                  : prev
-              )
-            }
-          />
-        ) : (
-          <PagarePreview
-            contract={contract}
-            signers={contract.signers}
-            signatures={signatures}
-            mode={mode}
-            token={token}
-            onSigned={() =>
-              setContract((prev) =>
-                prev ? { ...prev, status: "SIGNED" } : prev
-              )
-            }
-          />
-        )}
+    <div className="w-full overflow-x-auto">
+      {/* documento o tabla */}
+
+      <div className="min-h-screen font-sans">
+        <div className="mx-auto flex max-w-215 flex-col gap-2 px-4 py-10">
+          {!isLibranzaSigned ? (
+            <LibranzaPreview
+              data={contract.libranzaData!}
+              signers={contract.signers}
+              signatures={signatures}
+              templateKey={contract.templateKey ?? ""}
+              mode={mode}
+              token={token}
+              onSigned={() =>
+                setContract((prev) =>
+                  prev
+                    ? {
+                      ...prev,
+                      status: "SIGNED",
+                      isSigned: true,
+                    }
+                    : prev
+                )
+              }
+            />
+          ) : (
+            <PagarePreview
+              contract={contract}
+              signers={contract.signers}
+              signatures={signatures}
+              mode={mode}
+              token={token}
+              onSigned={() =>
+                setContract((prev) =>
+                  prev ? { ...prev, status: "SIGNED" } : prev
+                )
+              }
+            />
+          )}
+        </div>
       </div>
     </div>
   );

@@ -163,7 +163,9 @@ export function DocumentBlock({
             {doc.file ? (
               <>
                 <CheckCircle size={16} />
-                {doc.file.name}
+                <span className="max-w-50 truncate">
+                  {doc.file.name}
+                </span>
               </>
             ) : flags.canReplaceFile ? (
               <>

@@ -936,7 +936,7 @@ export default function LibranzaReviewDocument() {
                                 </div>
 
                                 <div className="flex flex-wrap gap-2">
-                                    {(['NOMINA', 'EFECTY 110520', 'PSE', 'BANCO'] as const).map((op) => (
+                                    {(['NOMINA'] as const).map((op) => (
                                         <button
                                             key={op}
                                             type="button"

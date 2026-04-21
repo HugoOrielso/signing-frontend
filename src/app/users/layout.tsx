@@ -18,7 +18,7 @@ export default async function DashboardUserLayout({
       <TooltipProvider>
         <UserSidebar />
 
-        <SidebarInset className="bg-slate-50/60">
+        <SidebarInset className="min-w-0 overflow-hidden bg-slate-50/60">
           <header
             className="
               sticky top-0 z-40

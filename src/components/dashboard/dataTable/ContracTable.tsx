@@ -81,7 +81,7 @@ export default function ContractsTable() {
       <StatsBar contracts={contracts} />
 
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div className="w-full md:w-72">
+        <div className="w-full">
           <Select
             value={filter}
             onValueChange={(value: string) => setFilter(value as StatusFilter)}
@@ -99,7 +99,7 @@ export default function ContractsTable() {
           </Select>
         </div>
 
-        <div className="w-full md:w-104">
+        <div className="w-full ">
           <Input
             placeholder="Buscar por nombre, cédula, teléfono..."
             value={search}
