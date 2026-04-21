@@ -1,13 +1,14 @@
 import {
   LayoutDashboard,
   ClipboardList,
+  type LucideIcon,
 } from "lucide-react";
 
 
 export type SidebarLink = {
   href: string;
   label: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   children?: Omit<SidebarLink, "children">[];
 };
 

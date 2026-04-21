@@ -8,15 +8,15 @@ import {
     PenLine,
     Send,
     XCircle,
+    type LucideIcon,
 } from "lucide-react";
-
 export const TOTAL_STEPS = 11;
 
 export type StatusMeta = {
     label: string;
     description: string;
     step: number;
-    icon: React.ElementType;
+    icon: LucideIcon;
     className: string;
     cardClassName?: string;
     progressClassName?: string;
@@ -24,7 +24,7 @@ export type StatusMeta = {
         label: string;
         href: (token: string) => string;
         variant: "primary" | "secondary";
-        icon: React.ElementType;
+        icon: LucideIcon;
     };
 };
 

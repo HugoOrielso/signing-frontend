@@ -12,10 +12,8 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# NEXT_PUBLIC_* van hardcodeadas aquí — se hornean en el bundle del cliente
 ENV NEXT_PUBLIC_API_URL=https://backend.hugoorielso.com/api
 ENV NEXT_PUBLIC_API_IMAGES=https://backend.hugoorielso.com
-ENV NEXTAUTH_URL=https://hugoorielso.com
 ENV API_URL=https://backend.hugoorielso.com/api
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production

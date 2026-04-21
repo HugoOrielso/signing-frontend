@@ -7,13 +7,14 @@ import {
   FileCheck,
   FolderOpen,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export type UserRole = "ADMIN" | "OPERATOR" | "CREDIT_ANALYST";
 
 export type SidebarLink = {
   href: string;
   label: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   roles: UserRole[];
   children?: Omit<SidebarLink, "children">[];
 };
