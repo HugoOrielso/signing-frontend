@@ -20,7 +20,7 @@ const empresaConfig: Record<
   }
 > = {
   dimcultura: {
-    logo: "/assets/logo.webp",
+    logo: "/assets/logo_dimcultura.png",
     nombre: "Dimcultura S.A.S.",
     subtitulo: "Nueva Dimensión Cultural",
     slogan: "Un mundo en el que debes estar",
@@ -29,7 +29,7 @@ const empresaConfig: Record<
     web: "www.dimcultura.com",
   },
   gruculcol: {
-    logo: "/assets/gruculcol.webp",
+    logo: "/assets/gruculcol.png",
     nombre: "GRUCULCOL",
     subtitulo: "Grupo Cultural Colombiano",
     slogan: "Educación sin fronteras",
@@ -120,7 +120,7 @@ export function LibranzaHeader({ data, templateKey }: Props) {
 
       <div className="py-1 text-center text-[7px] leading-tight text-neutral-800">
         Sede Administrativa: Calle 24 No. 5-40 Conjunto Los Ángeles Barrio Gran
-        Colombia Casa G1 Villa del Rosario Col. Lote 1 Barrio El Country Tel.
+        Colombia Casa G1 Villa del Rosario Col/ Dirección Cartagena: Lote 1 Barrio El Country Tel.
         6512857{" "}
         <strong className="font-semibold text-black">
           {config.email} · {config.web}

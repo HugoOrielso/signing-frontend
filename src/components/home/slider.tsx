@@ -78,16 +78,12 @@ const StripeSlider: React.FC = () => {
   return (
     <section className='flex items-center justify-center'>
       <section className="relative w-full p-4 z-20 max-w-6xl">
-        <div className="container mx-auto ">
-          <div className="flex flex-col md:flex-row gap-4 md:gap-20 items-center">
+        <div className=" mx-auto ">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-20 justify-center items-center">
             {/* TEXTO */}
-            <div className="relative min-h-100 flex flex-col justify-center">
+            <div className="relative  flex flex-col justify-center">
               <AnimatePresence mode="wait">
                 <motion.div key={`text-${currentSlide.id}`} className="space-y-6">
-                  {/* <motion.div custom={0} variants={textVariants} initial="initial" animate="animate" exit="exit" className="flex items-center gap-3">
-                  <Image src={currentSlide.companyLogo} width={40} height={40} alt="logo" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Dimcultura</span>
-                </motion.div> */}
 
                   <motion.span
                     custom={1}
@@ -95,7 +91,7 @@ const StripeSlider: React.FC = () => {
                     initial="initial"
                     animate="animate"
                     exit="exit"
-                    className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold"
+                    className="inline-block p-2  rounded-full text-xs font-semibold"
                     style={{ backgroundColor: `${currentSlide.accentColor}15`, color: currentSlide.accentColor }}
                   >
                     {currentSlide.tag}
@@ -107,7 +103,7 @@ const StripeSlider: React.FC = () => {
                     initial="initial"
                     animate="animate"
                     exit="exit"
-                    className="text-4xl md:text-5xl font-semibold text-slate-900 leading-[1.1]"
+                    className="text-3xl md:text-4xl font-semibold text-slate-900 leading-[1.1]"
                   >
                     {currentSlide.title}
                   </motion.h2>
@@ -123,7 +119,7 @@ const StripeSlider: React.FC = () => {
                     {currentSlide.description}
                   </motion.p>
 
-                  <motion.div custom={4} variants={textVariants} initial="initial" animate="animate" exit="exit" className="flex gap-4 pt-4">
+                  <motion.div custom={4} variants={textVariants} initial="initial" animate="animate" exit="exit" className="flex gap-4 ">
                     <button
                       className="rounded-2xl px-8 py-3 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-[1.02]"
                       style={{ backgroundColor: currentSlide.accentColor, boxShadow: `0 14px 36px -10px ${currentSlide.accentColor}60` }}
@@ -151,7 +147,7 @@ const StripeSlider: React.FC = () => {
             </div>
 
             {/* IMAGEN CON ESTILO DE TARJETA (Mismo que tu Building Card) */}
-            <div className="relative flex justify-center lg:justify-end items-center ">
+            <div className="relative flex justify-center lg:justify-center items-center ">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={`img-${currentSlide.id}`}
@@ -159,14 +155,14 @@ const StripeSlider: React.FC = () => {
                   initial="initial"
                   animate="animate"
                   exit="exit"
-                  className="relative p-6 rounded-sm items-center justify-center flex   backdrop-blur-xl max-h-75 aspect-square min-h-75"
+                  className="relative p-6 rounded-sm items-center justify-center flex   backdrop-blur-xl max-h-55 aspect-square min-h-50"
                 >
                   <Image
                     src={currentSlide.mainImage}
                     alt={currentSlide.title}
                     width={300}
-                    height={400}
-                    className=" object-contain border rounded "
+                    height={300}
+                    className=" object-contain  "
                   />
                 </motion.div>
               </AnimatePresence>

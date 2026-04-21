@@ -18,12 +18,12 @@ const cardServices = [
 
 const Hero = () => {
     return (
-        <div className='flex w-full items-center justify-center'>
+        <div className='flex w-full items-center justify-center overflow-x-hidden'>
             <section className="max-w-6xl flex flex-1 items-center p-4">
-                <div className="grid w-full items-start gap-8 lg:items-center lg:gap-14 lg:grid-cols-[1.15fr_0.85fr]">
+                <div className="flex flex-col items-center lg:flex-row p-4 w-full">
 
                     {/* Columna izquierda */}
-                    <div className="order-1 max-w-3xl">
+                    <div className="order-1 w-[80%] md:w-full max-w-3xl p-4">
 
                         {/* Badge */}
                         <div className="mb-4 inline-flex max-w-full items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-2 text-[11px] text-blue-700 shadow-sm backdrop-blur sm:mb-6 sm:px-4 sm:text-sm">
@@ -34,18 +34,16 @@ const Hero = () => {
                         </div>
 
                         {/* TITULO */}
-                        <h1 className="max-w-4xl text-2.5xl font-semibold leading-[1.1] tracking-tight text-slate-900 sm:text-3xl md:text-4xl lg:text-5xl">
-                            <p >
-                                Construimos tu futuro combinando{" "}
-                                <span className="bg-linear-to-r from-blue-700 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
-                                    soluciones financieras e inmobiliarias
-                                </span>{" "}
-                                con gestión documental digital.
-                            </p>
+                        <h1 className="w-full text-2xl font-semibold leading-[1.15] tracking-tight text-slate-900 sm:text-3xl md:text-4xl lg:text-5xl">
+                            Construimos tu futuro combinando{" "}
+                            <span className="bg-linear-to-r from-blue-700 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
+                                soluciones financieras e inmobiliarias
+                            </span>{" "}
+                            con gestión documental digital.
                         </h1>
 
                         {/* DESCRIPCIÓN */}
-                        <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:mt-6 sm:text-base sm:leading-8 md:text-lg">
+                        <p className="mt-4 w-full text-sm leading-7 text-slate-600 sm:mt-6 sm:text-base sm:leading-8 md:text-lg">
                             Dimcultura integra el desarrollo inmobiliario con soluciones financieras digitales,
                             permitiendo gestionar libranzas, pagarés y procesos documentales de forma ágil,
                             segura y centralizada.
@@ -63,8 +61,8 @@ const Hero = () => {
                                 <span
                                     key={label}
                                     className={`rounded-full border px-3 py-1.5 text-[11px] sm:text-xs ${highlight
-                                            ? "border-blue-200 bg-blue-50 text-blue-700"
-                                            : "border-slate-200 bg-slate-50 text-slate-600"
+                                        ? "border-blue-200 bg-blue-50 text-blue-700"
+                                        : "border-slate-200 bg-slate-50 text-slate-600"
                                         }`}
                                 >
                                     {label}
@@ -74,7 +72,7 @@ const Hero = () => {
 
                         {/* BOTONES */}
                         <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-4">
-                            <button className="w-full rounded-2xl bg-linear-to-r from-blue-700 to-blue-500 px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_36px_rgba(37,99,235,0.22)] transition-transform duration-300 hover:scale-[1.02] sm:w-auto">
+                            <button className="w-full rounded-2xl bg-linear-to-r from-blue-700 to-blue-500 px-5 py-3.5 text-sm font-semibold text-white shadow-[0_14px_36px_rgba(37,99,235,0.22)] transition-transform duration-300 hover:scale-[1.02] sm:w-auto">
                                 Ver servicios
                             </button>
 
@@ -85,7 +83,7 @@ const Hero = () => {
                     </div>
 
                     {/* Columna derecha */}
-                    <div className="order-2 relative lg:order-2">
+                    <div className="order-2 relative w-[80%] md:w-full mt-8 lg:mt-0 lg:order-2 lg:w-auto">
 
                         {/* Glow */}
                         <div className="absolute -inset-4 rounded-[2rem] bg-blue-100/70 blur-2xl sm:-inset-6 lg:-inset-8 lg:blur-3xl" />
@@ -108,7 +106,7 @@ const Hero = () => {
 
                             {/* Canvas 3D */}
                             <div className="relative mb-4 w-full overflow-hidden rounded-2xl bg-slate-950">
-                                <div className="h-50 w-62.5 md:w-full sm:h-65 md:h-75 lg:h-80">
+                                <div className="h-48  w-full lg:w-full sm:h-64 md:h-72 lg:h-80">
                                     <BuildingCanvas />
                                 </div>
 

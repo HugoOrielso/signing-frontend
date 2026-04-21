@@ -6,9 +6,27 @@ import { cn } from "@/lib/utils";
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: "Contract Signing",
+  title: {
+    default: "Dimcultura",
+    template: "%s | Dimcultura",
+  },
+  description: "Gestión digital de libranzas, pagarés y procesos documentales.",
+  keywords: ["libranza", "pagaré", "dimcultura", "documentos"],
+  metadataBase: new URL("https://dimcultura.com"),
+  openGraph: {
+    title: "Dimcultura",
+    description: "Gestión digital de libranzas y documentos.",
+    url: "https://dimcultura.com",
+    siteName: "Dimcultura",
+    locale: "es_CO",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   icons: {
-    icon: "/assets/logo.webp",
+    icon: "/assets/logo_dimcultura.png",
   },
 };
 

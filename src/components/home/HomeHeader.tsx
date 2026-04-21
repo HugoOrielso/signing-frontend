@@ -3,7 +3,7 @@ import React from 'react'
 
 const HomeHeader = () => {
     return (
-        <header className="flex items-center justify-center sticky top-0 z-20 bg-white/80 backdrop-blur-sm px-3 py-1">
+        <header className="flex items-center justify-center sticky top-0 z-9999999 bg-white/80 backdrop-blur-sm px-3 py-1">
             <div className='flex items-center justify-between w-full max-w-7xl'>
                 <div className="flex items-center gap-3">
                     <div className="flex items-center justify-center">
