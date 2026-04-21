@@ -13,9 +13,9 @@ publicApiNew.interceptors.response.use(
     if ((status === 401 || status === 403) && typeof window !== "undefined") {
       const path = window.location.pathname;
 
-      // if (path !== "/auth") {
-      //   window.location.href = "/auth/expired";
-      // }
+      if (path !== "/auth") {
+        window.location.href = "/auth/expired";
+      }
     }
 
     return Promise.reject(error);

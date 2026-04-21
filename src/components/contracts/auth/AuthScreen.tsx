@@ -151,9 +151,7 @@ export default function AuthScreen() {
         <header className="sticky top-0 z-30 border-b border-white/20 bg-white/70 px-4 backdrop-blur-xl supports-backdrop-filter:bg-white/60">
           <div className="mx-auto flex max-w-7xl items-center justify-between py-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-linear-to-br from-blue-700 to-blue-500 shadow-[0_16px_35px_rgba(37,99,235,0.20)]">
-                <Image src="/assets/logo.webp" alt="logo" width={24} height={24} />
-              </div>
+              <Image src="/assets/logo_dimcultura.png" alt="logo" width={44} height={44} />
 
               <div>
                 <div className="text-sm font-semibold text-slate-900">
@@ -209,11 +207,10 @@ export default function AuthScreen() {
                       }}
                       disabled={loading}
                       autoFocus
-                      className={`h-12 w-full rounded-2xl border bg-white px-4 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 ${
-                        error
+                      className={`h-12 w-full rounded-2xl border bg-white px-4 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 ${error
                           ? "border-red-300 ring-4 ring-red-50"
                           : "border-slate-200 shadow-sm focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
-                      }`}
+                        }`}
                     />
 
                     {error && (
@@ -223,11 +220,10 @@ export default function AuthScreen() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className={`mt-5 inline-flex h-12 w-full items-center justify-center rounded-2xl text-sm font-semibold text-white transition-all ${
-                        loading
+                      className={`mt-5 inline-flex h-12 w-full items-center justify-center rounded-2xl text-sm font-semibold text-white transition-all ${loading
                           ? "cursor-not-allowed bg-slate-400"
                           : "bg-linear-to-r from-blue-700 to-blue-500 shadow-[0_16px_35px_rgba(37,99,235,0.22)] hover:scale-[1.01]"
-                      }`}
+                        }`}
                     >
                       {loading ? "Enviando código…" : "Enviar código"}
                     </button>
@@ -285,11 +281,10 @@ export default function AuthScreen() {
                     <button
                       onClick={handleVerify}
                       disabled={!otpComplete || loading}
-                      className={`mt-6 inline-flex h-12 w-full items-center justify-center rounded-2xl text-sm font-semibold text-white transition-all ${
-                        otpComplete && !loading
+                      className={`mt-6 inline-flex h-12 w-full items-center justify-center rounded-2xl text-sm font-semibold text-white transition-all ${otpComplete && !loading
                           ? "bg-linear-to-r from-blue-700 to-blue-500 shadow-[0_16px_35px_rgba(37,99,235,0.22)] hover:scale-[1.01]"
                           : "cursor-not-allowed bg-slate-300"
-                      }`}
+                        }`}
                     >
                       {loading ? "Verificando…" : "Verificar y acceder"}
                     </button>
