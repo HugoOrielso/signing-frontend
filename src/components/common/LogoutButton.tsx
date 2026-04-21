@@ -18,7 +18,7 @@ export default function LogoutButton() {
 
       toast.success("Signed out successfully", { id: toastId });
 
-      window.location.href = "/";
+      window.location.href = "/auth";
     } catch {
       toast.error("Failed to sign out. Try again.", { id: toastId });
     }
