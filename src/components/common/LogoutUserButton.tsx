@@ -1,18 +1,18 @@
 "use client";
 
-import api from "@/lib/axiosClient";
+import publicApiNew from "@/lib/publicAxios";
 import { useSessionStore } from "@/store/adminSession";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 
-export default function LogoutButton() {
+export default function LogoutUserButton() {
   const clearSession = useSessionStore((s) => s.clearSession);
 
   const handleLogout = async () => {
     const toastId = toast.loading("Signing out...");
 
     try {
-      await api.post("/auth/logout");
+      await publicApiNew.post("/users/verify/logout");
 
       clearSession();
 

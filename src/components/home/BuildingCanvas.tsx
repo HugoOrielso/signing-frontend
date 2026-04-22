@@ -1,51 +1,48 @@
-import { ContactShadows, Environment, Float, OrbitControls } from "@react-three/drei";
+"use client";
+
 import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
+import { OrbitControls, ContactShadows, Environment, Float } from "@react-three/drei";
 import { HouseModel } from "./3d/house";
+
 
 export function BuildingCanvas() {
   return (
-    <div className="w-full h-full">
-      <Canvas
-        shadows
-        camera={{ position: [4, 3, 6], fov: 45 }}
-        className="w-full h-full"
-      >
-        <ambientLight intensity={0.5} />
+    <Canvas
+      shadows
+      camera={{ position: [0, 1.8, 6], fov: 38 }}
+      gl={{ antialias: true, alpha: true }}
+    >
+      <ambientLight intensity={1.1} />
+      <directionalLight
+        position={[4, 6, 3]}
+        intensity={2.2}
+        castShadow
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+      />
+      <directionalLight position={[-3, 2, -2]} intensity={0.8} />
 
-        <directionalLight
-          position={[5, 10, 5]}
-          intensity={1.8}
-          castShadow
-          shadow-mapSize={[2048, 2048]}
-        />
+      <Environment preset="city" />
 
-        <pointLight position={[-4, 3, -4]} intensity={1.2} color="#6080ff" />
-        <pointLight position={[0, 2, 3]} intensity={0.8} color="#ffcc66" />
+      <Float speed={1.8} rotationIntensity={0.18} floatIntensity={0.35}>
+        <HouseModel />
+      </Float>
 
-        <Suspense fallback={null}>
-          <Float speed={1.4} floatIntensity={0.22} rotationIntensity={0.08}>
-            <HouseModel />
-          </Float>
+      <ContactShadows
+        position={[0, -2.2, 0]}
+        opacity={0.35}
+        scale={10}
+        blur={2.8}
+        far={4.5}
+      />
 
-          <ContactShadows
-            opacity={0.45}
-            blur={2.5}
-            position={[0, -1.22, 0]}
-            scale={8}
-          />
-
-          <Environment preset="city" />
-        </Suspense>
-
-        <OrbitControls
-          enableZoom={false}
-          autoRotate
-          autoRotateSpeed={1.0}
-          minPolarAngle={Math.PI / 6}
-          maxPolarAngle={Math.PI / 2.2}
-        />
-      </Canvas>
-    </div>
+      <OrbitControls
+        enablePan={false}
+        minDistance={5}
+        maxDistance={7}
+        autoRotate
+        autoRotateSpeed={1.2}
+      />
+    </Canvas>
   );
 }

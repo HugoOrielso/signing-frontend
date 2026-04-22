@@ -5,22 +5,31 @@ import { toast } from "sonner";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import api from "@/lib/axiosClient";
-import { Mail, Lock, User } from "lucide-react";
+import { Mail, Lock, User, Shield } from "lucide-react";
+
+type UserRole = "OPERATOR" | "CREDIT_ANALYST";
 
 export default function CreateUserForm() {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   function handleSubmit(formData: FormData) {
-    const { email, name, password } = Object.fromEntries(formData) as {
+    const { email, name, password, role } = Object.fromEntries(formData) as {
       email: string;
       name: string;
       password: string;
+      role: UserRole;
     };
 
     startTransition(async () => {
       try {
-        await api.post("/auth/register", { email, name, password });
+        await api.post("/auth/create", {
+          email,
+          name,
+          password,
+          role,
+        });
+
         toast.success("Usuario creado correctamente");
         router.push("/dashboard/users");
       } catch (err: unknown) {
@@ -77,6 +86,33 @@ export default function CreateUserForm() {
             className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 shadow-sm outline-none transition-all placeholder:text-slate-400 focus:border-blue-300 focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
           />
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <label
+          htmlFor="role"
+          className="block text-sm font-medium text-slate-700"
+        >
+          Rol
+        </label>
+
+        <div className="group relative">
+          <Shield className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-blue-600" />
+          <select
+            id="role"
+            name="role"
+            defaultValue="OPERATOR"
+            disabled={isPending}
+            className="h-12 w-full appearance-none rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 shadow-sm outline-none transition-all focus:border-blue-300 focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <option value="OPERATOR">Operador</option>
+            <option value="CREDIT_ANALYST">Analista de crédito</option>
+          </select>
+        </div>
+
+        <p className="text-xs text-slate-500">
+          Selecciona si el usuario será operador o analista.
+        </p>
       </div>
 
       <div className="space-y-2">

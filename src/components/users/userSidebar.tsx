@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
-import LogoutButton from "@/components/common/LogoutButton";
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +26,7 @@ import {
 } from "../ui/common/dropDown";
 import { linksUser, SidebarLink } from "@/lib/utils/userSidebarInfo";
 import Image from "next/image";
+import LogoutUserButton from "../common/LogoutUserButton";
 
 export default function UserSidebar() {
   const pathname = usePathname();
@@ -197,7 +197,7 @@ export default function UserSidebar() {
 
       <SidebarFooter className="border-t border-slate-200 p-3">
         <div className="rounded-2xl bg-slate-50 p-2">
-          <LogoutButton />
+          <LogoutUserButton />
         </div>
       </SidebarFooter>
     </Sidebar>

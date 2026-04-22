@@ -1,57 +1,114 @@
-import { Skeleton } from "@/components/ui/common/skeleton"; // si no tienes, te dejo fallback abajo
+"use client";
 
-export default function Page() {
+import { useEffect, useState } from "react";
+import axios from "axios";
+import api from "@/lib/axiosClient";
+import { Mail, Shield, User2 } from "lucide-react";
+
+type UserItem = {
+  id: string;
+  name: string;
+  email: string;
+  role: "ADMIN" | "OPERATOR" | "CREDIT_ANALYST";
+  createdAt: string;
+};
+
+export default function UsersList() {
+  const [users, setUsers] = useState<UserItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const res = await api.get("/auth/users");
+        setUsers(res.data.users ?? []);
+      } catch (err: unknown) {
+        const message = axios.isAxiosError(err)
+          ? err.response?.data?.error ?? "Error al cargar usuarios"
+          : "Error inesperado";
+
+        setError(message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <p className="text-sm text-slate-500">Cargando usuarios...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-3xl border border-red-200 bg-red-50 p-6 shadow-sm">
+        <p className="text-sm text-red-600">{error}</p>
+      </div>
+    );
+  }
+
+  if (!users.length) {
+    return (
+      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <p className="text-sm text-slate-500">No hay usuarios registrados.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-6 md:p-10 space-y-8">
-      {/* HEADER */}
-      <div className="space-y-3">
-        <Skeleton className="h-8 w-64 rounded-xl" />
-        <Skeleton className="h-4 w-96 rounded-lg" />
+    <div className="rounded-3xl border border-slate-200 bg-white m-6 shadow-sm">
+      <div className="mb-5 p-6">
+        <h2 className="text-lg font-semibold text-slate-900">Usuarios</h2>
+        <p className="text-sm text-slate-500">
+          Lista de usuarios registrados en el sistema.
+        </p>
       </div>
 
-      {/* CARDS / KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        {Array.from({ length: 4 }).map((_, i) => (
+      <div className="space-y-3 p-6">
+        {users.map((user) => (
           <div
-            key={i}
-            className="rounded-[26px] border border-slate-200/80 bg-white/80 p-5 shadow-sm"
+            key={user.id}
+            className="rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-blue-200 hover:bg-blue-50/40"
           >
-            <div className="flex items-center gap-3">
-              <Skeleton className="h-12 w-12 rounded-2xl" />
-              <Skeleton className="h-4 w-24 rounded-lg" />
-            </div>
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <User2 className="h-4 w-4 text-blue-600" />
+                  <p className="font-medium text-slate-900">{user.name}</p>
+                </div>
 
-            <Skeleton className="mt-4 h-3 w-full rounded-lg" />
-            <Skeleton className="mt-2 h-3 w-3/4 rounded-lg" />
-          </div>
-        ))}
-      </div>
-
-      {/* TABLA / LISTADO */}
-      <div className="rounded-[30px] border border-slate-200/80 bg-white/90 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
-        <div className="flex items-center justify-between mb-6">
-          <Skeleton className="h-5 w-40 rounded-lg" />
-          <Skeleton className="h-10 w-32 rounded-xl" />
-        </div>
-
-        <div className="space-y-4">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div
-              key={i}
-              className="flex items-center justify-between rounded-xl border border-slate-200 p-4"
-            >
-              <div className="flex items-center gap-4">
-                <Skeleton className="h-10 w-10 rounded-full" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-40 rounded-lg" />
-                  <Skeleton className="h-3 w-28 rounded-lg" />
+                <div className="flex items-center gap-2 text-sm text-slate-600">
+                  <Mail className="h-4 w-4 text-slate-400" />
+                  <span>{user.email}</span>
                 </div>
               </div>
 
-              <Skeleton className="h-8 w-20 rounded-lg" />
+              <div className="flex flex-col items-start gap-2 md:items-end">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
+                  <Shield className="h-3.5 w-3.5 text-blue-600" />
+                  {user.role === "CREDIT_ANALYST"
+                    ? "Analista de crédito"
+                    : user.role === "OPERATOR"
+                      ? "Operador"
+                      : "Administrador"}
+                </div>
+
+                <p className="text-xs text-slate-500">
+                  Creado: {new Date(user.createdAt).toLocaleDateString()}
+                </p>
+              </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );

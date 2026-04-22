@@ -5,7 +5,6 @@ import {
 } from "@/components/ui/common/sidebar";
 import { TooltipProvider } from "@/components/ui/common/tooltip";
 import UserSidebar from "@/components/users/userSidebar";
-import LogoutButton from "@/components/common/LogoutButton";
 import { ShieldCheck } from "lucide-react";
 
 export default async function DashboardUserLayout({
@@ -55,9 +54,7 @@ export default async function DashboardUserLayout({
                 Acceso seguro
               </div>
 
-              <div className="rounded-full border border-white/40 bg-white/50 p-1 shadow-sm backdrop-blur">
-                <LogoutButton />
-              </div>
+
             </div>
           </header>
 
