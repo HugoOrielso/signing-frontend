@@ -9,7 +9,7 @@ import { useParams } from 'next/navigation';
 
 export function DetailsPageHeader({ contract }: { contract: Contract }) {
   const params = useParams()
-
+  console.log(params.id)
   const link = useMemo(() => publicUrlAdmin(contract.token), [contract.token]);
   return (
     <div className="bg-muted/30 px-4 py-4 sm:px-6 sm:py-5">
@@ -69,6 +69,18 @@ export function DetailsPageHeader({ contract }: { contract: Contract }) {
                 <Copy className="h-3.5 w-3.5" />
                 Ver/subir documentos
               </a>
+
+              {contract.status === "SIGNED" && (
+                <a
+                  href={`${process.env.NEXT_PUBLIC_API_URL}/contracts/contract/${params.id}/download`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
+                >
+                  <FileText className="h-3.5 w-3.5" />
+                  Descargar PDF
+                </a>
+              )}
             </div>
           )}
         </div>
