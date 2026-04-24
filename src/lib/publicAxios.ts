@@ -16,11 +16,8 @@ publicApiNew.interceptors.response.use(
   (error) => {
     const status = error.response?.status;
     const code = error.response?.data?.code;
-    console.log("INTERCEPTOR", { status, code, error });
-    if (
-      status === 401 &&
-      SESSION_CODES.has(code)
-    ) {
+
+    if (status === 401 && SESSION_CODES.has(code)) {
       const path = window.location.pathname;
 
       if (path !== "/auth" && path !== "/auth/expired") {
