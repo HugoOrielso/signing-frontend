@@ -24,8 +24,6 @@ publicApiNew.interceptors.response.use(
       const path = window.location.pathname;
 
       if (path !== "/auth" && path !== "/auth/expired") {
-        console.log("entre")
-        console.log(error)
         window.location.href = "/auth/expired";
       }
     }

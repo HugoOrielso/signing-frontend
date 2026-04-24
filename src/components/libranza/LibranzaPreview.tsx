@@ -46,7 +46,7 @@ export default function LibranzaPreview({ data, signers = [], signatures: initia
         : { type: "DRAWN", imageUrl: sigData }; // base64 directo, el backend lo sube
 
       const { data: res } = await publicApi.post(
-        `/contracts/public/${token}/sign`,
+        `/users/contracts/${token}/sign`,
         body
       );
 
