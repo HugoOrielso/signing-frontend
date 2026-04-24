@@ -24,7 +24,7 @@ interface ContractData {
   signers: LibranzaSigner[];
   signatures: LibranzaSignature[];
   libranzaData?: LibranzaDataPreview | null;
-  isSigned?: boolean
+  isSigned?: boolean;
 }
 
 export type ViewMode = "sign" | "view" | "preview";
@@ -34,7 +34,13 @@ interface Props {
   pageMode: "sign" | "view";
 }
 
-type Step = "loading" | "view" | "error";
+type Step = "loading" | "redirecting-veriff" | "view" | "error";
+
+interface ApiErrorResponse {
+  message?: string;
+  code?: string;
+  status?: string;
+}
 
 export default function PublicContractView({ token, pageMode }: Props) {
   const [step, setStep] = useState<Step>("loading");
@@ -49,7 +55,55 @@ export default function PublicContractView({ token, pageMode }: Props) {
         setSignatures(data.data.signatures ?? []);
         setStep("view");
       } catch (err) {
-        const error = err as AxiosError<{ message?: string }>;
+        const error = err as AxiosError<ApiErrorResponse>;
+        const code = error.response?.data?.code;
+
+        if (
+          code === "IDENTITY_VERIFICATION_REQUIRED" ||
+          code === "IDENTITY_VERIFICATION_PENDING" ||
+          code === "IDENTITY_VERIFICATION_INCOMPLETE" ||
+          code === "IDENTITY_VERIFICATION_NOT_APPROVED"
+        ) {
+          try {
+            setStep("redirecting-veriff");
+
+            const { data } = await publicApiNew.get(
+              `/users/contracts/${token}/generateVeriffSession`
+            );
+
+            const sessionUrl =
+              data?.data?.sessionUrl ||
+              data?.sessionUrl ||
+              data?.verification?.url;
+
+            if (!sessionUrl) {
+              toast.error("No se pudo obtener la sesión de verificación");
+              setStep("error");
+              return;
+            }
+
+            window.location.href = sessionUrl;
+            return;
+          } catch (sessionErr) {
+            const sessionError = sessionErr as AxiosError<ApiErrorResponse>;
+            toast.error(
+              sessionError.response?.data?.message ??
+                "No se pudo iniciar la verificación de identidad"
+            );
+            setStep("error");
+            return;
+          }
+        }
+
+        if (code === "IDENTITY_VERIFICATION_REJECTED") {
+          toast.error(
+            error.response?.data?.message ??
+              "La verificación de identidad fue rechazada"
+          );
+          setStep("error");
+          return;
+        }
+
         toast.error(
           error.response?.data?.message ?? "No se pudo cargar el contrato"
         );
@@ -67,16 +121,16 @@ export default function PublicContractView({ token, pageMode }: Props) {
   }
 
   if (!token) return <PublicContractError />;
-  if (step === "loading") return <PublicContractLoading />;
+  if (step === "loading" || step === "redirecting-veriff") {
+    return <PublicContractLoading />;
+  }
   if (step === "error" || !contract) return <PublicContractError />;
 
   const mode = resolveMode();
-  const isLibranzaSigned = contract.isSigned
+  const isLibranzaSigned = contract.isSigned;
 
   return (
     <div className="w-full overflow-x-auto">
-      {/* documento o tabla */}
-
       <div className="min-h-screen font-sans">
         <div className="mx-auto flex max-w-215 flex-col gap-2 px-4 py-10">
           {!isLibranzaSigned ? (
@@ -91,10 +145,10 @@ export default function PublicContractView({ token, pageMode }: Props) {
                 setContract((prev) =>
                   prev
                     ? {
-                      ...prev,
-                      status: "SIGNED",
-                      isSigned: true,
-                    }
+                        ...prev,
+                        status: "SIGNED",
+                        isSigned: true,
+                      }
                     : prev
                 )
               }

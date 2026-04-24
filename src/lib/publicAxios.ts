@@ -5,15 +5,27 @@ const publicApiNew = axios.create({
   withCredentials: true,
 });
 
+const SESSION_CODES = new Set([
+  "PUBLIC_SESSION_INVALID",
+  "PUBLIC_SESSION_NOT_FOUND",
+  "PUBLIC_SESSION_EXPIRED",
+]);
+
 publicApiNew.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response?.status;
-
-    if ((status === 401 || status === 403) && typeof window !== "undefined") {
+    const code = error.response?.data?.code;
+    console.log("INTERCEPTOR", { status, code, error });
+    if (
+      status === 401 &&
+      SESSION_CODES.has(code)
+    ) {
       const path = window.location.pathname;
 
-      if (path !== "/auth") {
+      if (path !== "/auth" && path !== "/auth/expired") {
+        console.log("entre")
+        console.log(error)
         window.location.href = "/auth/expired";
       }
     }

@@ -281,7 +281,7 @@ export default function AuthScreen() {
                     <button
                       onClick={handleVerify}
                       disabled={!otpComplete || loading}
-                      className={`mt-6 inline-flex h-12 w-full items-center justify-center rounded-2xl text-sm font-semibold text-white transition-all ${otpComplete && !loading
+                      className={`mt-6 inline-flex h-12 w-full items-center justify-center rounded-2xl text-sm font-semibold text-white cursor-pointer transition-all ${otpComplete && !loading
                           ? "bg-linear-to-r from-blue-700 to-blue-500 shadow-[0_16px_35px_rgba(37,99,235,0.22)] hover:scale-[1.01]"
                           : "cursor-not-allowed bg-slate-300"
                         }`}
