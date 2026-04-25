@@ -51,7 +51,7 @@ export function DetailsPageHeader({ contract }: { contract: Contract }) {
                 <History className="h-3.5 w-3.5" />
                 Ver auditoria
               </a>
-              <a
+              {/* <a
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -59,7 +59,7 @@ export function DetailsPageHeader({ contract }: { contract: Contract }) {
               >
                 <ExternalLink className="h-3.5 w-3.5" />
                 Abrir enlace
-              </a>
+              </a> */}
               <a
                 href={`/dashboard/upload-documents/${contract.id}`}
                 target="_blank"

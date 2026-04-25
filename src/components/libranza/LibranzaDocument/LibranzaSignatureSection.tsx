@@ -6,8 +6,8 @@ import { LibranzaDataPreview, LibranzaSignature, LibranzaSigner } from "@/types/
 import { Great_Vibes } from "next/font/google";
 
 const greatVibes = Great_Vibes({
-    subsets: ["latin"],
-    weight: "400",
+  subsets: ["latin"],
+  weight: "400",
 });
 const empresaNombre: Record<string, string> = {
   dimcultura: "DIMCULTURA S.A.S.",
@@ -33,9 +33,14 @@ export function LibranzaSignatureSection({
   const contractedSigner = signers.find((s) => s.partyRole === "DEUDOR");
   const contractedSig = signatures.find((sig) => sig.signerId === contractedSigner?.id);
   const alreadySigned = !!contractedSig;
+
   return (
     <div className="my-1 grid grid-cols-2 gap-3">
+
+      {/* BLOQUE IZQUIERDO */}
+      {/* BLOQUE IZQUIERDO */}
       <div className="flex min-h-28 flex-col rounded-sm border border-neutral-400 p-1 text-[9.5px] text-ink">
+
         <p className="mb-2 text-[7px] leading-[1.45] text-justify font-semibold text-ink">
           He recibido en perfecto estado y a mi entera conformidad, los libros
           aquí descritos, manifestando tener conocimiento de que la empresa{" "}
@@ -44,13 +49,43 @@ export function LibranzaSignatureSection({
           una indemnización del 37% del valor de la misma.
         </p>
 
-        <p className="mt-auto font-bold uppercase tracking-[0.03em] text-ink">
-          Acepto el descuento y recibo en conformidad
-        </p>
+        {/* 👉 CUADRO DE FIRMA */}
+        <div className="mt-auto flex flex-col items-center gap-1">
 
-        <div className="mt-3 border-b border-ink" />
+          <div className="flex h-10 w-full items-center justify-center border border-dashed border-neutral-500 bg-white">
+            {alreadySigned ? (
+              contractedSig.type === "DRAWN" && contractedSig.imageUrl ? (
+                <div className="relative h-full w-full">
+                  <Image
+                    src={contractedSig.imageUrl}
+                    alt="Firma del cliente"
+                    fill
+                    unoptimized
+                    className="object-contain opacity-80"
+                  />
+                </div>
+              ) : (
+                <span
+                  className={`text-lg leading-none text-ink ${greatVibes.className}`}
+                >
+                  {contractedSig.typedValue}
+                </span>
+              )
+            ) : (
+              <span className="text-[7px] text-neutral-500 text-center px-1">
+                Se utilizará la misma firma del cliente
+              </span>
+            )}
+          </div>
+
+          {/* 👉 TEXTO ABAJO (como pediste) */}
+          <p className="text-[7px] font-bold uppercase tracking-[0.05em] text-ink text-center">
+            Acepto el descuento y recibo en conformidad
+          </p>
+        </div>
       </div>
 
+      {/* BLOQUE DERECHO (ORIGINAL) */}
       <div
         className="flex min-h-28 flex-col rounded-sm p-1 text-[9.5px]"
         style={{
@@ -86,14 +121,12 @@ export function LibranzaSignatureSection({
             ) : (
               <span
                 className={`leading-none text-ink ${greatVibes.className} text-2xl`}
-                
               >
                 {contractedSig.typedValue}
               </span>
             )
           ) : showSignatureZone ? (
-            <span
-              className="rounded-sm border border-dashed px-2 py-1 text-[7.5px] tracking-[0.12em] text-black">
+            <span className="rounded-sm border border-dashed px-2 py-1 text-[7.5px] tracking-[0.12em] text-black">
               PENDIENTE DE FIRMA
             </span>
           ) : (
