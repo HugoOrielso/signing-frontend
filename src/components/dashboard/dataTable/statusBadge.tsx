@@ -81,8 +81,8 @@ const STATUS_CONFIG: Record<ContractStatus, StatusConfig> = {
     className: 'bg-red-50 text-red-600 border-red-200 hover:bg-red-50',
   },
   CANCELLED: {
-    label: 'Cancelado',
-    className: 'bg-slate-100 text-slate-500 border-slate-200 hover:bg-slate-100',
+    label: 'Libranza anulada',
+    className: 'bg-red-100 text-red-500 border-red-200 hover:bg-red-100',
   },
 };
 
@@ -110,7 +110,7 @@ export function ContractStatusBadge({
     <Badge
       variant="outline"
       className={cn(
-        'px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider',
+        'p-1.5 text-xs font-semibold uppercase tracking-wider',
         cfg.className,
         className
       )}

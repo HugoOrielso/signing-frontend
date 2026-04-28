@@ -6,6 +6,8 @@ import {
   FilePlus,
   FileCheck,
   FolderOpen,
+  HandCoins,
+  Users2
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -25,6 +27,27 @@ export const links: SidebarLink[] = [
     label: "Dashboard",
     icon: LayoutDashboard,
     roles: ["ADMIN", "OPERATOR", "CREDIT_ANALYST"],
+  },
+
+  {
+    href: "/dashboard/reports",
+    label: "Reportes",
+    icon: HandCoins,
+    roles: ["ADMIN"],
+    children: [
+      {
+        href: "/dashboard/reports/financial-summary",
+        label: "Ingresos",
+        icon: HandCoins,
+        roles: ["ADMIN"],
+      },
+      {
+        href: "/dashboard/reports/operational",
+        label: "Rendimiento",
+        icon: Users2,
+        roles: ["ADMIN"],
+      },
+    ],
   },
   {
     href: "/dashboard/contracts/create",

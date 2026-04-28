@@ -43,8 +43,6 @@ function formatDate(date: string): string {
 }
 
 
-
-
 function EmptyState() {
   return (
     <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
@@ -76,7 +74,6 @@ function ContractCard({ contract }: { contract: ContractSummary }) {
               Libranza - {contract.consecutivo || "Contrato"}
             </h3>
             <div className="flex items-center gap-2">
-
               {
                 dataReviewStatus ?
                   <div className="flex items-center gap-2">
@@ -144,8 +141,6 @@ function ContractCard({ contract }: { contract: ContractSummary }) {
             </div>
           </div>
         </div>
-
-
       </div>
 
       <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">

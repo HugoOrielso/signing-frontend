@@ -260,12 +260,13 @@ export interface Contract {
   startDate?: string | null;
   endDate?: string | null;
   dataReviewStatus: "PENDING" | "APPROVED" | "REJECTED"
-  dataReviewNotes: string | null,
   parties: ContractParty[];
   signers: LibranzaSigner[];
   signatures: LibranzaSignature[];
   libranzaData?: LibranzaDataPreview | null;
-
+  dataReviewNotes?: string | null;
+  assignedToId?: string | null;
+  assignedAt?: string | null;
   documents?: ContractDocumentItem[];
 }
 
@@ -351,7 +352,7 @@ export type ContractSummary = {
   token: string;
   canSign: boolean;
   hasAttachments: boolean;
-  dataReviewStatus: "REJECTED" | "PENDING" | "APPROVED"  
+  dataReviewStatus: "REJECTED" | "PENDING" | "APPROVED"
   dataReviewNotes?: string
 };
 

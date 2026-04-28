@@ -83,14 +83,14 @@ export const STATUS_META: Record<ContractStatus, StatusMeta> = {
 
   READY_TO_SIGN: {
     label: "Listo para firmar",
-    description: "Tu libranza está listo para firmar.",
+    description: "Tu libranza/pagaré está listo para firmar.",
     step: 5,
     icon: PenLine,
     className: "border-green-200 bg-green-50 text-green-700",
     cardClassName: "border-green-200 bg-green-50",
     progressClassName: "bg-green-500",
     action: {
-      label: "Firmar libranza",
+      label: "Firmar libranza/pagaré",
       href: (token) => `/users/contracts/sign/${token}`,
       variant: "primary",
       icon: PenLine,

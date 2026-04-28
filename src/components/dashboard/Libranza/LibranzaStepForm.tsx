@@ -31,6 +31,7 @@ type FormErrors = Record<string, string>;
 
 import { Calendar } from 'primereact/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/common/select';
+import axios from 'axios';
 
 export default function LibranzaStepForm() {
   const user = useSessionStore((s) => s.user);
@@ -155,6 +156,7 @@ export default function LibranzaStepForm() {
     },
     { value: "PENSIONADO", label: "Pensionado" },
   ];
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -245,17 +247,21 @@ export default function LibranzaStepForm() {
       }
 
       setErrors({});
-      // setForm({
-      //   ...result.data,
-      //   sumaTotal: (result.data.sumaTotal),
-      //   numeroCuotas: (result.data.numeroCuotas),
-      //   valorCuota: (result.data.valorCuota),
-      // });
       toast.success("Borrador guardado");
       // nextStep();
       window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch {
-      toast.error("No se pudo guardar el borrador");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const message =
+          error.response?.data?.message ||
+          error.response?.data?.error ||
+          "No se pudo guardar el borrador";
+
+        toast.error(message);
+        return;
+      }
+
+      toast.error("Error inesperado al guardar el borrador");
     }
   }
 

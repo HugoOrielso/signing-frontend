@@ -7,6 +7,7 @@ import api from "@/lib/axiosClient";
 import { DocumentBlock } from "@/components/dashboard/Libranza/DocumentBlock";
 import { ContractDocumentItem, DocType, UploadState } from "@/types/libranza";
 import { BackgroundSurface } from "@/components/common/backgroudDecor";
+import { PreviewModal } from "@/components/common/PreviewImages";
 
 const DOC_CONFIG: {
   type: DocType;
@@ -25,6 +26,7 @@ export default function LibranzaUploadDocuments() {
   const params = useParams();
   const token = params?.id as string;
 
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [docs, setDocs] = useState<Record<DocType, UploadState>>({
     ID_FRONT: { file: null, preview: null, loading: false, status: null, notes: "" },
     ID_BACK: { file: null, preview: null, loading: false, status: null, notes: "" },
@@ -170,8 +172,27 @@ export default function LibranzaUploadDocuments() {
     }
   };
 
+  const handleUpdateDocument = async (type: DocType, file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("docType", type);
+
+    try {
+      await api.patch(`/contracts/public/${token}/edit-document`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      toast.success("Documento actualizado");
+    } catch (error) { 
+      console.log(error)
+    }
+
+  };
+
   return (
-    <div className="relative overflow-hidden bg-[linear-gradient(180deg,#f8fafc_0%,#f1f5f9_100%)]">
+    <div className="relative bg-[linear-gradient(180deg,#f8fafc_0%,#f1f5f9_100%)]">
       <BackgroundSurface />
 
       <div className="relative z-10 mx-auto max-w-5xl space-y-6 p-4">
@@ -200,11 +221,19 @@ export default function LibranzaUploadDocuments() {
               onChange={handleFileChange}
               onUpload={uploadDocument}
               required={doc.required}
+              onPreview={setPreviewUrl}
+              onUpdateDocument={handleUpdateDocument}
             />
           ))}
         </div>
 
       </div>
+      <PreviewModal
+        previewUrl={previewUrl}
+        onClose={() => setPreviewUrl(null)}
+      />
     </div>
   );
 }
+
+

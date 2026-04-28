@@ -2,15 +2,34 @@
 
 import { displayStatus, fmtDate, publicUrlAdmin } from '@/lib/utils/libranzaHelper';
 import { Contract } from '@/types/libranza';
-import { BadgeCheck, CalendarDays, Copy, ExternalLink, FileText, History } from 'lucide-react';
+import { BadgeCheck, CalendarDays, Copy, FileText, History, PencilLine } from 'lucide-react';
 import { useMemo } from 'react';
 import { ContractStatusBadge } from '@/components/dashboard/dataTable/statusBadge';
 import { useParams } from 'next/navigation';
+import CancelLibranza from '../cancelLibranza';
+import { TakeLibranzaButton } from '../takeLibranza';
+import { useSessionStore } from '@/store/adminSession';
 
 export function DetailsPageHeader({ contract }: { contract: Contract }) {
   const params = useParams()
-  console.log(params.id)
+  const user = useSessionStore((s) => s.user);
   const link = useMemo(() => publicUrlAdmin(contract.token), [contract.token]);
+
+  const isSignedOrCancelled =
+    contract.status === "SIGNED" || contract.status === "CANCELLED";
+
+  const canTake =
+    !contract.assignedToId &&
+    (user?.role === "CREDIT_ANALYST" || user?.role === "ADMIN") &&
+    !isSignedOrCancelled;
+
+  const isTakenByMe = contract.assignedToId === user?.id;
+
+
+  const canCancel =
+    !isSignedOrCancelled &&
+    (user?.role === "ADMIN" || isTakenByMe);
+
   return (
     <div className="bg-muted/30 px-4 py-4 sm:px-6 sm:py-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -38,33 +57,39 @@ export function DetailsPageHeader({ contract }: { contract: Contract }) {
         </div>
 
         <div className="flex shrink-0 flex-col items-start gap-3 lg:items-end">
-          <ContractStatusBadge status={displayStatus(contract)} />
+          <div className='flex items-center gap-3'>
+            {canTake && <TakeLibranzaButton />}
+            {canCancel && <CancelLibranza />}
+            <ContractStatusBadge status={displayStatus(contract)} />
 
+          </div>
           {link && (
             <div className="flex flex-wrap gap-2">
               <a
                 href={`/dashboard/manage-contracts/${params.id}/audit`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
+                className="inline-flex items-center gap-2 rounded border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
               >
                 <History className="h-3.5 w-3.5" />
                 Ver auditoria
               </a>
-              {/* <a
-                href={link}
+
+              <a
+                href={`/dashboard/edit/${contract.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
+                className="inline-flex items-center gap-2 rounded border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
               >
-                <ExternalLink className="h-3.5 w-3.5" />
-                Abrir enlace
-              </a> */}
+                <PencilLine className="h-3.5 w-3.5" />
+                Editar libranza
+              </a>
+
               <a
                 href={`/dashboard/upload-documents/${contract.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
+                className="inline-flex items-center gap-2 rounded border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
               >
                 <Copy className="h-3.5 w-3.5" />
                 Ver/subir documentos
@@ -75,7 +100,7 @@ export function DetailsPageHeader({ contract }: { contract: Contract }) {
                   href={`${process.env.NEXT_PUBLIC_API_URL}/contracts/contract/${params.id}/download`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
+                  className="inline-flex items-center gap-2 rounded border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
                 >
                   <FileText className="h-3.5 w-3.5" />
                   Descargar PDF

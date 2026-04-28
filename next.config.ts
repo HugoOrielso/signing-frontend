@@ -1,9 +1,17 @@
 import type { NextConfig } from "next";
 
-const API_URL = process.env.API_URL  || "http://localhost:4000/api";
+const API_URL = process.env.API_URL || "http://localhost:4000/api";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+    ],
+  },
   async rewrites() {
     return [
       {

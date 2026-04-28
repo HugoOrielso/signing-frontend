@@ -86,7 +86,7 @@ export default function ContractsTable() {
             value={filter}
             onValueChange={(value: string) => setFilter(value as StatusFilter)}
           >
-            <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-white shadow-sm focus:ring-4 focus:ring-blue-100">
+            <SelectTrigger className="h-11 p-5.5 rounded-2xl border-slate-200 bg-white shadow-sm focus:ring-4 focus:ring-blue-100">
               <SelectValue placeholder="Filtrar por estado" />
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-slate-200">

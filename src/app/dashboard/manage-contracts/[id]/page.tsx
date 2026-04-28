@@ -66,3 +66,5 @@ export default function ContractDetailPage() {
 
   return <ContractDetailClient contract={contract} />;
 }
+
+

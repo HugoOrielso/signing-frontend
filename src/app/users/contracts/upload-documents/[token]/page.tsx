@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { DocumentBlock } from "@/components/dashboard/Libranza/DocumentBlock";
 import { ContractDocumentItem, DocType, UploadState } from "@/types/libranza";
 import publicApiNew from "@/lib/publicAxios";
+import { PreviewModal } from "../../../../../components/common/PreviewImages";
 
 const DOC_CONFIG: {
     type: DocType;
@@ -152,7 +153,7 @@ export default function LibranzaUploadDocuments() {
             }));
         }
     };
-
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     return (
         <div className="mx-auto max-w-5xl space-y-6 p-4">
             <h1 className="text-center text-xl font-bold">
@@ -169,10 +170,14 @@ export default function LibranzaUploadDocuments() {
                         onChange={handleFileChange}
                         onUpload={uploadDocument}
                         required={doc.required}
+                        onPreview={setPreviewUrl}
                     />
                 ))}
             </div>
-
+            <PreviewModal
+                previewUrl={previewUrl}
+                onClose={() => setPreviewUrl(null)}
+            />
         </div>
     );
 }

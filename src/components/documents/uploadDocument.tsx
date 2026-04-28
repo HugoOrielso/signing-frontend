@@ -20,10 +20,10 @@ const DOC_CONFIG: {
     { type: "ADDITIONAL_DOCUMENT", label: "Documento adicional", required: false },
   ];
 
-export  function LibranzaUploadDocuments() {
+export function LibranzaUploadDocuments() {
   const params = useParams();
   const token = params?.id as string;
-
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [docs, setDocs] = useState<Record<DocType, UploadState>>({
     ID_FRONT: { file: null, preview: null, loading: false, status: null, notes: "" },
     ID_BACK: { file: null, preview: null, loading: false, status: null, notes: "" },
@@ -132,10 +132,10 @@ export  function LibranzaUploadDocuments() {
       }));
 
       toast.success("Documento subido");
-      setTimeout(()=>{
+      setTimeout(() => {
         location.reload()
-      },300)
-    } catch  {
+      }, 300)
+    } catch {
       toast.error("Error subiendo documento");
       setDocs((prev) => ({
         ...prev,
@@ -160,6 +160,7 @@ export  function LibranzaUploadDocuments() {
             onChange={handleFileChange}
             onUpload={uploadDocument}
             required={doc.required}
+            onPreview={setPreviewUrl}
           />
         ))}
       </div>

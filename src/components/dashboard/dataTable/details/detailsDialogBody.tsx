@@ -46,7 +46,7 @@ export const DetailsDialogBody = ({
           <ContractFinalReviewCard contractId={contract.id} />
         }
 
-        { 
+        {
           (docsVerifies && contract.status === "PENDING_VERIFICATION") && contracDataStatus === "REJECTED" &&
           <RejectedInfoCard notes={contract.dataReviewNotes} />
         }
@@ -93,6 +93,23 @@ export const DetailsDialogBody = ({
               <DetailRow label="Cédula" value={ld?.clienteCC ?? contractedParty?.identification} />
               <DetailRow label="Expedida en" value={ld?.clienteCCDe} />
               <DetailRow
+                label="Fecha de expedición"
+                value={formatDate(ld?.clienteFechaExpedicionCC)}
+              />
+
+              <DetailRow
+                label="Fecha de nacimiento"
+                value={formatDate(ld?.clienteFechaNacimiento)}
+              />
+              <DetailRow
+                label="Edad"
+                value={
+                  getAge(ld?.clienteFechaNacimiento)
+                    ? `${getAge(ld?.clienteFechaNacimiento)} años`
+                    : null
+                }
+              />
+              <DetailRow
                 label="Dirección"
                 value={ld?.clienteDireccion ?? contractedParty?.address}
               />
@@ -138,6 +155,10 @@ export const DetailsDialogBody = ({
               <DetailRow label="Municipio" value={ld?.municipioTrabajo} />
               <DetailRow label="Empresa" value={ld?.empresaTrabajo} />
               <DetailRow label="Departamento" value={ld?.departamento} />
+              <DetailRow
+                label="Tipo de contrato"
+                value={resolveTipoContrato(ld?.tipoContrato)}
+              />
             </div>
           </InfoCard>
 
@@ -251,4 +272,60 @@ export const DetailsDialogBody = ({
       </div>
     </div>
   )
+}
+
+export function formatDate(value?: string | null) {
+  if (!value) return null;
+
+  const [year, month, day] = value.split("T")[0].split("-");
+
+  return `${day}/${month}/${year}`;
+}
+
+
+export function getAge(value?: string | null): number | null {
+  if (!value) return null;
+
+  // 🔥 extraemos solo la fecha (evitamos timezone)
+  const [year, month, day] = value.split("T")[0].split("-").map(Number);
+
+  const today = new Date();
+
+  let age = today.getFullYear() - year;
+
+  const currentMonth = today.getMonth() + 1;
+  const currentDay = today.getDate();
+
+  // 👇 si aún no ha cumplido años este año, restamos 1
+  if (
+    currentMonth < month ||
+    (currentMonth === month && currentDay < day)
+  ) {
+    age--;
+  }
+
+  return age;
+}
+
+export type ContractEmploymentType =
+  | "PROVISIONAL"
+  | "TEMPORAL"
+  | "PROVISIONAL_VACANTE_DEFINITIVA"
+  | "CARRERA_ADMINISTRATIVA"
+  | "PENSIONADO";
+
+export function resolveTipoContrato(
+  value?: string | null
+): string {
+  if (!value) return "—";
+
+  const map: Record<ContractEmploymentType, string> = {
+    PROVISIONAL: "Provisional",
+    TEMPORAL: "Temporal",
+    PROVISIONAL_VACANTE_DEFINITIVA: "Provisional (Vacante definitiva)",
+    CARRERA_ADMINISTRATIVA: "Carrera administrativa",
+    PENSIONADO: "Pensionado",
+  };
+
+  return map[value as ContractEmploymentType] ?? value;
 }
