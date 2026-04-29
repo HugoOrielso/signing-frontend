@@ -41,12 +41,12 @@ export const links: SidebarLink[] = [
         icon: HandCoins,
         roles: ["ADMIN"],
       },
-      {
-        href: "/dashboard/reports/operational",
-        label: "Rendimiento",
-        icon: Users2,
-        roles: ["ADMIN"],
-      },
+      // {
+      //   href: "/dashboard/reports/operational",
+      //   label: "Rendimiento",
+      //   icon: Users2,
+      //   roles: ["ADMIN"],
+      // },
     ],
   },
   {
