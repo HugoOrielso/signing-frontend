@@ -6,6 +6,16 @@ import { Calendar } from "primereact/calendar";
 import { toast } from "sonner";
 import { FileText, Loader2, TrendingUp, Wallet } from "lucide-react";
 import { FinancialContractsDataTable } from "./dataTableReports";
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    Tooltip,
+    ResponsiveContainer,
+    CartesianGrid,
+} from "recharts";
+
 
 const formatMoney = (value: number) =>
     new Intl.NumberFormat("es-CO", {
@@ -25,6 +35,30 @@ export function AdminFinancialSummary() {
     const [data, setData] = useState<FinancialSummaryResponse | null>(null);
     const [loading, setLoading] = useState(false);
     const [dateRange, setDateRange] = useState<DateRange>(null);
+
+    const incomeByDayChartData = useMemo(() => {
+        if (!data?.contracts) return [];
+
+        const grouped = data.contracts.reduce<Record<string, number>>(
+            (acc, contract) => {
+                const day = new Date(contract.createdAt).toLocaleDateString("es-CO", {
+                    day: "2-digit",
+                    month: "short",
+                });
+
+                acc[day] = (acc[day] || 0) + contract.cuotas.sumaTotal;
+
+                return acc;
+            },
+            {}
+        );
+
+        return Object.entries(grouped).map(([date, total]) => ({
+            date,
+            total,
+            formatted: formatMoney(total),
+        }));
+    }, [data]);
 
     const fetchSummary = useCallback(async () => {
         try {
@@ -121,11 +155,56 @@ export function AdminFinancialSummary() {
                 </div>
             ) : null}
 
+            {data ? (
+                <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+                    <div className="mb-5">
+                        <h3 className="text-lg font-bold text-slate-900">
+                            Ingresos por día
+                        </h3>
+                        <p className="text-sm text-slate-500">
+                            Total acumulado según la fecha de creación de los contratos
+                        </p>
+                    </div>
+
+                    <div className="h-80 w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={incomeByDayChartData}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+
+                                <XAxis dataKey="date" />
+
+                                <YAxis
+                                    tickFormatter={(value) =>
+                                        new Intl.NumberFormat("es-CO", {
+                                            notation: "compact",
+                                            maximumFractionDigits: 1,
+                                        }).format(Number(value))
+                                    }
+                                />
+
+                                <Tooltip
+                                    formatter={(_, __, item) => {
+                                        const payload = item.payload as {
+                                            formatted: string;
+                                        };
+
+                                        return [payload.formatted, "Ingresos"];
+                                    }}
+                                />
+
+                                <Bar
+                                    dataKey="total"
+                                    radius={[10, 10, 0, 0]}
+                                    fill="#2563eb"
+                                />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+            ) : null}
+
             {data?.contracts && (
-
                 <FinancialContractsDataTable data={data.contracts} />
-
-
             )}
         </div>
     );
@@ -150,3 +229,5 @@ function SummaryCard({
         </div>
     );
 }
+
+

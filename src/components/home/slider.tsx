@@ -16,33 +16,35 @@ const slides: SlideData[] = [
   {
     id: 1,
     companyLogo: "/assets/logo_dimcultura.png", // Usamos tu logo real
-    tag: "Libranzas Digitales",
-    title: "Gestión de créditos ágil y profesional",
-    description: "Flujos de aprobación digital diseñados para optimizar el recaudo por nómina en tiempo real.",
+    tag: "Cursos Académicos",
+    title: "Convierte el conocimiento en aprendizaje real",
+    description:
+      "Creamos cursos claros y prácticos a partir de tesis, documentos académicos y contenido especializado.",
     mainImage: "/assets/gruculcol.png",
     accentColor: "#2563eb" // El azul de tu landing
   },
   {
     id: 2,
     companyLogo: "/assets/logo_dimcultura.png",
-    tag: "Proyectos de Construcción",
-    title: "Vivienda respaldada por tecnología",
-    description: "Nuestras obras residenciales cuentan con trazabilidad documental integrada para tu tranquilidad.",
+    tag: "Educación Digital",
+    title: "Una plataforma para aprender de forma moderna",
+    description:
+      "Organiza contenidos, materiales y rutas de aprendizaje en experiencias educativas simples, visuales y profesionales.",
     mainImage: "/assets/logo_dimcultura.png",
     accentColor: "#4f46e5"
   },
   {
     id: 3,
     companyLogo: "/assets/logo_dimcultura.png",
-    tag: "Pagarés Electrónicos",
-    title: "Firma electrónica con validez legal",
-    description: "Desmaterializa tus títulos valores. Crea, firma y consulta tus pagarés 100% digital.",
+    tag: "Formación Profesional",
+    title: "Cursos diseñados para crecer y aplicar",
+    description: "Transformamos información compleja en formación útil para estudiantes, docentes, empresas y profesionales.",
     mainImage: "/assets/logo_mega.png",
     accentColor: "#0d9488"
   }
 ];
 
-const StripeSlider: React.FC = () => {
+const EducationSlider: React.FC = () => {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -175,4 +177,4 @@ const StripeSlider: React.FC = () => {
   );
 };
 
-export default StripeSlider;
+export default EducationSlider;

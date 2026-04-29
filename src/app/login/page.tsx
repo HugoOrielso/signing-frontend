@@ -1,5 +1,6 @@
 import LoginForm from "@/components/auth/LoginForm";
 import { BackgroundDecor } from "@/components/common/backgroudDecor";
+import Image from "next/image";
 
 export default async function LoginPage() {
   return (
@@ -8,10 +9,8 @@ export default async function LoginPage() {
 
       <div className="relative z-10 flex min-h-screen items-center justify-center px-6 py-10">
         <div className="w-full max-w-md">
-          <div className="mb-6 text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-blue-700 to-blue-500 shadow-[0_18px_40px_rgba(37,99,235,0.22)]">
-              <span className="text-lg font-bold text-white">D</span>
-            </div>
+          <div className="mb-6 text-center items-center justify-center flex flex-col">
+            <Image src={"/assets/logo_dimcultura.png"} alt="logo" width={100} height={100} />
 
             <p className="text-sm font-medium uppercase tracking-[0.25em] text-blue-700/80">
               Dimcultura
