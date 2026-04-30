@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { DataReviewStatus, ProductoItem, ReferenceItem, ReviewedLibranzaDetail, ReviewedLibranzaForm } from '@/types/libranza';
+import { ProductoItem, ReferenceItem, ReviewedLibranzaDetail, ReviewedLibranzaForm } from '@/types/libranza';
 import { useLibranzaStore } from '@/store/libranzaStore';
 import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
-import { buildLibranzaPayloadToReview } from '@/lib/utils/buildLibranzaPayload';
+import { buildLibranzaPayloadToEdit } from '@/lib/utils/buildLibranzaPayload';
 import api from '@/lib/axiosClient';
 import { useSessionStore } from '@/store/adminSession';
 import ReferencesSection from '../dashboard/Libranza/form/references/References';
@@ -43,7 +43,6 @@ export default function EditLibranzaData() {
     const id = params.id as string;
     const user = useSessionStore((s) => s.user);
     const form = useLibranzaStore((state) => state.reviewForm);
-    const dataReviewNotes = useLibranzaStore((state) => state.dataReviewNotes);
     const setForm = useLibranzaStore((state) => state.setReviewForm);
     const [errors, setErrors] = useState<FormErrors>({});
     const [referencias, setReferencias] = useState<ReferenceItem[]>(
@@ -221,7 +220,7 @@ export default function EditLibranzaData() {
         try {
             setErrors({});
 
-            const payload = buildLibranzaPayloadToReview(result.data);
+            const payload = buildLibranzaPayloadToEdit(result.data);
 
             await api.patch(
                 `/contracts/contract/${id}/edit`,
@@ -233,10 +232,9 @@ export default function EditLibranzaData() {
 
             window.scrollTo({ top: 0, behavior: "smooth" });
 
-            setTimeout(() => {
-                location.reload()
-            }, 500)
+
         } catch (error: unknown) {
+            console.log(error)
             const axiosError = error as AxiosError<ValidationErrorResponse>;
 
             const backendErrors = axiosError.response?.data?.errors?.fieldErrors;

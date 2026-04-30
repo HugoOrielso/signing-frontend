@@ -7,6 +7,7 @@ import {
   Clock,
   ShieldCheck,
 } from "lucide-react";
+import Link from "next/link";
 
 const quickActions = [
   {
@@ -79,22 +80,25 @@ export default function Page() {
             const Icon = item.icon;
 
             return (
-              <div
+              <Link
+                href="/users/contracts"
                 key={item.title}
-                className="group rounded-[26px] border border-slate-200/80 bg-white/90 p-5 shadow-[0_20px_50px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_24px_60px_rgba(37,99,235,0.10)]"
+                className="group block rounded-[26px] border border-slate-200/80 bg-white/90 p-5 shadow-[0_20px_50px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_24px_60px_rgba(37,99,235,0.10)]"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-700 transition group-hover:bg-blue-100">
                     <Icon className="h-5 w-5" />
                   </div>
 
-                  <h3 className="font-semibold text-slate-900">{item.title}</h3>
+                  <h3 className="font-semibold text-slate-900">
+                    {item.title}
+                  </h3>
                 </div>
 
                 <p className="mt-4 text-sm leading-7 text-slate-600">
                   {item.description}
                 </p>
-              </div>
+              </Link>
             );
           })}
         </div>

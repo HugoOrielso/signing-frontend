@@ -12,6 +12,7 @@ import { toast } from "sonner"
 import api from "@/lib/axiosClient"
 import { getDocumentStatusUI } from "./StatusUi"
 import { resolveDocumentType } from "./DocumentTypeBadge"
+import axios from "axios"
 
 export function DocumentComplianceCard({
     doc,
@@ -34,51 +35,69 @@ export function DocumentComplianceCard({
 
     async function handleApprove() {
         try {
-            setLoading(true)
+            setLoading(true);
 
             await api.patch(`/contracts/documents/${doc.id}/review`, {
                 status: "APPROVED",
-            })
+            });
 
-            toast.success("Documento aprobado")
-            await onReviewed?.()
+            toast.success("Documento aprobado");
+
+            await onReviewed?.();
+
             setTimeout(() => {
-                location.reload()
-            }, 250)
-        } catch (error) {
-            console.error("approve document error:", error)
-            toast.error("No se pudo aprobar el documento")
+                location.reload();
+            }, 250);
+        } catch (error: unknown) {
+
+            if (axios.isAxiosError(error)) {
+                const message =
+                    error.response?.data?.message ||
+                    "No se pudo aprobar el documento";
+
+                toast.error(message);
+            } else {
+                toast.error("Error inesperado");
+            }
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
     async function handleReject() {
         if (!notes.trim()) {
-            toast.error("Debes agregar una nota")
-            return
+            toast.error("Debes agregar una nota");
+            return;
         }
 
         try {
-            setLoading(true)
+            setLoading(true);
 
             await api.patch(`/contracts/documents/${doc.id}/review`, {
                 status: "REJECTED",
                 notes: notes.trim(),
-            })
+            });
 
-            toast.success("Documento rechazado")
-            setShowReject(false)
-            setNotes("")
-            await onReviewed?.()
+            toast.success("Documento rechazado");
+            setShowReject(false);
+            setNotes("");
+
+            await onReviewed?.();
+
             setTimeout(() => {
-                location.reload()
-            }, 250)
-        } catch (error) {
-            console.error("reject document error:", error)
-            toast.error("No se pudo rechazar el documento")
+                location.reload();
+            }, 250);
+        } catch (error: unknown) {
+
+            if (axios.isAxiosError(error)) {
+                toast.error(
+                    error.response?.data?.message || "No se pudo rechazar el documento"
+                );
+            } else {
+                toast.error("Error inesperado");
+            }
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 

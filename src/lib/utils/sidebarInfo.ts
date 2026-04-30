@@ -7,7 +7,7 @@ import {
   FileCheck,
   FolderOpen,
   HandCoins,
-  Users2
+  Users2,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -41,12 +41,12 @@ export const links: SidebarLink[] = [
         icon: HandCoins,
         roles: ["ADMIN"],
       },
-      // {
-      //   href: "/dashboard/reports/operational",
-      //   label: "Rendimiento",
-      //   icon: Users2,
-      //   roles: ["ADMIN"],
-      // },
+      {
+        href: "/dashboard/reports/operational",
+        label: "Rendimiento",
+        icon: Users2,
+        roles: ["ADMIN"],
+      },
     ],
   },
   {
@@ -87,4 +87,10 @@ export const links: SidebarLink[] = [
     icon: UserPlus,
     roles: ["ADMIN"],
   },
+  {
+    href: "/dashboard/staff/financial-report",
+    label: "Reporte financiero",
+    icon: HandCoins,
+    roles: ["CREDIT_ANALYST", "OPERATOR"],
+  }
 ];

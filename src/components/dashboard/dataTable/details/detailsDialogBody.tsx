@@ -1,15 +1,13 @@
-import { useMemo } from 'react'
 import {
   Building2,
   FileText,
-  Link2,
   ShieldCheck,
   User,
   Wallet,
 } from 'lucide-react'
 
 import { DetailRow, InfoCard, ProductsCard, Section } from './atoms'
-import { fmtMoney, publicUrl } from '@/lib/utils/libranzaHelper'
+import { fmtMoney } from '@/lib/utils/libranzaHelper'
 import { Contract, ContractDocumentItem } from '@/types/libranza'
 import { DocumentComplianceCard } from './DocumentCard'
 import { ContractFinalReviewCard } from './ContractDataReview'
@@ -28,7 +26,6 @@ export const DetailsDialogBody = ({
   docsLoading,
   onPreview,
 }: DetailsDialogBodyProps) => {
-  const link = useMemo(() => publicUrl(contract.token), [contract.token])
   const ld = contract.libranzaData
   const contractedParty = contract.parties.find((p) => p.role === 'CONTRACTED')
 
@@ -64,22 +61,6 @@ export const DetailsDialogBody = ({
               <DetailRow label="Pagaduría" value={(ld?.pagaduriaNombre ?? "-")} />
               <DetailRow label="Pagaduría departamento" value={(ld?.pagaduriaDepartamento ?? "-")} />
               <DetailRow label="Pagaduría municipio" value={(ld?.pagaduriaMunicipio ?? "-")} />
-
-              <DetailRow label="Enlace de firma">
-                {link ? (
-                  <a
-                    href={link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition hover:bg-muted"
-                  >
-                    <Link2 className="h-3.5 w-3.5" />
-                    Abrir enlace público
-                  </a>
-                ) : (
-                  <span className="text-sm text-muted-foreground">—</span>
-                )}
-              </DetailRow>
             </div>
           </InfoCard>
 

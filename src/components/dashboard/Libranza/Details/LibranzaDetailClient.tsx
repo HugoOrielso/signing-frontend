@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
 import type { Contract } from '@/types/libranza';
 import { DetailsDialogBody } from '@/components/dashboard/dataTable/details/detailsDialogBody';
 import { DetailsPageHeader } from './DetailsPageHeader';
@@ -14,23 +12,11 @@ export function ContractDetailClient({
   contract: Contract;
 }) {
   const docs = contract.documents ?? [];
-
-  const router = useRouter();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   return (
     <div className="min-h-screen bg-muted/20">
 
-      {/* Top bar */}
-      <div className="border-b bg-background px-4 py-2.5 sm:px-6">
-        <button
-          onClick={() => router.back()}
-          className="inline-flex items-center gap-2 text-sm  hover:text-foreground cursor-pointer text-main"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Volver
-        </button>
-      </div>
 
       {/* Main content */}
       <div className="mx-auto  p-3 sm:px-6 lg:px-8">

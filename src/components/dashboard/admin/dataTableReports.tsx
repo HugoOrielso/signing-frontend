@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/common/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/common/Table";
 import { columnsReport } from "./columsReport";
+import { useSessionStore } from "@/store/adminSession";
 
 const STATUS_OPTIONS = [
     { label: "Todos", value: "ALL" },
@@ -55,7 +56,7 @@ export function FinancialContractsDataTable({
             },
         },
     });
-
+    const user = useSessionStore((state) => state.user)
     const clienteFilter =
         (table.getColumn("cliente")?.getFilterValue() as string) ?? "";
 
@@ -97,14 +98,18 @@ export function FinancialContractsDataTable({
                     className="h-11 max-w-100 rounded-2xl border-slate-200 bg-white shadow-sm"
                 />
 
-                <Input
-                    placeholder="Filtrar por operador..."
-                    value={operadorFilter}
-                    onChange={(event) =>
-                        table.getColumn("operador")?.setFilterValue(event.target.value)
-                    }
-                    className="h-11 max-w-100 rounded-2xl border-slate-200 bg-white shadow-sm"
-                />
+
+                {
+                    user?.role === "ADMIN" &&
+                    <Input
+                        placeholder="Filtrar por operador..."
+                        value={operadorFilter}
+                        onChange={(event) =>
+                            table.getColumn("operador")?.setFilterValue(event.target.value)
+                        }
+                        className="h-11 max-w-100 rounded-2xl border-slate-200 bg-white shadow-sm"
+                    />
+                }
 
 
             </div>

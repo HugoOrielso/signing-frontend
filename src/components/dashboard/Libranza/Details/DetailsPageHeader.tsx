@@ -75,19 +75,20 @@ export function DetailsPageHeader({ contract }: { contract: Contract }) {
                 Ver auditoria
               </a>
 
-              <a
-                href={`/dashboard/edit/${contract.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
-              >
-                <PencilLine className="h-3.5 w-3.5" />
-                Editar libranza
-              </a>
+              {
+                user?.role === "CREDIT_ANALYST" || user?.role === "ADMIN" &&
+                <a
+                  href={`/dashboard/edit/${contract.id}`}
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
+                >
+                  <PencilLine className="h-3.5 w-3.5" />
+                  Editar libranza
+                </a>
+              }
 
               <a
                 href={`/dashboard/upload-documents/${contract.id}`}
-                target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
               >
@@ -98,7 +99,6 @@ export function DetailsPageHeader({ contract }: { contract: Contract }) {
               {contract.status === "SIGNED" && (
                 <a
                   href={`${process.env.NEXT_PUBLIC_API_URL}/contracts/contract/${params.id}/download`}
-                  target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded border bg-background px-3 py-2 text-xs font-semibold transition hover:bg-muted"
                 >

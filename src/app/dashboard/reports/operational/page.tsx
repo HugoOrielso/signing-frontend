@@ -1,5 +1,5 @@
-import { AdminOperationalSummary } from "@/components/dashboard/admin/OperationalSummary";
+import { AdminFilteredOperationalReport } from "@/components/dashboard/admin/OperationalSummary";
 
 export default function page() {
-  return <AdminOperationalSummary />;
+  return <AdminFilteredOperationalReport />;
 }

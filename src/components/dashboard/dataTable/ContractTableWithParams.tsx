@@ -37,10 +37,8 @@ const STATUS_OPTIONS = [
     { label: "OTP pendiente", value: "OTP_PENDING" },
     { label: "OTP verificado", value: "OTP_VERIFIED" },
     { label: "Firma parcial", value: "PARTIALLY_SIGNED" },
-    { label: "Firmado", value: "SIGNED" },
     { label: "Rechazado", value: "REJECTED" },
     { label: "Expirado", value: "EXPIRED" },
-    { label: "Cancelado", value: "CANCELLED" },
 ] as const;
 
 type StatusFilter = "ALL" | ContractStatus;
@@ -54,7 +52,7 @@ export default function ContractsTableWithParams() {
 
     const [filter, setFilter] = useState<StatusFilter>("ALL");
     const [search, setSearch] = useState("");
-    const [asesor, setAsesor] = useState("");
+    const [asesor, setAsesor] = useState("ALL");
     const [dateRange, setDateRange] = useState<DateRange>(null);
 
     const fetchOperators = useCallback(async () => {
@@ -73,16 +71,18 @@ export default function ContractsTableWithParams() {
 
     const fetchContracts = useCallback(async () => {
         try {
-            if (!asesor || !dateRange?.[0] || !dateRange?.[1]) return;
-
             setLoading(true);
 
             const res = await api.get("/contracts/with-params", {
                 params: {
-                    asesor,
-                    startDate: dateRange[0].toISOString(),
-                    endDate: dateRange[1].toISOString(),
-                    status: filter,
+                    asesor: asesor !== "ALL" ? asesor : undefined,
+                    startDate: dateRange?.[0]
+                        ? dateRange[0].toISOString()
+                        : undefined,
+                    endDate: dateRange?.[1]
+                        ? dateRange[1].toISOString()
+                        : undefined,
+                    status: filter !== "ALL" ? filter : undefined,
                     search: search.trim() || undefined,
                 },
             });
@@ -112,10 +112,11 @@ export default function ContractsTableWithParams() {
 
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-
                     <Select
                         value={filter}
-                        onValueChange={(value) => setFilter(value as StatusFilter)}
+                        onValueChange={(value) =>
+                            setFilter(value as StatusFilter)
+                        }
                     >
                         <SelectTrigger className="h-11 p-6 rounded border-slate-200 bg-white shadow-sm">
                             <SelectValue placeholder="Estado" />
@@ -123,22 +124,25 @@ export default function ContractsTableWithParams() {
 
                         <SelectContent>
                             {STATUS_OPTIONS.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
+                                <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                >
                                     {option.label}
                                 </SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
+
                     <Input
                         placeholder="Buscar..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className=" p-6 rounded border-slate-200 max-w-100 bg-white shadow-sm"
+                        className="p-6 rounded border-slate-200 max-w-100 bg-white shadow-sm"
                     />
-
                 </div>
-                <div className="flex items-center gap-3">
 
+                <div className="flex items-center gap-3">
                     <Select
                         value={asesor}
                         onValueChange={setAsesor}
@@ -147,14 +151,23 @@ export default function ContractsTableWithParams() {
                         <SelectTrigger className="h-11 p-6 rounded border-slate-200 bg-white shadow-sm">
                             <SelectValue
                                 placeholder={
-                                    loadingOperators ? "Cargando asesores..." : "Selecciona un asesor"
+                                    loadingOperators
+                                        ? "Cargando asesores..."
+                                        : "Selecciona un asesor"
                                 }
                             />
                         </SelectTrigger>
 
                         <SelectContent>
+                            <SelectItem value="ALL">
+                                Todos los asesores
+                            </SelectItem>
+
                             {operators.map((operator) => (
-                                <SelectItem key={operator.id} value={operator.name}>
+                                <SelectItem
+                                    key={operator.id}
+                                    value={operator.name}
+                                >
                                     {operator.name}
                                 </SelectItem>
                             ))}
@@ -163,21 +176,18 @@ export default function ContractsTableWithParams() {
 
                     <Calendar
                         value={dateRange}
-                        onChange={(e) => setDateRange(e.value as DateRange)}
+                        onChange={(e) =>
+                            setDateRange(e.value as DateRange)
+                        }
                         selectionMode="range"
                         readOnlyInput
                         hideOnRangeSelection
                         placeholder="Rango de fechas"
                     />
-
                 </div>
             </div>
 
-            {!asesor || !dateRange?.[0] || !dateRange?.[1] ? (
-                <div className="flex items-center justify-center rounded-2xl border border-dashed border-slate-300 py-16 text-sm text-slate-500">
-                    Selecciona asesor y rango de fechas para ver contratos
-                </div>
-            ) : loading ? (
+            {loading ? (
                 <div className="flex items-center justify-center rounded-[24px] border bg-white py-24">
                     <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-300 border-t-blue-600" />
                 </div>
@@ -185,9 +195,10 @@ export default function ContractsTableWithParams() {
                 <DataTable columns={columns} data={contracts} />
             )}
 
-            {!loading && asesor && dateRange?.[0] && dateRange?.[1] && (
+            {!loading && (
                 <p className="text-right text-xs text-slate-500">
-                    {contracts.length} contrato{contracts.length !== 1 ? "s" : ""}
+                    {contracts.length} contrato
+                    {contracts.length !== 1 ? "s" : ""}
                 </p>
             )}
         </div>

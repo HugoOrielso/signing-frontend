@@ -1,4 +1,5 @@
 // DashboardLayout.tsx
+import BackButton from "@/components/common/RotuerBack";
 import SessionInitializer from "@/components/dashboard/SessionInitializer";
 import DashboardSidebar from "@/components/dashboard/Sidebar";
 import {
@@ -42,9 +43,7 @@ export default async function DashboardLayout({
               <div className="relative z-10 flex items-center gap-3">
                 <SidebarTrigger className="cursor-pointer rounded-xl border border-transparent bg-white/40 p-2 transition hover:bg-white/70" />
 
-                <div className="hidden md:block">
-                  <p className="text-sm text-slate-500">Panel administrativo</p>
-                </div>
+                <BackButton />
               </div>
 
               <div className="relative z-10 flex items-center gap-3">
