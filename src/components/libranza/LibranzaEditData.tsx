@@ -211,7 +211,6 @@ export default function EditLibranzaData() {
                     formatted[key] = issue.message;
                 }
             });
-            console.log(formatted)
 
             setErrors(formatted);
             toast.error("Hay errores en el formulario");
@@ -232,6 +231,7 @@ export default function EditLibranzaData() {
 
             window.scrollTo({ top: 0, behavior: "smooth" });
 
+            setTimeout(()=>{location.reload()},500)
 
         } catch (error: unknown) {
             console.log(error)
