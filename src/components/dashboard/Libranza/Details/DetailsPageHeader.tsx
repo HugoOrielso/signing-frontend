@@ -76,7 +76,7 @@ export function DetailsPageHeader({ contract }: { contract: Contract }) {
               </a>
 
               {
-                user?.role === "CREDIT_ANALYST" || user?.role === "ADMIN" &&
+                (user?.role === "CREDIT_ANALYST" || user?.role === "ADMIN") &&
                 <a
                   href={`/dashboard/edit/${contract.id}`}
                   rel="noopener noreferrer"
