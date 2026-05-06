@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import api from "@/lib/axiosClient";
 import { Calendar } from "primereact/calendar";
 import { toast } from "sonner";
-import { FileText, Loader2, TrendingUp, Wallet } from "lucide-react";
+import { Download, FileText, Loader2, TrendingUp, Wallet } from "lucide-react";
 import { FinancialContractsDataTable } from "./dataTableReports";
 import {
     BarChart,
@@ -15,6 +15,7 @@ import {
     ResponsiveContainer,
     CartesianGrid,
 } from "recharts";
+import { exportToExcel } from "@/utils/exportToExcel";
 
 type DateRange = Date[] | null;
 
@@ -59,6 +60,50 @@ export function StaffFinancialSummary() {
             formatted: formatMoney(total),
         }));
     }, [data]);
+
+    const handleDownloadExcel = () => {
+        try {
+            exportToExcel({
+                data: data?.contracts ?? [],
+                fileName: `reporte-libranzas-${new Date()
+                    .toISOString()
+                    .slice(0, 10)}`,
+                sheetName: "Reporte libranzas",
+                mapRow: (contract) => ({
+                    "N° contrato": contract.contractNumber ?? "",
+                    Cliente: contract.cliente?.name ?? "",
+                    Identificación: contract.cliente?.identification ?? "",
+                    Estado: contract.status ?? "",
+                    "Fecha creación": contract.createdAt
+                        ? new Date(contract.createdAt).toLocaleDateString("es-CO")
+                        : "",
+                    Operador: contract.operador?.name ?? "",
+                    Analista: contract.analista?.name ?? "",
+                    Asesor: contract.asesor ?? "",
+                    "Total cuotas": contract.cuotas?.sumaTotal ?? 0,
+                }),
+                columnsWidth: [
+                    { wch: 18 },
+                    { wch: 28 },
+                    { wch: 18 },
+                    { wch: 22 },
+                    { wch: 18 },
+                    { wch: 25 },
+                    { wch: 25 },
+                    { wch: 25 },
+                    { wch: 18 },
+                ],
+            });
+
+            toast.success("Excel descargado correctamente");
+        } catch (error) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "No se pudo descargar el Excel"
+            );
+        }
+    };
 
     const fetchSummary = useCallback(async () => {
         try {
@@ -128,6 +173,15 @@ export function StaffFinancialSummary() {
                         ) : (
                             "Consultar"
                         )}
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleDownloadExcel}
+                        disabled={!data?.contracts?.length || loading}
+                        className="inline-flex h-12 items-center justify-center gap-2 rounded border border-slate-300 bg-green-600 px-5 text-sm font-semibold text-white shadow-sm  disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                    >
+                        <Download className="h-4 w-4" />
+                        Descargar Excel
                     </button>
                 </div>
             </div>

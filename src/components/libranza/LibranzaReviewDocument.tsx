@@ -690,6 +690,9 @@ export default function LibranzaReviewDocument() {
                                             <option value="CARRERA_ADMINISTRATIVA">
                                                 Carrera administrativa
                                             </option>
+                                            <option value="PROPIEDAD">
+                                                Propiedad
+                                            </option>
                                             <option value="PENSIONADO">Pensionado</option>
                                         </select>
                                         {renderError('tipoContrato')}

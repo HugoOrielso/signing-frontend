@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import api from "@/lib/axiosClient";
 import { Calendar } from "primereact/calendar";
 import { toast } from "sonner";
-import { FileText, Loader2, Search, TrendingUp, Wallet, X } from "lucide-react";
+import { Download, FileText, Loader2, Search, TrendingUp, Wallet, X } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -22,7 +22,8 @@ import {
     ResponsiveContainer,
     CartesianGrid,
 } from "recharts";
-
+import { exportToExcel } from "@/utils/exportToExcel";
+import { useSessionStore } from "@/store/adminSession";
 type DateRange = Date[] | null;
 
 type UserOption = {
@@ -86,6 +87,7 @@ const formatDate = (value: string) =>
     }).format(new Date(value));
 
 export function AdminFilteredOperationalReport() {
+    const user = useSessionStore((state) => state.user)
     const [data, setData] = useState<FinancialReportResponse | null>(null);
 
     const [operators, setOperators] = useState<UserOption[]>([]);
@@ -215,6 +217,52 @@ export function AdminFilteredOperationalReport() {
 
     const isOperatorSelected = operatorId !== "ALL";
     const isAnalystSelected = analystId !== "ALL";
+    const handleDownloadExcel = () => {
+        try {
+            exportToExcel({
+                data: data?.contracts ?? [],
+                fileName: `reporte-libranzas-${new Date()
+                    .toISOString()
+                    .slice(0, 10)}`,
+                sheetName: "Reporte libranzas",
+                mapRow: (contract) => ({
+                    "N° contrato": contract.contractNumber ?? "",
+                    Cliente: contract.cliente?.name ?? "",
+                    Identificación: contract.cliente?.identification ?? "",
+                    Estado: contract.status ?? "",
+                    "Fecha creación": contract.createdAt
+                        ? new Date(contract.createdAt).toLocaleDateString("es-CO")
+                        : "",
+                    Operador: contract.operador?.name ?? "",
+                    Analista: contract.analista?.name ?? "",
+                    Asesor: contract.asesor ?? "",
+                    "Total cuotas": contract.cuotas?.sumaTotal ?? 0,
+                }),
+                columnsWidth: [
+                    { wch: 18 },
+                    { wch: 28 },
+                    { wch: 18 },
+                    { wch: 22 },
+                    { wch: 18 },
+                    { wch: 25 },
+                    { wch: 25 },
+                    { wch: 25 },
+                    { wch: 18 },
+                ],
+            });
+
+            toast.success("Excel descargado correctamente");
+        } catch (error) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "No se pudo descargar el Excel"
+            );
+        }
+    };
+
+
+
 
     return (
         <div className="space-y-6 p-4">
@@ -225,111 +273,123 @@ export function AdminFilteredOperationalReport() {
                     </h2>
                     <p className="text-sm text-slate-500">{rangeLabel}</p>
                 </div>
+                <div className="flex flex-col gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
+                        <Select
+                            value={operatorId}
+                            onValueChange={(value) => {
+                                setOperatorId(value);
 
-                <div className="flex flex-wrap items-center gap-3">
-                    <Select
-                        value={operatorId}
-                        onValueChange={(value) => {
-                            setOperatorId(value);
+                                if (value !== "ALL") {
+                                    setAnalystId("ALL");
+                                }
+                            }}
+                            disabled={loadingFilters || isAnalystSelected}
+                        >
+                            <SelectTrigger className="h-12 py-6  rounded bg-white">
+                                <SelectValue placeholder="Operador" />
+                            </SelectTrigger>
 
-                            if (value !== "ALL") {
-                                setAnalystId("ALL");
-                            }
-                        }}
-                        disabled={loadingFilters || isAnalystSelected}
-                    >
-                        <SelectTrigger className="h-12 p-6 min-w-52.5 rounded bg-white">
-                            <SelectValue placeholder="Operador" />
-                        </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="ALL">Todos los operadores</SelectItem>
 
-                        <SelectContent>
-                            <SelectItem value="ALL">Todos los operadores</SelectItem>
+                                {operators.map((operator) => (
+                                    <SelectItem key={operator.id} value={operator.id}>
+                                        {operator.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        {
+                            user?.role === "ADMIN" &&
+                            <Select
+                                value={analystId}
+                                onValueChange={(value) => {
+                                    setAnalystId(value);
 
-                            {operators.map((operator) => (
-                                <SelectItem key={operator.id} value={operator.id}>
-                                    {operator.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                                    if (value !== "ALL") {
+                                        setOperatorId("ALL");
+                                    }
+                                }}
+                                disabled={loadingFilters || isOperatorSelected}
+                            >
+                                <SelectTrigger className="h-12 py-6 rounded bg-white">
+                                    <SelectValue placeholder="Analista" />
+                                </SelectTrigger>
 
-                    <Select
-                        value={analystId}
-                        onValueChange={(value) => {
-                            setAnalystId(value);
+                                <SelectContent>
+                                    <SelectItem value="ALL">Todos los analistas</SelectItem>
 
-                            if (value !== "ALL") {
-                                setOperatorId("ALL");
-                            }
-                        }}
-                        disabled={loadingFilters || isOperatorSelected}
-                    >
-                        <SelectTrigger className="h-12 p-6 min-w-52.5 rounded bg-white">
-                            <SelectValue placeholder="Analista" />
-                        </SelectTrigger>
+                                    {analysts.map((analyst) => (
+                                        <SelectItem key={analyst.id} value={analyst.id}>
+                                            {analyst.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        }
 
-                        <SelectContent>
-                            <SelectItem value="ALL">Todos los analistas</SelectItem>
+                        <Select value={status} onValueChange={setStatus}>
+                            <SelectTrigger className="h-12 py-6  rounded bg-white">
+                                <SelectValue placeholder="Estado" />
+                            </SelectTrigger>
 
-                            {analysts.map((analyst) => (
-                                <SelectItem key={analyst.id} value={analyst.id}>
-                                    {analyst.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                            <SelectContent>
+                                {STATUS_OPTIONS.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
 
-                    <Select value={status} onValueChange={setStatus}>
-                        <SelectTrigger className="h-12 p-6 min-w-52.5 rounded bg-white">
-                            <SelectValue placeholder="Estado" />
-                        </SelectTrigger>
+                        <Calendar
+                            value={dateRange}
+                            onChange={(e) => setDateRange(e.value as DateRange)}
+                            selectionMode="range"
+                            readOnlyInput
+                            hideOnRangeSelection
+                            showIcon
+                            placeholder="Rango de fechas"
+                        />
 
-                        <SelectContent>
-                            {STATUS_OPTIONS.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                        <button
+                            type="button"
+                            onClick={fetchReport}
+                            disabled={loading}
+                            className="inline-flex h-12 items-center justify-center gap-2 rounded bg-blue-600 px-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-60"
+                        >
+                            {loading ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <>
+                                    <Search className="h-4 w-4" />
+                                    Consultar
+                                </>
+                            )}
+                        </button>
 
-                    <Calendar
-                        value={dateRange}
-                        onChange={(e) => setDateRange(e.value as DateRange)}
-                        selectionMode="range"
-                        readOnlyInput
-                        hideOnRangeSelection
-                        showIcon
-                        placeholder="Rango de fechas"
-                    />
-
-                    <button
-                        type="button"
-                        onClick={fetchReport}
-                        disabled={loading}
-                        className="inline-flex h-12 items-center justify-center gap-2 rounded bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-60"
-                    >
-                        {loading ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                            <>
-                                <Search className="h-4 w-4" />
-                                Consultar
-                            </>
-                        )}
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={handleClearFilters}
-                        disabled={loading}
-                        className="inline-flex h-12 items-center justify-center gap-2 rounded border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 disabled:opacity-60"
-                    >
-                        <X className="h-4 w-4" />
-                        Limpiar
-                    </button>
+                        <button
+                            type="button"
+                            onClick={handleClearFilters}
+                            disabled={loading}
+                            className="inline-flex h-12 items-center justify-center gap-2 rounded border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 disabled:opacity-60"
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleDownloadExcel}
+                            disabled={!data?.contracts?.length || loading}
+                            className="inline-flex h-12 items-center justify-center gap-2 rounded border border-slate-300 bg-green-600 px-5 text-sm font-semibold text-white shadow-sm  disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                        >
+                            <Download className="h-4 w-4" />
+                            Descargar Excel
+                        </button>
+                    </div>
                 </div>
             </div>
+
 
             {!data && !hasSearched && (
                 <div className="rounded-[24px] border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm">

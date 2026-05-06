@@ -146,7 +146,7 @@ export function SignaturePad({
 
                 <div className="flex w-fit overflow-hidden border border-borderSoft rounded-lg mb-4">
 
-                    {(["draw", "type"] as const).map((t) => (
+                    {(["draw"] as const).map((t) => (
                         <button
                             key={t}
                             onClick={() => setTab(t)}
@@ -202,10 +202,7 @@ export function SignaturePad({
                             <button
                                 onClick={requestDrawn}
                                 disabled={disabled || !hasDrawn}
-                                className={`p-2 rounded-lg text-xs lg:text-sm font-semibold
-                bg-ink text-gold
-                ${!hasDrawn ? "opacity-40" : ""}
-                `}
+                                className={`p-2 cursor-pointer rounded-lg text-xs lg:text-sm font-semibold bg-ink text-gold ${!hasDrawn ? "opacity-40" : ""}`}
                             >
                                 ✓ Firmar con este trazo
                             </button>

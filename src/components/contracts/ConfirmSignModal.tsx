@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react";
 
-export function ConfirmSignModal({ signerName, onConfirm, onCancel, confirming }: {
+export function ConfirmSignModal({ onConfirm, onCancel, confirming }: {
   signerName: string;
   onConfirm: () => void;
   onCancel: () => void;
@@ -34,56 +34,65 @@ export function ConfirmSignModal({ signerName, onConfirm, onCancel, confirming }
           </div>
 
           {/* Legal text */}
-          <div className="bg-[#fafafa] rounded-[10px] px-4 py-3.5 mb-5 border border-border-soft max-h-50 overflow-y-auto text-[11px] text-[#4a4a6a] leading-[1.7]">
-            <p className="font-bold text-ink mb-2 text-xs mt-0">
-              Declaración de Firma Electrónica
+          {/* Consentimiento legal */}
+          <div className="rounded-2xl border border-border-soft bg-neutral-50 p-4 text-[11px] leading-relaxed ">
+            <p className="mb-2 font-medium text-neutral-800">
+              Consentimiento y validez jurídica de la firma electrónica
             </p>
-            <p className="mb-2 mt-0">
-              Al firmar este documento, yo <strong>{signerName}</strong>, declaro bajo la gravedad
-              de juramento que:
+
+            <p className="mb-2">
+              De conformidad con la Ley 527 de 1999 y el Decreto 2364 de 2012 de la
+              República de Colombia, las partes reconocen y aceptan que la firma
+              electrónica realizada mediante este sistema tiene plena validez jurídica,
+              fuerza probatoria y efectos vinculantes equivalentes a una firma manuscrita.
             </p>
-            <ul className="mb-2 mt-0 pl-4.5">
-              <li className="mb-1">He leído y entendido completamente el contenido de
-                esta Libranza de Autorización de Descuento.</li>
-              <li className="mb-1">Acepto voluntariamente los términos y condiciones
-                establecidos en el documento, incluyendo la autorización de descuento por nómina
-                a favor de <strong>DIMCULTURA S.A.S.</strong></li>
-              <li className="mb-1">Autorizo el descuento de las cuotas pactadas de mi
-                salario o cualquier otro concepto laboral.</li>
-              <li className="mb-1">Comprendo que esta firma electrónica tiene plena
-                validez legal conforme a la <strong>Ley 527 de 1999</strong> (Comercio Electrónico
-                en Colombia) y el <strong>Decreto 2364 de 2012</strong> sobre firma electrónica.</li>
-              <li className="mb-1">La presente autorización es irrevocable una vez firmada,
-                salvo acuerdo escrito entre las partes.</li>
-            </ul>
-            <p className="mb-2 mt-0 text-[10.5px] ">
-              Esta firma electrónica genera los mismos efectos jurídicos que una firma manuscrita,
-              de acuerdo con la normatividad colombiana vigente. Se registrará la fecha, hora,
-              dirección IP y agente de usuario del dispositivo utilizado para firmar.
+
+            <p className="mb-2">
+              El firmante declara que los datos suministrados son auténticos, que actúa
+              en nombre propio y que manifiesta de manera libre, expresa e informada su
+              consentimiento para suscribir electrónicamente el presente documento.
             </p>
-            <p className="m-0 text-[10.5px] ">
-              Al confirmar, acepta también la <strong>Política de Tratamiento de Datos Personales
-              </strong> de DIMCULTURA S.A.S. conforme a la Ley 1581 de 2012.
+
+            <p className="mb-2">
+              La aceptación electrónica podrá realizarse mediante mecanismos de
+              autenticación como códigos OTP, validación de identidad, correo electrónico,
+              dirección IP, biometría, registros de trazabilidad y demás métodos
+              técnicamente válidos conforme a la legislación colombiana.
+            </p>
+
+            <p>
+              El firmante reconoce que el documento electrónico y los registros asociados
+              podrán ser utilizados como medio de prueba ante cualquier autoridad
+              administrativa o judicial competente.
             </p>
           </div>
 
           {/* Checkbox */}
-          <label className="flex items-start gap-3 cursor-pointer mb-6 select-none">
+          <label
+            className="flex items-start gap-3 cursor-pointer mt-2 select-none"
+            onClick={() => setAccepted((a) => !a)}
+          >
             <div
-              onClick={() => setAccepted(a => !a)}
-              className={`w-5 h-5 rounded-[5px] shrink-0 mt-px border-2 flex items-center justify-center transition-all duration-150 cursor-pointer
-                ${accepted ? "border-gold bg-ink" : "border-border-soft bg-white"}`}
+              className={`w-5 h-5 rounded-[5px] shrink-0 mt-px border-2 flex items-center justify-center transition-all duration-150
+      ${accepted ? "border-gold bg-ink" : "border-border-soft bg-white"}`}
             >
               {accepted && (
                 <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-                  <path d="M2 6l3 3 5-5" stroke="#c9a84c" strokeWidth={2}
-                    strokeLinecap="round" strokeLinejoin="round" />
+                  <path
+                    d="M2 6l3 3 5-5"
+                    stroke="#c9a84c"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               )}
             </div>
+
             <span className="text-xs text-ink leading-relaxed">
-              He leído y acepto los términos anteriores. Entiendo que esta firma electrónica
-              tiene validez legal y es vinculante para las partes involucradas.
+              He leído y acepto los términos anteriores. Autorizo el uso de mecanismos
+              de firma electrónica y reconozco que esta firma tiene plena validez legal
+              y efectos vinculantes conforme a la legislación colombiana.
             </span>
           </label>
         </div>

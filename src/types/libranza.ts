@@ -19,7 +19,7 @@ export interface LibranzaDataPreview {
   ciudad?: string | null;
   asesor?: string | null;
   fecha?: string | null;
-
+  consecutivo?: string | null
   clienteNombre?: string | null;
   clienteCC?: string | null;
   clienteCCDe?: string | null;
@@ -72,6 +72,7 @@ export type TipoContratoLibranza =
   | 'PROVISIONAL_VACANTE_DEFINITIVA'
   | 'CARRERA_ADMINISTRATIVA'
   | 'PENSIONADO'
+  | 'PROPIEDAD'
   | '';
 
 export interface ProductoItem {

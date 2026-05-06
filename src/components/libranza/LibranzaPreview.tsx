@@ -84,6 +84,7 @@ export default function LibranzaPreview({ data, signers = [], signatures: initia
           <div className="h-1.25 bg-linear-to-r from-blue-500 via-blue-700 to-ink" />
         )}
 
+
         <ScaledDocumentViewer>
           <LibranzaDocument
             data={data}

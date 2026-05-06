@@ -91,6 +91,28 @@ export const links: SidebarLink[] = [
     href: "/dashboard/staff/financial-report",
     label: "Reporte financiero",
     icon: HandCoins,
-    roles: ["CREDIT_ANALYST", "OPERATOR"],
+    roles: ["OPERATOR"],
+  },
+  {
+    href: "/dashboard/staff/financial-report",
+    label: "Reporte financiero",
+    icon: HandCoins,
+    roles: ["CREDIT_ANALYST"],
+    children: [
+      {
+        href: "/dashboard/staff/financial-report",
+        label: "Mi reporte",
+        icon: HandCoins,
+        roles: ["CREDIT_ANALYST"],
+      },
+      {
+        href: "/dashboard/reports/operational",
+        label: "Reporte por operador",
+        icon: Users2,
+        roles: ["CREDIT_ANALYST"],
+      },
+    ],
   }
 ];
+
+

@@ -128,6 +128,8 @@ export default function LibranzaStepForm() {
         return "TEMPORAL";
       case "Provisional vacante definitiva":
         return "PROVISIONAL_VACANTE_DEFINITIVA";
+      case "Propiedad":
+        return "PROPIEDAD";
       case "Carrera administrativa":
         return "CARRERA_ADMINISTRATIVA";
       case "Pensionado":
@@ -155,6 +157,7 @@ export default function LibranzaStepForm() {
       label: "Carrera administrativa",
     },
     { value: "PENSIONADO", label: "Pensionado" },
+    { value: "PROPIEDAD", label: "Propiedad" },
   ];
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {

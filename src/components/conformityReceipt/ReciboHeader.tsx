@@ -1,8 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { F } from "@/lib/formatters/formaters";
-import { LibranzaDataPreview } from "@/types/libranza";
 import { Separator } from "@/components/ui/common/separator";
 
 type Empresa = "dimcultura" | "gruculcol";
@@ -47,13 +45,14 @@ function resolveEmpresa(value?: string): Empresa {
 }
 
 interface Props {
-  data: LibranzaDataPreview;
-  templateKey?: string ;
+  templateKey?: string;
+  consecutivo?: string | number | null;
 }
 
-export function LibranzaHeader({ data, templateKey }: Props) {
-  const empresa = resolveEmpresa(templateKey ?? '');
+export function ReciboConformidadHeader({ templateKey, consecutivo }: Props) {
+  const empresa = resolveEmpresa(templateKey);
   const config = empresaConfig[empresa];
+
   return (
     <>
       <div className="mb-2 flex items-start justify-between">
@@ -71,12 +70,15 @@ export function LibranzaHeader({ data, templateKey }: Props) {
           <p className="text-[11px] font-semibold tracking-[0.02em]">
             {config.subtitulo}
           </p>
+
           <h1 className="text-[18px] font-extrabold uppercase tracking-[0.03em]">
             {config.nombre}
           </h1>
+
           <p className="text-[8px] italic text-neutral-700">
             &quot;{config.slogan}&quot;
           </p>
+
           <p className="mt-0.5 text-[7px] font-medium text-neutral-800">
             Nit. {config.nit} · Tel. 310 207 98 00 / 311 861 01 61
           </p>
@@ -84,32 +86,19 @@ export function LibranzaHeader({ data, templateKey }: Props) {
 
         <div className="rounded-sm border border-neutral-400 bg-white p-1 text-[8px] text-black">
           <div className="mb-1.5 flex items-center gap-1.5">
-            <span className="min-w-9.5 font-bold">CIUDAD:</span>
+            <span className="min-w-9.5 font-bold">FECHA:</span>
             <span className="flex-1 border-b border-neutral-400 pb-px">
-              {F(data.ciudad)}
-            </span>
-          </div>
-
-          <div className="mb-1.5 flex items-center gap-1.5">
-            <span className="min-w-9.5 font-bold">ASESOR:</span>
-            <span className="flex-1 border-b border-neutral-400 pb-px">
-              {F(data.asesor)}
+              {new Date().toLocaleDateString("es-CO", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })}
             </span>
           </div>
 
           <div className="flex items-end justify-between gap-3 text-[9px]">
-            <div className="flex gap-1.5">
-              <span className="min-w-9.5 font-bold">FECHA:</span>
-              <span>
-                {new Date().toLocaleDateString("es-CO", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                })}
-              </span>
-            </div>
             <span className="font-extrabold tracking-wide text-ink">
-              LIBRANZA - {data.consecutivo}
+              RECIBO DE CONFORMIDAD N° {consecutivo ?? ""}
             </span>
           </div>
         </div>
@@ -119,8 +108,8 @@ export function LibranzaHeader({ data, templateKey }: Props) {
 
       <div className="py-1 text-center text-[7px] leading-tight text-neutral-800">
         Sede Administrativa: Calle 24 No. 5-40 Conjunto Los Ángeles Barrio Gran
-        Colombia Casa G1 Villa del Rosario Col/ Dirección Cartagena: Lote 1 Barrio El Country Tel.
-        6512857{" "}
+        Colombia Casa G1 Villa del Rosario Col/ Dirección Cartagena: Lote 1
+        Barrio El Country Tel. 6512857{" "}
         <strong className="font-semibold text-black">
           {config.email} · {config.web}
         </strong>

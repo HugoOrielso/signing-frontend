@@ -52,7 +52,7 @@ export function LibranzaSignatureSection({
         {/* 👉 CUADRO DE FIRMA */}
         <div className="mt-auto flex flex-col items-center gap-1">
 
-          <div className="flex h-10 w-full items-center justify-center border border-dashed border-neutral-500 bg-white">
+          <div className="flex h-12 w-full items-center justify-center border rounded bg-white">
             {alreadySigned ? (
               contractedSig.type === "DRAWN" && contractedSig.imageUrl ? (
                 <div className="relative h-full w-full">
@@ -73,7 +73,7 @@ export function LibranzaSignatureSection({
               )
             ) : (
               <span className="text-[7px] text-neutral-500 text-center px-1">
-                Se utilizará la misma firma del cliente
+                Firma cliente
               </span>
             )}
           </div>
@@ -106,34 +106,8 @@ export function LibranzaSignatureSection({
           Firma
         </p>
 
-        <div className="mt-2 flex flex-1 items-center justify-center rounded-sm bg-blue-50">
-          {alreadySigned ? (
-            contractedSig.type === "DRAWN" && contractedSig.imageUrl ? (
-              <div className="relative h-11.5 w-full">
-                <Image
-                  src={contractedSig.imageUrl}
-                  alt="Firma del cliente"
-                  fill
-                  unoptimized
-                  className="object-contain"
-                />
-              </div>
-            ) : (
-              <span
-                className={`leading-none text-ink ${greatVibes.className} text-2xl`}
-              >
-                {contractedSig.typedValue}
-              </span>
-            )
-          ) : showSignatureZone ? (
-            <span className="rounded-sm border border-dashed px-2 py-1 text-[7.5px] tracking-[0.12em] text-black">
-              PENDIENTE DE FIRMA
-            </span>
-          ) : (
-            <span className="text-[7.5px] text-black tracking-[0.12em]">
-              FIRMA DEL CLIENTE
-            </span>
-          )}
+        <div className="mt-2 flex flex-1 items-center justify-center rounded-sm border">
+
         </div>
       </div>
     </div>

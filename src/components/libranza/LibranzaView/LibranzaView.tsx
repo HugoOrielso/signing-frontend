@@ -13,18 +13,23 @@ import { PublicContractError } from "@/components/libranza/LibranzaDocument/Cont
 import LibranzaPreview from "@/components/libranza/LibranzaPreview";
 import publicApiNew from "@/lib/publicAxios";
 import PagarePreview from "@/components/pagare/pagarePreview";
+import ReciboConformidadPreview from "@/components/conformityReceipt/ReciboConformidadPreview";
+import { DocumentsSigned } from "@/components/common/DocumentsSigned";
 
 interface ContractData {
   id: string;
   contractNumber?: string;
   contractType?: string;
   title: string;
+  consecutivo?: string
   status: string;
   templateKey?: string | null;
   signers: LibranzaSigner[];
   signatures: LibranzaSignature[];
   libranzaData?: LibranzaDataPreview | null;
   isSigned?: boolean;
+  isConformityReceiptSigned?: boolean;
+  pagareSigned?: boolean;
 }
 
 export type ViewMode = "sign" | "view" | "preview";
@@ -56,7 +61,7 @@ export default function PublicContractView({ token, pageMode }: Props) {
     const load = async () => {
       try {
         const { data } = await publicApiNew.get(`/users/contracts/${token}`);
-
+        console.log(data)
         setContract(data.data);
         setSignatures(data.data.signatures ?? []);
         setStep("view");
@@ -77,7 +82,7 @@ export default function PublicContractView({ token, pageMode }: Props) {
         if (code === "IDENTITY_VERIFICATION_REJECTED") {
           toast.error(
             error.response?.data?.message ??
-              "La verificación de identidad fue rechazada"
+            "La verificación de identidad fue rechazada"
           );
           setStep("error");
           return;
@@ -118,7 +123,7 @@ export default function PublicContractView({ token, pageMode }: Props) {
 
       toast.error(
         error.response?.data?.message ??
-          "No se pudo iniciar la verificación de identidad"
+        "No se pudo iniciar la verificación de identidad"
       );
 
       setStep("identity-required");
@@ -190,14 +195,15 @@ export default function PublicContractView({ token, pageMode }: Props) {
 
   const mode = resolveMode();
   const isLibranzaSigned = contract.isSigned;
-
+  const pagareSigned = contract.pagareSigned;
+  const isReciboConformidadSigned = contract.isConformityReceiptSigned;
   return (
     <div className="w-full overflow-x-auto">
       <div className="min-h-screen font-sans">
         <div className="mx-auto flex max-w-215 flex-col gap-2 px-4 py-10">
           {!isLibranzaSigned ? (
             <LibranzaPreview
-              data={contract.libranzaData!}
+              data={{ ...contract.libranzaData!, consecutivo: contract.consecutivo }}
               signers={contract.signers}
               signatures={signatures}
               templateKey={contract.templateKey ?? ""}
@@ -207,15 +213,16 @@ export default function PublicContractView({ token, pageMode }: Props) {
                 setContract((prev) =>
                   prev
                     ? {
-                        ...prev,
-                        status: "SIGNED",
-                        isSigned: true,
-                      }
+                      ...prev,
+                      status: "SIGNED",
+                      isSigned: true,
+                    }
                     : prev
                 )
               }
             />
-          ) : (
+          ) : !pagareSigned ? (
+
             <PagarePreview
               contract={contract}
               signers={contract.signers}
@@ -228,7 +235,15 @@ export default function PublicContractView({ token, pageMode }: Props) {
                 )
               }
             />
-          )}
+          ) : !isReciboConformidadSigned ? (
+
+            <ReciboConformidadPreview
+              token={token}
+              mode={mode}
+            />
+          ) : 
+            <DocumentsSigned/>
+          }
         </div>
       </div>
     </div>

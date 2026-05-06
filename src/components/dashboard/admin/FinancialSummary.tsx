@@ -15,7 +15,8 @@ import {
     ResponsiveContainer,
     CartesianGrid,
 } from "recharts";
-
+import { Download } from "lucide-react";
+import { exportToExcel } from "@/utils/exportToExcel";
 
 const formatMoney = (value: number) =>
     new Intl.NumberFormat("es-CO", {
@@ -35,6 +36,46 @@ export function AdminFinancialSummary() {
     const [data, setData] = useState<FinancialSummaryResponse | null>(null);
     const [loading, setLoading] = useState(false);
     const [dateRange, setDateRange] = useState<DateRange>(null);
+
+    const downloadExcelReport = () => {
+        try {
+            exportToExcel({
+                data: data?.contracts ?? [],
+                fileName: `resumen-financiero-${new Date().toISOString().slice(0, 10)}`,
+                sheetName: "Resumen financiero",
+                mapRow: (contract) => ({
+                    "N° contrato": contract.contractNumber ?? "",
+                    Cliente: contract.cliente?.name ?? "",
+                    Identificación: contract.cliente?.identification ?? "",
+                    Estado: contract.status,
+                    "Fecha creación": formatDate(contract.createdAt),
+                    Operador: contract.operador?.name ?? "",
+                    Analista: contract.analista?.name ?? "",
+                    "Total cuotas": contract.cuotas.sumaTotal,
+                    "Total cuotas formato": formatMoney(contract.cuotas.sumaTotal),
+                }),
+                columnsWidth: [
+                    { wch: 18 },
+                    { wch: 28 },
+                    { wch: 18 },
+                    { wch: 18 },
+                    { wch: 18 },
+                    { wch: 25 },
+                    { wch: 25 },
+                    { wch: 18 },
+                    { wch: 24 },
+                ],
+            });
+
+            toast.success("Excel descargado correctamente");
+        } catch (error) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "No se pudo descargar el Excel"
+            );
+        }
+    };
 
     const incomeByDayChartData = useMemo(() => {
         if (!data?.contracts) return [];
@@ -125,6 +166,15 @@ export function AdminFinancialSummary() {
                         className="inline-flex h-12 items-center justify-center rounded cursor-pointer bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-60"
                     >
                         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Consultar"}
+                    </button>
+                    <button
+                        type="button"
+                        onClick={downloadExcelReport}
+                        disabled={loading || !data?.contracts?.length}
+                        className="inline-flex h-12 items-center justify-center gap-2 rounded bg-emerald-600 px-5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 disabled:opacity-60"
+                    >
+                        <Download className="h-4 w-4" />
+                        Descargar Excel
                     </button>
                 </div>
             </div>
