@@ -10,8 +10,8 @@ const Header = () => {
                     <Image
                         src="/assets/logo_dimcultura.png"
                         alt="Dimcultura"
-                        width={60}
-                        height={60}
+                        width={100}
+                        height={100}
                         className="w-auto object-contain"
                     />
                 </Link>

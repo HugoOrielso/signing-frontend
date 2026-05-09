@@ -134,13 +134,16 @@ export default function LibranzaStepForm() {
         return "CARRERA_ADMINISTRATIVA";
       case "Pensionado":
         return "PENSIONADO";
+
       case "PROVISIONAL":
       case "TEMPORAL":
       case "PROVISIONAL_VACANTE_DEFINITIVA":
       case "CARRERA_ADMINISTRATIVA":
       case "PENSIONADO":
+      case "PROPIEDAD":
       case "":
-        return value;
+        return value as TipoContrato;
+
       default:
         return "";
     }
