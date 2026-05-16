@@ -1,10 +1,14 @@
 import type { NextConfig } from "next";
 
-const API_URL = process.env.API_URL || "http://localhost:4000/api";
-console.log(API_URL)
+const API_URL = process.env.API_URL;
+
+if (!API_URL) {
+  throw new Error("Missing API_URL");
+}
 
 const nextConfig: NextConfig = {
   output: "standalone",
+
   images: {
     remotePatterns: [
       {
@@ -13,6 +17,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+
   async rewrites() {
     return [
       {
@@ -21,8 +26,9 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
   generateBuildId: async () => {
-    return process.env.BUILD_ID || crypto.randomUUID()
+    return process.env.BUILD_ID || crypto.randomUUID();
   },
 };
 
