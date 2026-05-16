@@ -4,10 +4,10 @@ name: Build & Deploy to CapRover
 on:
   push:
     branches:
-      - main  # o el branch que uses para producción
+      - main
 
 env:
-  IMAGE_NAME: frontend  # nombre de tu app en CapRover
+  IMAGE_NAME: frontend
 
 jobs:
   build-and-deploy:
@@ -20,7 +20,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # ─── Login al registry (GitHub Container Registry) ───────────────────
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
@@ -28,25 +27,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.TOKEN_GHCR }}
 
-      # ─── Build y push de la imagen ────────────────────────────────────────
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: ghcr.io/hugoorielso/dimcultura-frontend:production
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          no-cache: true
           build-args: |
+            API_URL=${{ secrets.API_URL }}
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_API_IMAGES=${{ secrets.NEXT_PUBLIC_API_IMAGES }}
             BUILD_ID=${{ github.run_number }}
 
-      # ─── Deploy a CapRover ────────────────────────────────────────────────
       - name: Deploy to CapRover
         uses: caprover/deploy-from-github@v1.1.2
         with:
-          server: ${{ secrets.CAPROVER_SERVER }}      # https://captain.tudominio.com
-          app: ${{ secrets.CAPROVER_APP_NAME }}       # nombre de la app en CapRover
-          token: ${{ secrets.CAPROVER_APP_TOKEN }}    # token de la app (no el root)
+          server: ${{ secrets.CAPROVER_SERVER }}
+          app: ${{ secrets.CAPROVER_APP_NAME }}
+          token: ${{ secrets.CAPROVER_APP_TOKEN }}
           image: ghcr.io/hugoorielso/dimcultura-frontend:production
