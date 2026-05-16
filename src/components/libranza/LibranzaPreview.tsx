@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import publicApi from "@/lib/axiosPublicClient";
 import { LibranzaDataPreview, LibranzaSignature, LibranzaSigner } from "@/types/libranza";
 import { LibranzaDocument } from "./LibranzaDocument";
@@ -20,12 +20,17 @@ interface Props {
 }
 
 export default function LibranzaPreview({ data, signers = [], signatures: initialSignatures = [], templateKey, mode, token }: Props) {
-  const [signatures, setSignatures] = useState<LibranzaSignature[]>(initialSignatures);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [showPad, setShowPad] = useState(false);
+  const [signatures, setSignatures] = useState<LibranzaSignature[]>(initialSignatures);
+  const prevInitialRef = useRef(initialSignatures);
+
   useEffect(() => {
-    setSignatures(initialSignatures);
+    if (prevInitialRef.current !== initialSignatures) {
+      prevInitialRef.current = initialSignatures;
+      setSignatures(initialSignatures);
+    }
   }, [initialSignatures]);
 
   const contractedSigner = signers.find((s) => s.partyRole === "DEUDOR");
