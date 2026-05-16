@@ -3,14 +3,21 @@ FROM node:22-alpine AS deps
 
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml ./
+COPY pnpm-workspace.yaml* ./
+
+RUN pnpm install --frozen-lockfile
 
 
 # ─── Stage 2: Builder ────────────────────────────────────────────────────────
 FROM node:22-alpine AS builder
 
 WORKDIR /app
+
+RUN corepack enable
 
 ENV NEXT_PUBLIC_API_URL=https://backend.hugoorielso.com/api
 ENV NEXT_PUBLIC_API_IMAGES=https://backend.hugoorielso.com
@@ -21,7 +28,7 @@ ENV NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN yarn build
+RUN pnpm build
 
 
 # ─── Stage 3: Runner ─────────────────────────────────────────────────────────
@@ -36,6 +43,7 @@ ENV HOSTNAME=0.0.0.0
 ENV NEXTAUTH_URL=https://hugoorielso.com
 ENV NEXTAUTH_SECRET=tu-secret-aqui
 ENV NEXT_PUBLIC_API_URL=https://backend.hugoorielso.com/api
+ENV NEXT_PUBLIC_API_IMAGES=https://backend.hugoorielso.com
 ENV API_URL=https://backend.hugoorielso.com/api
 ENV AUTH_TRUST_HOST=true
 
