@@ -19,9 +19,15 @@ WORKDIR /app
 
 RUN corepack enable
 
-ENV NEXT_PUBLIC_API_URL=https://backend.hugoorielso.com/api
-ENV NEXT_PUBLIC_API_IMAGES=https://backend.hugoorielso.com
-ENV API_URL=https://backend.hugoorielso.com/api
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_API_IMAGES
+ARG API_URL
+ARG BUILD_ID
+
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PUBLIC_API_IMAGES=${NEXT_PUBLIC_API_IMAGES}
+ENV API_URL=${API_URL}
+ENV BUILD_ID=${BUILD_ID}
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
@@ -40,12 +46,9 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
-ENV NEXTAUTH_URL=https://hugoorielso.com
-ENV NEXTAUTH_SECRET=tu-secret-aqui
-ENV NEXT_PUBLIC_API_URL=https://backend.hugoorielso.com/api
-ENV NEXT_PUBLIC_API_IMAGES=https://backend.hugoorielso.com
-ENV API_URL=https://backend.hugoorielso.com/api
 ENV AUTH_TRUST_HOST=true
+
+RUN corepack enable
 
 RUN addgroup --system --gid 1001 nodejs \
  && adduser --system --uid 1001 nextjs
