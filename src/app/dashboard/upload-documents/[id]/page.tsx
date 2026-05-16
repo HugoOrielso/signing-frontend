@@ -185,8 +185,7 @@ export default function LibranzaUploadDocuments() {
       });
 
       toast.success("Documento actualizado");
-    } catch (error) { 
-      console.log(error)
+    } catch  { 
     }
 
   };

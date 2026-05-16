@@ -15,6 +15,7 @@ import publicApiNew from "@/lib/publicAxios";
 import PagarePreview from "@/components/pagare/pagarePreview";
 import ReciboConformidadPreview from "@/components/conformityReceipt/ReciboConformidadPreview";
 import { DocumentsSigned } from "@/components/common/DocumentsSigned";
+import LetraCambioPreview from "../letraDeCambio/letraDeCambioPreview";
 
 interface ContractData {
   id: string;
@@ -30,6 +31,7 @@ interface ContractData {
   isSigned?: boolean;
   isConformityReceiptSigned?: boolean;
   pagareSigned?: boolean;
+  isLetraCambioSigned?: boolean
 }
 
 export type ViewMode = "sign" | "view" | "preview";
@@ -61,7 +63,6 @@ export default function PublicContractView({ token, pageMode }: Props) {
     const load = async () => {
       try {
         const { data } = await publicApiNew.get(`/users/contracts/${token}`);
-        console.log(data)
         setContract(data.data);
         setSignatures(data.data.signatures ?? []);
         setStep("view");
@@ -197,6 +198,8 @@ export default function PublicContractView({ token, pageMode }: Props) {
   const isLibranzaSigned = contract.isSigned;
   const pagareSigned = contract.pagareSigned;
   const isReciboConformidadSigned = contract.isConformityReceiptSigned;
+  const isLetraCambioSigned = contract.isLetraCambioSigned;
+
   return (
     <div className="w-full overflow-x-auto">
       <div className="min-h-screen font-sans">
@@ -222,7 +225,6 @@ export default function PublicContractView({ token, pageMode }: Props) {
               }
             />
           ) : !pagareSigned ? (
-
             <PagarePreview
               contract={contract}
               signers={contract.signers}
@@ -231,19 +233,17 @@ export default function PublicContractView({ token, pageMode }: Props) {
               token={token}
               onSigned={() =>
                 setContract((prev) =>
-                  prev ? { ...prev, status: "SIGNED" } : prev
+                  prev ? { ...prev, pagareSigned: true } : prev
                 )
               }
             />
           ) : !isReciboConformidadSigned ? (
-
-            <ReciboConformidadPreview
-              token={token}
-              mode={mode}
-            />
-          ) : 
-            <DocumentsSigned/>
-          }
+            <ReciboConformidadPreview token={token} mode={mode} />
+          ) : !isLetraCambioSigned ? (
+            <LetraCambioPreview token={token} mode={mode} />
+          ) : (
+            <DocumentsSigned />
+          )}
         </div>
       </div>
     </div>

@@ -34,6 +34,7 @@ export const tipoContratoSchema = z.enum([
     "PROVISIONAL_VACANTE_DEFINITIVA",
     "CARRERA_ADMINISTRATIVA",
     "PENSIONADO",
+    "PROPIEDAD"
 ]);
 
 export const productoSchema = z.object({

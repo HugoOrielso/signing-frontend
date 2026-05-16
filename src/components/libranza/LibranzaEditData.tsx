@@ -201,7 +201,6 @@ export default function EditLibranzaData() {
             dataReviewNotes: String(fd.get("dataReviewNotes") || "").trim(),
         };
         const result = libranzaReviewSchema.safeParse(rawData);
-        console.log(result)
         if (!result.success) {
             const formatted: Record<string, string> = {};
 
@@ -234,7 +233,6 @@ export default function EditLibranzaData() {
             setTimeout(()=>{location.reload()},500)
 
         } catch (error: unknown) {
-            console.log(error)
             const axiosError = error as AxiosError<ValidationErrorResponse>;
 
             const backendErrors = axiosError.response?.data?.errors?.fieldErrors;

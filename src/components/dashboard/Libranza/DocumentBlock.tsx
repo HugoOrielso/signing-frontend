@@ -46,7 +46,6 @@ export function DocumentBlock({
 
   const hasSelectedFile = !!doc.file;
   const hasRemoteFile = !!doc.uploadedUrl;
-console.log(doc)
   const previewUrl = doc.preview || doc.uploadedUrl || null;
 
   const isImage =

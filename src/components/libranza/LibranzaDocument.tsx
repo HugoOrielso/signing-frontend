@@ -18,7 +18,6 @@ export function LibranzaDocument({
   showSignatureZone,
   templateKey
 }: Props) {
-  console.log(data)
   return (
     <div className="w-full bg-white p-6 text-[11px] text-black">
       <LibranzaHeader data={data} templateKey={templateKey} />
