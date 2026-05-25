@@ -92,9 +92,9 @@ export const libranzaFormSchema = z
             })
             .refine((value) => {
                 const age = calculateAgeFromString(value);
-                return age !== null && age >= 18 && age <= 65;
+                return age !== null && age >= 18 && age < 65;
             }, {
-                message: "No se puede realizar la libranza: la edad permitida es entre 18 y 65 años",
+                message: "No se puede realizar la libranza: la edad permitida es entre 18 y 64 años",
             }),
 
         clienteFechaExpedicionCC: z

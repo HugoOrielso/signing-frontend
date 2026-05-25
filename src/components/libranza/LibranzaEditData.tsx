@@ -876,7 +876,7 @@ export default function EditLibranzaData() {
                             type="submit"
                             className="rounded-lg bg-ink px-7 py-3 text-sm font-semibold text-main cursor-pointer"
                         >
-                            Editar datos →
+                            Guardar datos →
                         </button>
                     </div>
                 </form>
