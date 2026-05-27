@@ -37,12 +37,12 @@ export function Footer() {
               <div className="space-y-3 text-sm text-slate-300">
                 <p className="flex items-center gap-3">
                   <Mail className="h-4 w-4 text-blue-400" />
-                  contacto@dimcultura.com
+                  servicioalcliente@dimcultura.com
                 </p>
 
                 <p className="flex items-center gap-3">
                   <Phone className="h-4 w-4 text-blue-400" />
-                  +57 300 000 0000
+                  +57 311 861 0161
                 </p>
 
                 <p className="flex items-center gap-3">
