@@ -1,4 +1,4 @@
-import type { Contract } from '@/types/libranza';
+import type { Contract, ContractStatus } from '@/types/libranza';
 
 export function fmtDate(d?: string | null) {
   if (!d) return '—';
@@ -69,14 +69,18 @@ export function signerIsSigned(c: Contract, signerId: string): boolean {
   return c.signatures.some((sig) => sig.signerId === signerId);
 }
 
-export function displayStatus(c: Contract): string {
+export function displayStatus(c: Contract): ContractStatus {
   const [signed, total] = signedCount(c);
 
-  if (c.status === 'SIGNED' || (total > 0 && signed === total)) return 'SIGNED';
-  if (c.status === 'PARTIALLY_SIGNED' || (total > 0 && signed > 0)) return 'PARTIALLY_SIGNED';
-  if (c.status === 'SENT' || c.status === 'VIEWED') return 'PENDING_SIGN';
+  if (c.status === 'SIGNED') return 'SIGNED';
 
-  return c.status;
+  if (c.status === 'PARTIALLY_SIGNED') return 'PARTIALLY_SIGNED';
+
+  if (total > 1 && signed > 0 && signed < total) {
+    return 'PARTIALLY_SIGNED';
+  }
+
+  return c.status as ContractStatus;
 }
 
 export function publicUrl(token?: string | null): string | null {
