@@ -38,7 +38,7 @@ export default function LibranzaStepForm() {
   const form = useLibranzaStore((state) => state.form);
   const router = useRouter()
   const [errors, setErrors] = useState<FormErrors>({});
-
+  const [isCreating, setIsCreating] = useState(false);
   const [referencias, setReferencias] = useState<ReferenceItem[]>(
     form.references ?? []
   );
@@ -242,7 +242,9 @@ export default function LibranzaStepForm() {
       toast.error("Hay errores en el formulario");
       return;
     }
+
     try {
+      setIsCreating(true);
       const draftContract = await api.post("/contracts", buildLibranzaPayload(result.data));
 
       if (draftContract.status === 201) {
@@ -268,6 +270,8 @@ export default function LibranzaStepForm() {
       }
 
       toast.error("Error inesperado al guardar el borrador");
+    } finally {
+      setIsCreating(false)
     }
   }
 
@@ -957,9 +961,14 @@ export default function LibranzaStepForm() {
       <div className="mt-9 flex justify-end border-t pt-6">
         <button
           type="submit"
-          className="rounded-lg bg-ink px-7 py-3 text-sm font-semibold text-main cursor-pointer"
+          disabled={isCreating}
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-ink px-7 py-3 text-sm font-semibold text-main cursor-pointer disabled:cursor-not-allowed disabled:opacity-70"
         >
-          Guardar borrador →
+          {isCreating && (
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-main border-t-transparent" />
+          )}
+
+          {isCreating ? "Guardando borrador..." : "Guardar borrador →"}
         </button>
       </div>
     </form>
