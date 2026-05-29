@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ProductoItem, ReferenceItem, ReviewedLibranzaDetail, ReviewedLibranzaForm } from '@/types/libranza';
+import { ProductoItem, ReferenceItem, ReviewedLibranzaDetail, ReviewedLibranzaForm, TipoContratoLibranza, TipoCuenta } from '@/types/libranza';
 import { useLibranzaStore } from '@/store/libranzaStore';
 import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
@@ -230,7 +230,7 @@ export default function EditLibranzaData() {
 
             window.scrollTo({ top: 0, behavior: "smooth" });
 
-            setTimeout(()=>{location.reload()},500)
+            setTimeout(() => { location.reload() }, 500)
 
         } catch (error: unknown) {
             const axiosError = error as AxiosError<ValidationErrorResponse>;
@@ -585,28 +585,31 @@ export default function EditLibranzaData() {
                                 {renderError('pagaduriaDepartamento')}
                             </div>
 
-                            <div>
-                                <label className={labelClass}>Tipo de contrato</label>
-                                <select
-                                    name="tipoContrato"
-                                    className={getInputClass('tipoContrato')}
-                                    value={form.tipoContrato || ''}
-                                    onChange={() => setFieldErrorClear('tipoContrato')}
-                                    required
-                                >
-                                    <option value="">Seleccionar…</option>
-                                    <option value="PROVISIONAL">Provisional</option>
-                                    <option value="TEMPORAL">Temporal</option>
-                                    <option value="PROVISIONAL_VACANTE_DEFINITIVA">
-                                        Provisional vacante definitiva
-                                    </option>
-                                    <option value="CARRERA_ADMINISTRATIVA">
-                                        Carrera administrativa
-                                    </option>
-                                    <option value="PENSIONADO">Pensionado</option>
-                                </select>
-                                {renderError('tipoContrato')}
-                            </div>
+                            <select
+                                name="tipoContrato"
+                                className={getInputClass('tipoContrato')}
+                                value={form.tipoContrato || ''}
+                                onChange={(e) => {
+                                    setForm({
+                                        ...form,
+                                        tipoContrato: e.target.value as TipoContratoLibranza,
+                                    });
+
+                                    setFieldErrorClear('tipoContrato');
+                                }}
+                                required
+                            >
+                                <option value="">Seleccionar…</option>
+                                <option value="PROVISIONAL">Provisional</option>
+                                <option value="TEMPORAL">Temporal</option>
+                                <option value="PROVISIONAL_VACANTE_DEFINITIVA">
+                                    Provisional vacante definitiva
+                                </option>
+                                <option value="CARRERA_ADMINISTRATIVA">
+                                    Carrera administrativa
+                                </option>
+                                <option value="PENSIONADO">Pensionado</option>
+                            </select>
                         </div>
                     </section>
 
@@ -720,8 +723,15 @@ export default function EditLibranzaData() {
                                 <select
                                     name="tipoCuenta"
                                     className={getInputClass('tipoCuenta')}
-                                    value={form.tipoCuenta}
-                                    onChange={() => setFieldErrorClear('tipoCuenta')}
+                                    value={form.tipoCuenta || ''}
+                                    onChange={(e) => {
+                                        setForm({
+                                            ...form,
+                                            tipoCuenta: e.target.value as TipoCuenta,
+                                        });
+
+                                        setFieldErrorClear('tipoCuenta');
+                                    }}
                                     required
                                 >
                                     <option value="">Seleccionar…</option>
@@ -730,6 +740,8 @@ export default function EditLibranzaData() {
                                 </select>
                                 {renderError('tipoCuenta')}
                             </div>
+
+
 
                             <div>
                                 <label className={labelClass}>Número de Cuenta</label>
